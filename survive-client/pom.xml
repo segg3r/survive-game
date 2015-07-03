@@ -1,0 +1,138 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>by.segg3r</groupId>
+		<artifactId>survive-root</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>survive-client</artifactId>
+
+	<properties>
+		<parent.basedir>${project.basedir}/..</parent.basedir>
+		<parent.target>${parent.basedir}/target</parent.target>
+
+		<deploy.path>${parent.basedir}/deploy</deploy.path>
+		<deploy.fullPath>${deploy.path}/${project.artifactId}-${project.version}</deploy.fullPath>
+		<deploy.runPath>${deploy.fullPath}/run.bat</deploy.runPath>
+
+		<release.finalName>${project.artifactId}-${project.version}.jar</release.finalName>
+
+		<release.zip.finalPath>${parent.target}</release.zip.finalPath>
+		<release.zip.finalName>${project.artifactId}-${project.version}.zip</release.zip.finalName>
+		<release.zip.postfix>release</release.zip.postfix>
+		<release.zip.targetName>${project.artifactId}-${project.version}-${release.zip.postfix}.zip</release.zip.targetName>
+		<release.zip.targetPath>${project.build.directory}</release.zip.targetPath>
+
+		<release.resources.path>resources</release.resources.path>
+		<release.lib.path>lib</release.lib.path>
+		<release.natives.path>natives</release.natives.path>
+
+		<source.src.path>src</source.src.path>
+		<source.natives.path>${project.build.directory}/natives</source.natives.path>
+		<source.resources.path>${source.src.path}/main/resources</source.resources.path>
+		<source.scripts.path>${source.src.path}/main/scripts</source.scripts.path>
+		<source.assembly.path>${source.src.path}/META-INF/assembly.xml</source.assembly.path>
+
+		<execution.class.main>by.segg3r.Runner</execution.class.main>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.googlecode.mavennatives</groupId>
+				<artifactId>maven-nativedependencies-plugin</artifactId>
+				<version>0.0.7</version>
+				<executions>
+					<execution>
+						<id>unpack-natives</id>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<phase>generate-resources</phase>
+					<nativesTargetDir>${library.natives.path}</nativesTargetDir>
+					<separateDirs>false</separateDirs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>${execution.class.main}</mainClass>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>${release.lib.path}</classpathPrefix>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>bundle-project-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>${source.assembly.path}</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>copy-zip</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target name="copy zip in target">
+								<copy file="${release.zip.targetPath}/${release.zip.targetName}"
+									tofile="${release.zip.finalPath}/${release.zip.finalName}" />
+							</target>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>unpack-zip</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
+									dest="${deploy.path}" />
+								<exec executable="${deploy.runPath}" dir="${deploy.fullPath}" spawn="true" />
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.slick2d</groupId>
+			<artifactId>slick2d-core</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+	</dependencies>
+</project>
