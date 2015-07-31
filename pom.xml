@@ -9,6 +9,8 @@
 	<properties>
 		<module.client>survive-client</module.client>
 		<deploy.path>${project.basedir}/deploy</deploy.path>
+		
+		<spring.version>4.2.0.RELEASE</spring.version>
 	</properties>
 
 	<modules>
