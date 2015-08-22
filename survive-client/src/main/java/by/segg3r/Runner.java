@@ -6,8 +6,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import by.segg3r.game.config.AppConfig;
 
-public class Runner {
+public final class Runner {
 
+	private Runner() {};
+	
 	public static void main(String[] args) {
 		try (AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				AppConfig.class)) {
