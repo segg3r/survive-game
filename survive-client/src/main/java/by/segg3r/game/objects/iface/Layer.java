@@ -1,4 +1,4 @@
-package by.segg3r.game.objects;
+package by.segg3r.game.objects.iface;
 
 public enum Layer {
 
