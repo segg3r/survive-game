@@ -1,33 +1,50 @@
 package by.segg3r.game.objects.prefabs;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.newdawn.slick.SlickException;
 
 import by.segg3r.game.objects.characters.GameCharacter;
+import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.characters.animations.AnimationSet;
 import by.segg3r.game.objects.characters.animations.GameCharacterAnimation;
 import by.segg3r.game.objects.prefabs.options.GameCharacterPrefabAnimationOptions;
 import by.segg3r.game.rooms.Room;
 
-public class GameCharacterPrefab extends Prefab<GameCharacter, GameCharacterPrefabAnimationOptions> {
+public class GameCharacterPrefab extends
+		Prefab<GameCharacter, GameCharacterPrefabAnimationOptions> {
 
-	public GameCharacterPrefab(GameCharacterPrefabAnimationOptions animationOptions) {
+	public GameCharacterPrefab(
+			GameCharacterPrefabAnimationOptions animationOptions) {
 		super(animationOptions);
 	}
-	
-	public GameCharacter instantiate(ImageHolder imageHolder, Room room, double x, double y) throws SlickException {
+
+	public GameCharacter instantiate(ImageHolder imageHolder, Room room)
+			throws SlickException {
 		GameCharacterPrefabAnimationOptions animationOptions = getAnimationOptions();
-		int duration = animationOptions.getDuration();
-		
-		String bodyFileName = animationOptions.getBodyFileName();
-		AnimationSet bodyAnimationSet = imageHolder.getGameCharacterAnimationSet(bodyFileName, duration);
-		List<AnimationSet> animationSets = Arrays.asList(bodyAnimationSet);
-		
-		GameCharacterAnimation animation = new GameCharacterAnimation(animationSets);		
+
+		GameCharacterAnimation animation = buildAnimation(imageHolder,
+				animationOptions);
 		GameCharacter gameCharacter = new GameCharacter(room, animation);
-		return gameCharacter;		
+		return gameCharacter;
 	}
-	
+
+	private GameCharacterAnimation buildAnimation(ImageHolder imageHolder,
+			GameCharacterPrefabAnimationOptions animationOptions)
+			throws SlickException {
+		Map<AnimationPart, AnimationSet> animationSets = new HashMap<AnimationPart, AnimationSet>();
+		for (AnimationPart animationPart : AnimationPart.values()) {
+			String fileName = animationOptions.getFileName(animationPart);
+			if (fileName != null) {
+				animationSets.put(animationPart, imageHolder
+						.getGameCharacterAnimationSet(fileName,
+								animationOptions));
+			}
+
+		}
+		GameCharacterAnimation animation = new GameCharacterAnimation(
+				animationSets);
+		return animation;
+	}
 }

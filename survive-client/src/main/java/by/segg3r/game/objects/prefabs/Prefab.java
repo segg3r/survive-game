@@ -16,8 +16,7 @@ public abstract class Prefab
 		this.animationOptions = animationOptions;
 	}
 
-	public abstract GameObject instantiate(ImageHolder imageHolder, Room room,
-			double x, double y) throws SlickException;
+	public abstract GameObject instantiate(ImageHolder imageHolder, Room room) throws SlickException;
 
 	protected AnimationOptionsType getAnimationOptions() {
 		return this.animationOptions;

@@ -13,13 +13,20 @@ public class GameObjectFactory {
 
 	@Autowired
 	private ImageHolder imageHolder;
-	
+
 	public GameObjectFactory() {
 		super();
 	}
-	
-	public GameObject instantiate(Prefab<?, ?> prefab, Room room, double x, double y) throws SlickException {
-		return prefab.instantiate(imageHolder, room, x, y);
+
+	public GameObject instantiate(Prefab<?, ?> prefab, Room room, double x,
+			double y) throws SlickException {
+		GameObject gameObject = prefab.instantiate(imageHolder, room);
+		gameObject.setPosition(x, y);
+		return gameObject;
+	}
+
+	public void setImageHolder(ImageHolder imageHolder) {
+		this.imageHolder = imageHolder;
 	}
 
 }

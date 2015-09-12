@@ -29,4 +29,8 @@ public class GameCharacter extends GameObject {
 		gameCharacterAnimation.draw(this, (float) getX(), (float) getY());
 	}
 
+	public GameCharacterAnimation getGameCharacterAnimation() {
+		return gameCharacterAnimation;
+	}
+
 }

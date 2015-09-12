@@ -1,5 +1,8 @@
 package by.segg3r.game;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -8,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import by.segg3r.game.objects.GameObjectFactory;
+import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.prefabs.GameCharacterPrefab;
 import by.segg3r.game.objects.prefabs.options.GameCharacterPrefabAnimationOptions;
 import by.segg3r.game.rooms.Room;
@@ -28,8 +32,10 @@ public class Game extends BasicGame {
 	public void init(GameContainer gc) throws SlickException {
 		this.currentRoom = new Room(gameObjectFactory);
 
+		Map<AnimationPart, String> files = new HashMap<AnimationPart, String>();
+		files.put(AnimationPart.BODY, "img/characters/image_body.png");
 		GameCharacterPrefabAnimationOptions animationOptions = new GameCharacterPrefabAnimationOptions(
-				"img/characters/body_white.jpg", 400);
+				files);
 		GameCharacterPrefab prefab = new GameCharacterPrefab(animationOptions);
 
 		currentRoom.addGameObject(prefab, 50, 50);

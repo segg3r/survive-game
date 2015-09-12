@@ -23,6 +23,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import by.segg3r.game.objects.characters.animations.AnimationSet;
+import by.segg3r.game.objects.prefabs.options.PrefabAnimationOptions;
 
 public class ImageHolderTest {
 
@@ -40,14 +41,15 @@ public class ImageHolderTest {
 
 		SpriteSheet cached = mock(SpriteSheet.class);
 		SpriteSheet loaded = mock(SpriteSheet.class);
+		PrefabAnimationOptions<?> animationOptions = mock(PrefabAnimationOptions.class);
 		doReturn(cached).when(imageHolder).getCachedCharacterSpriteSheet(
 				eq(fileName));
 		doReturn(loaded).when(imageHolder).loadCharacterSpriteSheet(
-				eq(fileName));
+				eq(fileName), eq(animationOptions));
 		doNothing().when(imageHolder).cacheCharacterSpriteSheet(eq(fileName),
 				eq(loaded));
 
-		SpriteSheet result = imageHolder.getGameCharacterSpriteSheet(fileName);
+		SpriteSheet result = imageHolder.getGameCharacterSpriteSheet(fileName, animationOptions);
 		assertEquals(result, cached);
 		verify(imageHolder, never()).cacheCharacterSpriteSheet(eq(fileName),
 				eq(loaded));
@@ -59,14 +61,15 @@ public class ImageHolderTest {
 		imageHolder = spy(imageHolder);
 
 		SpriteSheet loaded = mock(SpriteSheet.class);
+		PrefabAnimationOptions<?> animationOptions = mock(PrefabAnimationOptions.class);
 		doReturn(null).when(imageHolder).getCachedCharacterSpriteSheet(
 				eq(fileName));
 		doReturn(loaded).when(imageHolder).loadCharacterSpriteSheet(
-				eq(fileName));
+				eq(fileName), eq(animationOptions));
 		doNothing().when(imageHolder).cacheCharacterSpriteSheet(eq(fileName),
 				eq(loaded));
 
-		SpriteSheet result = imageHolder.getGameCharacterSpriteSheet(fileName);
+		SpriteSheet result = imageHolder.getGameCharacterSpriteSheet(fileName, animationOptions);
 		assertEquals(result, loaded);
 		verify(imageHolder, times(1)).cacheCharacterSpriteSheet(eq(fileName),
 				eq(loaded));
@@ -86,6 +89,7 @@ public class ImageHolderTest {
 	@Test(description = "should correctly get images from sprite sheet")
 	public void testGetImagesFromSpriteSheet() throws SlickException {
 		SpriteSheet spriteSheet = mock(SpriteSheet.class);
+		PrefabAnimationOptions<?> animationOptions = mock(PrefabAnimationOptions.class);
 
 		List<Image> images = new ArrayList<Image>();
 		for (int i = 0; i < 12; i++) {
@@ -103,9 +107,10 @@ public class ImageHolderTest {
 		int duration = 20;
 		imageHolder = spy(imageHolder);
 		doReturn(spriteSheet).when(imageHolder).getGameCharacterSpriteSheet(
-				eq(fileName));
+				eq(fileName), eq(animationOptions));
+		when(animationOptions.getDuration()).thenReturn(duration);
 		
-		AnimationSet result = imageHolder.getGameCharacterAnimationSet(fileName, duration);
+		AnimationSet result = imageHolder.getGameCharacterAnimationSet(fileName, animationOptions);
 		
 		Animation top = result.getTop();
 		assertEquals(top.getImage(0), images.get(0));

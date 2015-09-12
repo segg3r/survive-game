@@ -2,6 +2,7 @@ package by.segg3r.game.objects.characters.animations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.newdawn.slick.Animation;
 
@@ -9,9 +10,9 @@ import by.segg3r.game.objects.characters.GameCharacter;
 
 public class GameCharacterAnimation {
 
-	private List<AnimationSet> animationSets;
+	private Map<AnimationPart, AnimationSet> animationSets;
 
-	public GameCharacterAnimation(List<AnimationSet> animationSets) {
+	public GameCharacterAnimation(Map<AnimationPart, AnimationSet> animationSets) {
 		super();
 		this.animationSets = animationSets;
 	}
@@ -34,20 +35,18 @@ public class GameCharacterAnimation {
 		List<Animation> result = new ArrayList<Animation>();
 
 		double direction = gameCharacter.getDirection();
-		for (AnimationSet animationSet : animationSets) {
-			Animation currentAnimation = animationSet
-					.getCurrentAnimation(direction);
-			result.add(currentAnimation);
+		for (AnimationPart animationPart : AnimationPart.values()) {
+			AnimationSet animationSet = getAnimationSet(animationPart);
+			if (animationSet != null) {
+				Animation currentAnimation = animationSet.getCurrentAnimation(direction);
+				result.add(currentAnimation);
+			}	
 		}
 		return result;
 	}
 
-	public List<AnimationSet> getAnimationSets() {
-		return animationSets;
-	}
-
-	public void setAnimationSets(List<AnimationSet> animationSets) {
-		this.animationSets = animationSets;
+	public AnimationSet getAnimationSet(AnimationPart animationPart) {
+		return animationSets.get(animationPart);
 	}
 
 }
