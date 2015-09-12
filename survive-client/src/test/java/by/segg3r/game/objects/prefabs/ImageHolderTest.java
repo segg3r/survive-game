@@ -22,7 +22,9 @@ import org.newdawn.slick.SpriteSheet;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.characters.animations.AnimationSet;
+import by.segg3r.game.objects.prefabs.options.GameCharacterPrefabAnimationOptions;
 import by.segg3r.game.objects.prefabs.options.PrefabAnimationOptions;
 
 public class ImageHolderTest {
@@ -49,7 +51,8 @@ public class ImageHolderTest {
 		doNothing().when(imageHolder).cacheCharacterSpriteSheet(eq(fileName),
 				eq(loaded));
 
-		SpriteSheet result = imageHolder.getGameCharacterSpriteSheet(fileName, animationOptions);
+		SpriteSheet result = imageHolder.getGameCharacterSpriteSheet(fileName,
+				animationOptions);
 		assertEquals(result, cached);
 		verify(imageHolder, never()).cacheCharacterSpriteSheet(eq(fileName),
 				eq(loaded));
@@ -69,7 +72,8 @@ public class ImageHolderTest {
 		doNothing().when(imageHolder).cacheCharacterSpriteSheet(eq(fileName),
 				eq(loaded));
 
-		SpriteSheet result = imageHolder.getGameCharacterSpriteSheet(fileName, animationOptions);
+		SpriteSheet result = imageHolder.getGameCharacterSpriteSheet(fileName,
+				animationOptions);
 		assertEquals(result, loaded);
 		verify(imageHolder, times(1)).cacheCharacterSpriteSheet(eq(fileName),
 				eq(loaded));
@@ -88,8 +92,14 @@ public class ImageHolderTest {
 
 	@Test(description = "should correctly get images from sprite sheet")
 	public void testGetImagesFromSpriteSheet() throws SlickException {
+		String fileName = "sheet.png";
+		int duration = 20;
+
 		SpriteSheet spriteSheet = mock(SpriteSheet.class);
-		PrefabAnimationOptions<?> animationOptions = mock(PrefabAnimationOptions.class);
+		GameCharacterPrefabAnimationOptions animationOptions = mock(GameCharacterPrefabAnimationOptions.class);
+		AnimationPart animationPart = AnimationPart.ARMOR;
+		when(animationOptions.getFileName(eq(animationPart))).thenReturn(
+				fileName);
 
 		List<Image> images = new ArrayList<Image>();
 		for (int i = 0; i < 12; i++) {
@@ -103,41 +113,51 @@ public class ImageHolderTest {
 			}
 		}
 
-		String fileName = "sheet.png";
-		int duration = 20;
 		imageHolder = spy(imageHolder);
 		doReturn(spriteSheet).when(imageHolder).getGameCharacterSpriteSheet(
 				eq(fileName), eq(animationOptions));
 		when(animationOptions.getDuration()).thenReturn(duration);
-		
-		AnimationSet result = imageHolder.getGameCharacterAnimationSet(fileName, animationOptions);
-		
+
+		AnimationSet result = imageHolder.getGameCharacterAnimationSet(
+				animationPart, animationOptions);
+
 		Animation top = result.getTop();
 		assertEquals(top.getImage(0), images.get(0));
 		assertEquals(top.getImage(1), images.get(1));
 		assertEquals(top.getImage(2), images.get(2));
 		assertEquals(top.getImage(3), images.get(1));
 		assertEquals(top.getDuration(0), duration);
-		
+
 		Animation right = result.getRight();
 		assertEquals(right.getImage(0), images.get(3));
 		assertEquals(right.getImage(1), images.get(4));
 		assertEquals(right.getImage(2), images.get(5));
 		assertEquals(right.getImage(3), images.get(4));
 		assertEquals(right.getDuration(0), duration);
-		
+
 		Animation down = result.getDown();
 		assertEquals(down.getImage(0), images.get(6));
 		assertEquals(down.getImage(1), images.get(7));
 		assertEquals(down.getImage(2), images.get(8));
 		assertEquals(down.getImage(3), images.get(7));
 		assertEquals(down.getDuration(0), duration);
-		
+
 		Animation left = result.getLeft();
 		assertEquals(left.getImage(0), images.get(9));
 		assertEquals(left.getImage(1), images.get(10));
 		assertEquals(left.getImage(2), images.get(11));
 		assertEquals(left.getImage(3), images.get(10));
 		assertEquals(left.getDuration(0), duration);
+	}
+
+	@Test(description = "should return NULL animation set if there is no file for"
+			+ " given animation part in animation options")
+	public void testGetGameCharacterAnimationSetReturnNull() throws SlickException {
+		AnimationPart animationPart = AnimationPart.ARMOR;
+		GameCharacterPrefabAnimationOptions animationOptions = mock(GameCharacterPrefabAnimationOptions.class);
+		when(animationOptions.getFileName(eq(animationPart)))
+			.thenReturn(null);
+		
+		assertNull(imageHolder.getGameCharacterAnimationSet(animationPart, animationOptions));
 	}
 }

@@ -11,7 +11,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.springframework.stereotype.Component;
 
+import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.characters.animations.AnimationSet;
+import by.segg3r.game.objects.prefabs.options.GameCharacterPrefabAnimationOptions;
 import by.segg3r.game.objects.prefabs.options.PrefabAnimationOptions;
 
 @Component
@@ -26,21 +28,26 @@ public class ImageHolder {
 		super();
 	}
 
-	public AnimationSet getGameCharacterAnimationSet(String fileName,
-			PrefabAnimationOptions<?> animationOptions) throws SlickException {
-		SpriteSheet spriteSheet = getGameCharacterSpriteSheet(fileName,
-				animationOptions);
-		Animation top = buildGameCharacterAnimation(spriteSheet, 0,
-				animationOptions);
-		Animation right = buildGameCharacterAnimation(spriteSheet, 1,
-				animationOptions);
-		Animation down = buildGameCharacterAnimation(spriteSheet, 2,
-				animationOptions);
-		Animation left = buildGameCharacterAnimation(spriteSheet, 3,
-				animationOptions);
+	public AnimationSet getGameCharacterAnimationSet(
+			AnimationPart animationPart,
+			GameCharacterPrefabAnimationOptions animationOptions) throws SlickException {
+		String fileName = animationOptions.getFileName(animationPart);
+		AnimationSet result = null;
+		if (fileName != null) {
+			SpriteSheet spriteSheet = getGameCharacterSpriteSheet(fileName,
+					animationOptions);
+			Animation top = buildGameCharacterAnimation(spriteSheet, 0,
+					animationOptions);
+			Animation right = buildGameCharacterAnimation(spriteSheet, 1,
+					animationOptions);
+			Animation down = buildGameCharacterAnimation(spriteSheet, 2,
+					animationOptions);
+			Animation left = buildGameCharacterAnimation(spriteSheet, 3,
+					animationOptions);
 
-		AnimationSet animationSet = new AnimationSet(left, right, top, down);
-		return animationSet;
+			result = new AnimationSet(left, right, top, down);
+		}
+		return result;
 	}
 
 	private Animation buildGameCharacterAnimation(SpriteSheet spriteSheet,

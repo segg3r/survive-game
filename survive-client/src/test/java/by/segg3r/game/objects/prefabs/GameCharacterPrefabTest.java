@@ -7,9 +7,6 @@ import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.newdawn.slick.SlickException;
@@ -44,22 +41,24 @@ public class GameCharacterPrefabTest {
 	@Test(description = "should correctly instantiate animation sets")
 	public void testInstantiateAnimationSets() throws SlickException {
 		// arrange
-		Map<AnimationPart, String> files = new HashMap<AnimationPart, String>();
-		files.put(AnimationPart.BODY, "body_part.png");
-		files.put(AnimationPart.ARMOR, "armor_part.png");
-		GameCharacterPrefabAnimationOptions animationOptions = new GameCharacterPrefabAnimationOptions(
-				files);
+		GameCharacterPrefabAnimationOptions animationOptions = mock(GameCharacterPrefabAnimationOptions.class);
 		GameCharacterPrefab prefab = new GameCharacterPrefab(animationOptions);
 
 		AnimationSet body = mock(AnimationSet.class);
 		AnimationSet armor = mock(AnimationSet.class);
 
 		when(
-				imageHolder.getGameCharacterAnimationSet(eq("body_part.png"),
-						eq(animationOptions))).thenReturn(body);
+				imageHolder.getGameCharacterAnimationSet(
+						eq(AnimationPart.BODY), eq(animationOptions)))
+				.thenReturn(body);
 		when(
-				imageHolder.getGameCharacterAnimationSet(eq("armor_part.png"),
-						eq(animationOptions))).thenReturn(armor);
+				imageHolder.getGameCharacterAnimationSet(
+						eq(AnimationPart.ARMOR), eq(animationOptions)))
+				.thenReturn(armor);
+		when(
+				imageHolder.getGameCharacterAnimationSet(
+						eq(AnimationPart.HAIRS), eq(animationOptions)))
+				.thenReturn(null);
 
 		// act
 		GameCharacter gameCharacter = prefab.instantiate(imageHolder);

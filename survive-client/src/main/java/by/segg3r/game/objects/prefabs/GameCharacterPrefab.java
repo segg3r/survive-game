@@ -34,13 +34,9 @@ public class GameCharacterPrefab extends
 			throws SlickException {
 		Map<AnimationPart, AnimationSet> animationSets = new HashMap<AnimationPart, AnimationSet>();
 		for (AnimationPart animationPart : AnimationPart.values()) {
-			String fileName = animationOptions.getFileName(animationPart);
-			if (fileName != null) {
-				animationSets.put(animationPart, imageHolder
-						.getGameCharacterAnimationSet(fileName,
-								animationOptions));
-			}
-
+			animationSets.put(animationPart, imageHolder
+					.getGameCharacterAnimationSet(animationPart,
+							animationOptions));
 		}
 		GameCharacterAnimation animation = new GameCharacterAnimation(
 				animationSets);
