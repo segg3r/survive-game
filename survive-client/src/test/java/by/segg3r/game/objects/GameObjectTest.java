@@ -23,8 +23,9 @@ public class GameObjectTest {
 
 		gameObject.update(.5);
 
-		assertEquals(gameObject.getX(), 190.);
-		assertEquals(gameObject.getY(), 300.);
+		Position position = gameObject.getPosition();
+		assertEquals(position.getX(), 190.);
+		assertEquals(position.getY(), 300.);
 	}
 
 }

@@ -8,13 +8,13 @@ import by.segg3r.game.objects.iface.Updatable;
 
 public class GameObject implements Renderable, Updatable {
 
-	private double x;
-	private double y;
+	private Position position;
 	private double speed;
 	private double direction;
 
 	public GameObject() {
 		super();
+		this.position = new Position(0., 0.);
 	}
 
 	@Override
@@ -23,8 +23,8 @@ public class GameObject implements Renderable, Updatable {
 	}
 
 	private void updatePosition(double delta) {
-		x += delta * speed * Math.cos(direction);
-		y += delta * speed * Math.sin(direction);
+		position.setX(position.getX() + delta * speed * Math.cos(direction));
+		position.setY(position.getY() + delta * speed * Math.sin(direction));
 	}
 
 	@Override
@@ -33,24 +33,11 @@ public class GameObject implements Renderable, Updatable {
 	}
 
 	public void setPosition(double x, double y) {
-		this.setX(x);
-		this.setY(y);
+		position.set(x, y);
 	}
-
-	public double getX() {
-		return x;
-	}
-
-	public void setX(double x) {
-		this.x = x;
-	}
-
-	public double getY() {
-		return y;
-	}
-
-	public void setY(double y) {
-		this.y = y;
+	
+	public Position getPosition() {
+		return this.position;
 	}
 
 	public double getSpeed() {

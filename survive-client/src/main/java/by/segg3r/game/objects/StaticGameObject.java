@@ -22,7 +22,8 @@ public class StaticGameObject extends GameObject {
 	@Override
 	public void render(Graphics g) throws SlickException {
 		super.render(g);
-		animation.draw((float) getX(), (float) getY());
+		Position position = getPosition();
+		animation.draw((float) position.getX(), (float) position.getY());
 	}
 
 }

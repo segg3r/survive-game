@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 
 import by.segg3r.game.objects.GameObject;
 import by.segg3r.game.objects.GameObjectFactory;
+import by.segg3r.game.objects.Position;
 import by.segg3r.game.objects.prefabs.ImageHolder;
 import by.segg3r.game.objects.prefabs.Prefab;
 
@@ -34,7 +35,8 @@ public class GameObjectFactoryTest {
 		when(prefab.instantiate(any(ImageHolder.class))).thenReturn(gameObject);
 
 		gameObjectFactory.instantiate(prefab, 20., 50.);
-		assertEquals(gameObject.getX(), 20.);
-		assertEquals(gameObject.getY(), 50.);
+		Position position = gameObject.getPosition();
+		assertEquals(position.getX(), 20.);
+		assertEquals(position.getY(), 50.);
 	}
 }

@@ -4,6 +4,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 import by.segg3r.game.objects.GameObject;
+import by.segg3r.game.objects.Position;
 import by.segg3r.game.objects.characters.animations.GameCharacterAnimation;
 
 public class GameCharacter extends GameObject {
@@ -23,7 +24,8 @@ public class GameCharacter extends GameObject {
 	@Override
 	public void render(Graphics g) throws SlickException {
 		super.render(g);
-		gameCharacterAnimation.draw(this, (float) getX(), (float) getY());
+		Position position = getPosition();
+		gameCharacterAnimation.draw(this, (float) position.getX(), (float) position.getY());
 	}
 
 	public GameCharacterAnimation getGameCharacterAnimation() {
