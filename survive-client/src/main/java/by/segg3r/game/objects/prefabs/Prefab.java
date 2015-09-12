@@ -15,7 +15,7 @@ public abstract class Prefab<ObjectType extends GameObject,
 		this.animationOptions = animationOptions;
 	}
 
-	public abstract GameObject instantiate(ImageHolder imageHolders)
+	public abstract ObjectType instantiate(ImageHolder imageHolders)
 			throws SlickException;
 
 	protected AnimationOptionsType getAnimationOptions() {

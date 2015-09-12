@@ -27,10 +27,11 @@ public class GameObjectFactoryTest {
 		gameObjectFactory.setImageHolder(imageHolder);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test(description = "should set position of newly created game object")
 	public void shouldRenderCurrentRoom() throws SlickException {
 		GameObject gameObject = new GameObject();
-		Prefab<?, ?> prefab = mock(Prefab.class);
+		Prefab<GameObject, ?> prefab = mock(Prefab.class);
 
 		when(prefab.instantiate(any(ImageHolder.class))).thenReturn(gameObject);
 

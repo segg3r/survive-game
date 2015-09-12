@@ -9,9 +9,13 @@ import by.segg3r.game.objects.characters.animations.GameCharacterAnimation;
 
 public class GameCharacter extends GameObject {
 
+	private static final double DEFAULT_MOVEMENT_SPEED = 60.;
+	
 	private GameCharacterAnimation gameCharacterAnimation;
 
 	public GameCharacter(GameCharacterAnimation gameCharacterAnimation) {
+		super();
+		setMovementSpeed(DEFAULT_MOVEMENT_SPEED);
 		this.gameCharacterAnimation = gameCharacterAnimation;
 	}
 

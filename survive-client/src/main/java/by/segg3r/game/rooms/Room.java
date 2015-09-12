@@ -30,10 +30,11 @@ public class Room {
 		this.gameObjectFactory = gameObjectFactory;
 	}
 
-	public void addGameObject(Prefab<?, ?> prefab, double x, double y)
+	public <T extends GameObject> T addGameObject(Prefab<T, ?> prefab, double x, double y)
 			throws SlickException {
-		GameObject gameObject = gameObjectFactory.instantiate(prefab, x, y);
+		T gameObject = gameObjectFactory.instantiate(prefab, x, y);
 		addGameObject(gameObject);
+		return gameObject;
 	}
 
 	public void render(GameContainer gc, Graphics g) throws SlickException {

@@ -17,9 +17,9 @@ public class GameObjectFactory {
 		super();
 	}
 
-	public GameObject instantiate(Prefab<?, ?> prefab, double x,
+	public <T extends GameObject> T instantiate(Prefab<T, ?> prefab, double x,
 			double y) throws SlickException {
-		GameObject gameObject = prefab.instantiate(imageHolder);
+		T gameObject = prefab.instantiate(imageHolder);
 		gameObject.setPosition(x, y);
 		return gameObject;
 	}

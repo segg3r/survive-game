@@ -138,9 +138,10 @@ public class RoomTest {
 		assertTrue(room.getUpdatables().contains(gameObject));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test(description = "should add game object instantiated from prefab factory")
 	public void addGameObjectFromPrefab() throws SlickException {
-		Prefab<?, ?> prefab = mock(Prefab.class);
+		Prefab<GameObject, ?> prefab = mock(Prefab.class);
 		GameObject gameObject = mock(GameObject.class);
 
 		room = spy(room);

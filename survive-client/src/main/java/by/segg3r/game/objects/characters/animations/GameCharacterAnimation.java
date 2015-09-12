@@ -10,6 +10,8 @@ import by.segg3r.game.objects.characters.GameCharacter;
 
 public class GameCharacterAnimation {
 
+	private static final int STANDING_IMAGE_INDEX = 1;
+	
 	private Map<AnimationPart, AnimationSet> animationSets;
 
 	public GameCharacterAnimation(Map<AnimationPart, AnimationSet> animationSets) {
@@ -19,8 +21,14 @@ public class GameCharacterAnimation {
 
 	public void update(GameCharacter gameCharacter, long delta) {
 		List<Animation> currentAnimations = getCurrentAnimations(gameCharacter);
-		for (Animation currentAnimation : currentAnimations) {
-			currentAnimation.update(delta);
+		if (gameCharacter.getSpeed() > 0) {
+			for (Animation currentAnimation : currentAnimations) {
+				currentAnimation.update(delta);
+			}
+		} else {
+			for (Animation currentAnimation : currentAnimations) {
+				currentAnimation.setCurrentFrame(STANDING_IMAGE_INDEX);
+			}
 		}
 	}
 

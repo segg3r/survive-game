@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import by.segg3r.game.objects.GameObjectFactory;
+import by.segg3r.game.objects.characters.GameCharacter;
 import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.prefabs.GameCharacterPrefab;
 import by.segg3r.game.objects.prefabs.options.GameCharacterPrefabAnimationOptions;
@@ -41,7 +42,8 @@ public class Game extends BasicGame {
 				files);
 		GameCharacterPrefab prefab = new GameCharacterPrefab(animationOptions);
 
-		currentRoom.addGameObject(prefab, 50, 50);
+		GameCharacter gameCharacter = currentRoom.addGameObject(prefab, 500, 500);
+		gameCharacter.setDestination(20, 20);
 	}
 
 	@Override

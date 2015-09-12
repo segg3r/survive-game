@@ -1,11 +1,7 @@
 package by.segg3r.game.objects.characters.animations;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-//import static org.testng.Assert.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,8 +30,10 @@ public class GameCharacterAnimationTest {
 		gameCharacterAnimation = new GameCharacterAnimation(animationSets);
 	}
 
-	@Test(description = "should update each animation set on game character animation update")
+	@Test(description = "should update each animation set on game character animation update"
+			+ " if character speed greater than 0")
 	public void shouldUpdate() {
+		when(gameCharacter.getSpeed()).thenReturn(1.);
 		when(gameCharacter.getDirection()).thenReturn(Math.PI / 2);
 
 		for (AnimationPart animationPart : AnimationPart.values()) {
@@ -48,6 +46,24 @@ public class GameCharacterAnimationTest {
 
 		gameCharacterAnimation.update(gameCharacter, 500L);
 		verify(mockedCurrentAnimation, times(2)).update(eq(500L));
+		verify(mockedCurrentAnimation, never()).setCurrentFrame(eq(1));
+	}
+	
+	@Test(description = "should not update animation sets if game character is not moving")
+	public void shouldNotUpdate() {
+		when(gameCharacter.getSpeed()).thenReturn(0.);
+		when(gameCharacter.getDirection()).thenReturn(Math.PI / 2);
+
+		for (AnimationPart animationPart : AnimationPart.values()) {
+			AnimationSet animationSet = animationSets.get(animationPart);
+			if (animationSet != null) {
+				when(animationSet.getCurrentAnimation(eq(Math.PI / 2)))
+						.thenReturn(mockedCurrentAnimation);
+			}
+		}
+		gameCharacterAnimation.update(gameCharacter, 500L);
+		verify(mockedCurrentAnimation, never()).update(anyLong());
+		verify(mockedCurrentAnimation, times(2)).setCurrentFrame(eq(1));
 	}
 
 	@Test(description = "should render each animation set on game character animation render")
