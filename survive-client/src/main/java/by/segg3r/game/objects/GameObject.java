@@ -5,19 +5,16 @@ import org.newdawn.slick.SlickException;
 
 import by.segg3r.game.objects.iface.Renderable;
 import by.segg3r.game.objects.iface.Updatable;
-import by.segg3r.game.rooms.Room;
 
 public class GameObject implements Renderable, Updatable {
 
-	private Room room;
 	private double x;
 	private double y;
 	private double speed;
 	private double direction;
 
-	public GameObject(Room room) {
+	public GameObject() {
 		super();
-		this.room = room;
 	}
 
 	@Override
@@ -70,14 +67,6 @@ public class GameObject implements Renderable, Updatable {
 
 	public void setDirection(double direction) {
 		this.direction = direction;
-	}
-
-	public Room getRoom() {
-		return room;
-	}
-
-	public void setRoom(Room room) {
-		this.room = room;
 	}
 
 }

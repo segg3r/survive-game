@@ -11,19 +11,15 @@ import org.newdawn.slick.SlickException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import by.segg3r.game.rooms.Room;
-
 public class StaticGameObjectTest {
 
 	private StaticGameObject staticGameObject;
-	private Room room;
 	private Animation animation;
 
 	@BeforeMethod
 	public void init() {
-		room = mock(Room.class);
 		animation = mock(Animation.class);
-		staticGameObject = new StaticGameObject(room, animation);
+		staticGameObject = new StaticGameObject(animation);
 	}
 
 	@Test(description = "should update current animation")

@@ -5,15 +5,12 @@ import org.newdawn.slick.SlickException;
 
 import by.segg3r.game.objects.GameObject;
 import by.segg3r.game.objects.characters.animations.GameCharacterAnimation;
-import by.segg3r.game.rooms.Room;
 
 public class GameCharacter extends GameObject {
 
 	private GameCharacterAnimation gameCharacterAnimation;
 
-	public GameCharacter(Room room,
-			GameCharacterAnimation gameCharacterAnimation) {
-		super(room);
+	public GameCharacter(GameCharacterAnimation gameCharacterAnimation) {
 		this.gameCharacterAnimation = gameCharacterAnimation;
 	}
 

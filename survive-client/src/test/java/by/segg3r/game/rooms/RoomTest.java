@@ -146,9 +146,8 @@ public class RoomTest {
 		room = spy(room);
 
 		doNothing().when(room).addGameObject(any(GameObject.class));
-		when(
-				gameObjectFactory.instantiate(eq(prefab), eq(room), eq(300.),
-						eq(200.))).thenReturn(gameObject);
+		when(gameObjectFactory.instantiate(eq(prefab), eq(300.), eq(200.)))
+				.thenReturn(gameObject);
 
 		room.addGameObject(prefab, 300., 200.);
 		verify(room, times(1)).addGameObject(eq(gameObject));

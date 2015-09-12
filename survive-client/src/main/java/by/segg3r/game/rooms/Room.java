@@ -21,7 +21,7 @@ import by.segg3r.game.objects.prefabs.Prefab;
 public class Room {
 
 	private GameObjectFactory gameObjectFactory;
-	
+
 	private Map<Layer, Set<Renderable>> renderables = new HashMap<Layer, Set<Renderable>>();
 	private Set<Updatable> updatables = new HashSet<Updatable>();
 
@@ -29,9 +29,10 @@ public class Room {
 		super();
 		this.gameObjectFactory = gameObjectFactory;
 	}
-	
-	public void addGameObject(Prefab<?, ?> prefab, double x, double y) throws SlickException {
-		GameObject gameObject = gameObjectFactory.instantiate(prefab, this, x, y);
+
+	public void addGameObject(Prefab<?, ?> prefab, double x, double y)
+			throws SlickException {
+		GameObject gameObject = gameObjectFactory.instantiate(prefab, x, y);
 		addGameObject(gameObject);
 	}
 

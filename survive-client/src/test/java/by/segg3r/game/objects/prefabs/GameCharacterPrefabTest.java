@@ -1,7 +1,11 @@
 package by.segg3r.game.objects.prefabs;
 
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,40 +30,43 @@ public class GameCharacterPrefabTest {
 	private ImageHolder imageHolder;
 	@Mock
 	private Room room;
-	
+
 	@BeforeClass
 	public void beforeClass() {
 		MockitoAnnotations.initMocks(this);
 	}
-	
+
 	@AfterMethod
 	public void afterMethod() {
 		reset(imageHolder, room);
 	}
-	
+
 	@Test(description = "should correctly instantiate animation sets")
 	public void testInstantiateAnimationSets() throws SlickException {
-		//arrange
+		// arrange
 		Map<AnimationPart, String> files = new HashMap<AnimationPart, String>();
 		files.put(AnimationPart.BODY, "body_part.png");
 		files.put(AnimationPart.ARMOR, "armor_part.png");
 		GameCharacterPrefabAnimationOptions animationOptions = new GameCharacterPrefabAnimationOptions(
 				files);
 		GameCharacterPrefab prefab = new GameCharacterPrefab(animationOptions);
-		
+
 		AnimationSet body = mock(AnimationSet.class);
 		AnimationSet armor = mock(AnimationSet.class);
-		
-		when(imageHolder.getGameCharacterAnimationSet(eq("body_part.png"), eq(animationOptions)))
-			.thenReturn(body);
-		when(imageHolder.getGameCharacterAnimationSet(eq("armor_part.png"), eq(animationOptions)))
-			.thenReturn(armor);
-		
-		//act
-		GameCharacter gameCharacter = prefab.instantiate(imageHolder, room);
-	
-		//assert
-		GameCharacterAnimation animation = gameCharacter.getGameCharacterAnimation();
+
+		when(
+				imageHolder.getGameCharacterAnimationSet(eq("body_part.png"),
+						eq(animationOptions))).thenReturn(body);
+		when(
+				imageHolder.getGameCharacterAnimationSet(eq("armor_part.png"),
+						eq(animationOptions))).thenReturn(armor);
+
+		// act
+		GameCharacter gameCharacter = prefab.instantiate(imageHolder);
+
+		// assert
+		GameCharacterAnimation animation = gameCharacter
+				.getGameCharacterAnimation();
 		assertEquals(animation.getAnimationSet(AnimationPart.BODY), body);
 		assertEquals(animation.getAnimationSet(AnimationPart.ARMOR), armor);
 		assertNull(animation.getAnimationSet(AnimationPart.FACE));

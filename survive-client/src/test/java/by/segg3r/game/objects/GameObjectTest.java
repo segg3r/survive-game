@@ -1,23 +1,18 @@
 package by.segg3r.game.objects;
 
-import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 
 import org.newdawn.slick.SlickException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import by.segg3r.game.rooms.Room;
-
 public class GameObjectTest {
 
 	private GameObject gameObject;
-	private Room room;
 
 	@BeforeMethod
 	public void init() {
-		room = mock(Room.class);
-		gameObject = new GameObject(room);
+		gameObject = new GameObject();
 	}
 
 	@Test(description = "should correctly update position")

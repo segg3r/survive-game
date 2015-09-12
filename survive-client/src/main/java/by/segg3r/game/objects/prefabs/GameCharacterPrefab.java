@@ -10,7 +10,6 @@ import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.characters.animations.AnimationSet;
 import by.segg3r.game.objects.characters.animations.GameCharacterAnimation;
 import by.segg3r.game.objects.prefabs.options.GameCharacterPrefabAnimationOptions;
-import by.segg3r.game.rooms.Room;
 
 public class GameCharacterPrefab extends
 		Prefab<GameCharacter, GameCharacterPrefabAnimationOptions> {
@@ -20,13 +19,13 @@ public class GameCharacterPrefab extends
 		super(animationOptions);
 	}
 
-	public GameCharacter instantiate(ImageHolder imageHolder, Room room)
+	public GameCharacter instantiate(ImageHolder imageHolder)
 			throws SlickException {
 		GameCharacterPrefabAnimationOptions animationOptions = getAnimationOptions();
 
 		GameCharacterAnimation animation = buildAnimation(imageHolder,
 				animationOptions);
-		GameCharacter gameCharacter = new GameCharacter(room, animation);
+		GameCharacter gameCharacter = new GameCharacter(animation);
 		return gameCharacter;
 	}
 
