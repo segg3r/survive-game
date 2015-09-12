@@ -29,7 +29,7 @@ public class GameCharacterAnimationTest {
 
 		animationSets = new HashMap<AnimationPart, AnimationSet>();
 		animationSets.put(AnimationPart.BODY, mock(AnimationSet.class));
-		animationSets.put(AnimationPart.HEAD, mock(AnimationSet.class));
+		animationSets.put(AnimationPart.FACE, mock(AnimationSet.class));
 		gameCharacter = mock(GameCharacter.class);
 		gameCharacterAnimation = new GameCharacterAnimation(animationSets);
 	}

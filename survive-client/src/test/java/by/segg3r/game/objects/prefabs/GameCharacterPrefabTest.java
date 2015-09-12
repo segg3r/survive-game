@@ -62,7 +62,7 @@ public class GameCharacterPrefabTest {
 		GameCharacterAnimation animation = gameCharacter.getGameCharacterAnimation();
 		assertEquals(animation.getAnimationSet(AnimationPart.BODY), body);
 		assertEquals(animation.getAnimationSet(AnimationPart.ARMOR), armor);
-		assertNull(animation.getAnimationSet(AnimationPart.HEAD));
+		assertNull(animation.getAnimationSet(AnimationPart.FACE));
 	}
 
 }
