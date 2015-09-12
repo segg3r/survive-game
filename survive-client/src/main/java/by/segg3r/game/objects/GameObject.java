@@ -24,7 +24,7 @@ public class GameObject implements Renderable, Updatable {
 
 	private void updatePosition(double delta) {
 		position.setX(position.getX() + delta * speed * Math.cos(direction));
-		position.setY(position.getY() + delta * speed * Math.sin(direction));
+		position.setY(position.getY() - delta * speed * Math.sin(direction));
 	}
 
 	@Override
