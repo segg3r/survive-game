@@ -13,7 +13,7 @@ public class GameCharacterPrefabAnimationOptions extends
 	private static final int DEFAULT_DURATION = 500;
 	private static final Color DEFAULT_BACKGROUND_COLOR = new Color(32, 156, 0);
 
-	private Map<AnimationPart, String> animationPartFileNames;
+	private Map<AnimationPart, String> animationPartNames;
 
 	public GameCharacterPrefabAnimationOptions(
 			Map<AnimationPart, String> animationPartFileNames) {
@@ -24,11 +24,11 @@ public class GameCharacterPrefabAnimationOptions extends
 			Map<AnimationPart, String> animationPartFileNames, int duration,
 			Color backgroundColor) {
 		super(duration, backgroundColor);
-		this.animationPartFileNames = animationPartFileNames;
+		this.animationPartNames = animationPartFileNames;
 	}
 
-	public String getFileName(AnimationPart animationPart) {
-		return animationPartFileNames.get(animationPart);
+	public String getAnimationPartName(AnimationPart animationPart) {
+		return animationPartNames.get(animationPart);
 	}
 
 }

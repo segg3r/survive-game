@@ -34,10 +34,10 @@ public class Game extends BasicGame {
 		this.currentRoom = new Room(gameObjectFactory);
 
 		Map<AnimationPart, String> files = new HashMap<AnimationPart, String>();
-		files.put(AnimationPart.BODY, "img/characters/bodies/001.png");
-		files.put(AnimationPart.FACE, "img/characters/faces/001.png");
-		files.put(AnimationPart.HAIRS, "img/characters/hairs/001.png");
-		files.put(AnimationPart.ARMOR, "img/characters/armor/001.png");
+		files.put(AnimationPart.BODY, "001");
+		files.put(AnimationPart.FACE, "001");
+		files.put(AnimationPart.HAIRS, "001");
+		files.put(AnimationPart.ARMOR, "001");
 		GameCharacterPrefabAnimationOptions animationOptions = new GameCharacterPrefabAnimationOptions(
 				files);
 		GameCharacterPrefab prefab = new GameCharacterPrefab(animationOptions);

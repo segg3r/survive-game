@@ -13,7 +13,9 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
@@ -26,6 +28,7 @@ import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.characters.animations.AnimationSet;
 import by.segg3r.game.objects.prefabs.options.GameCharacterPrefabAnimationOptions;
 import by.segg3r.game.objects.prefabs.options.PrefabAnimationOptions;
+import by.segg3r.game.util.pathresolver.PathResolver;
 
 public class ImageHolderTest {
 
@@ -92,20 +95,31 @@ public class ImageHolderTest {
 
 	@Test(description = "should correctly get images from sprite sheet")
 	public void testGetImagesFromSpriteSheet() throws SlickException {
+		//data
+		String partName = "sheet";
 		String fileName = "sheet.png";
 		int duration = 20;
 
-		SpriteSheet spriteSheet = mock(SpriteSheet.class);
+		//animation options
 		GameCharacterPrefabAnimationOptions animationOptions = mock(GameCharacterPrefabAnimationOptions.class);
 		AnimationPart animationPart = AnimationPart.ARMOR;
-		when(animationOptions.getFileName(eq(animationPart))).thenReturn(
-				fileName);
+		when(animationOptions.getAnimationPartName(eq(animationPart)))
+				.thenReturn(partName);
+		
+		//path resolver
+		Map<AnimationPart, PathResolver> animationPartPathResolvers = new HashMap<AnimationPart, PathResolver>();
+		PathResolver armorPathResolver = mock(PathResolver.class);
+		when(armorPathResolver.resolve(eq(partName))).thenReturn(fileName);
+		animationPartPathResolvers.put(AnimationPart.ARMOR, armorPathResolver);
+		imageHolder.setAnimationPartPathResolvers(animationPartPathResolvers);
 
+		//sprite sheet algorithm
 		List<Image> images = new ArrayList<Image>();
 		for (int i = 0; i < 12; i++) {
 			images.add(mock(Image.class));
 		}
 
+		SpriteSheet spriteSheet = mock(SpriteSheet.class);
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 3; j++) {
 				when(spriteSheet.getSprite(j, i)).thenReturn(
@@ -118,9 +132,11 @@ public class ImageHolderTest {
 				eq(fileName), eq(animationOptions));
 		when(animationOptions.getDuration()).thenReturn(duration);
 
+		//method call
 		AnimationSet result = imageHolder.getGameCharacterAnimationSet(
 				animationPart, animationOptions);
 
+		//assert
 		Animation top = result.getTop();
 		assertEquals(top.getImage(0), images.get(0));
 		assertEquals(top.getImage(1), images.get(1));
@@ -152,12 +168,14 @@ public class ImageHolderTest {
 
 	@Test(description = "should return NULL animation set if there is no file for"
 			+ " given animation part in animation options")
-	public void testGetGameCharacterAnimationSetReturnNull() throws SlickException {
+	public void testGetGameCharacterAnimationSetReturnNull()
+			throws SlickException {
 		AnimationPart animationPart = AnimationPart.ARMOR;
 		GameCharacterPrefabAnimationOptions animationOptions = mock(GameCharacterPrefabAnimationOptions.class);
-		when(animationOptions.getFileName(eq(animationPart)))
-			.thenReturn(null);
-		
-		assertNull(imageHolder.getGameCharacterAnimationSet(animationPart, animationOptions));
+		when(animationOptions.getAnimationPartName(eq(animationPart)))
+				.thenReturn(null);
+
+		assertNull(imageHolder.getGameCharacterAnimationSet(animationPart,
+				animationOptions));
 	}
 }

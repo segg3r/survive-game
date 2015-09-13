@@ -1,5 +1,7 @@
 package by.segg3r.game.config;
 
+import java.util.Locale;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +18,8 @@ import by.segg3r.game.Game;
 @PropertySource("classpath:app.properties")
 public class AppConfig {
 
+	public static final Locale DEFAULT_LOCALE = Locale.US;
+	
 	@Value("${window.width}")
 	private int windowWidth;
 	@Value("${window.height}")
