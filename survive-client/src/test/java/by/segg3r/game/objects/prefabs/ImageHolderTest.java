@@ -24,6 +24,8 @@ import org.newdawn.slick.SpriteSheet;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import by.segg3r.game.config.GameResourceConfig;
+import by.segg3r.game.objects.Direction;
 import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.characters.animations.AnimationSet;
 import by.segg3r.game.objects.prefabs.options.GameCharacterPrefabAnimationOptions;
@@ -37,6 +39,9 @@ public class ImageHolderTest {
 	@BeforeMethod
 	public void init() {
 		imageHolder = new ImageHolder();
+
+		GameResourceConfig gameResourceConfig = new GameResourceConfig();
+		imageHolder.setDirectionImageRows(gameResourceConfig.getDirectionImageRows());
 	}
 
 	@Test(description = "should return cached sprite sheet if exists")
@@ -137,28 +142,28 @@ public class ImageHolderTest {
 				animationPart, animationOptions);
 
 		//assert
-		Animation top = result.getTop();
+		Animation top = result.getAnimation(Direction.TOP);
 		assertEquals(top.getImage(0), images.get(0));
 		assertEquals(top.getImage(1), images.get(1));
 		assertEquals(top.getImage(2), images.get(2));
 		assertEquals(top.getImage(3), images.get(1));
 		assertEquals(top.getDuration(0), duration);
 
-		Animation right = result.getRight();
+		Animation right = result.getAnimation(Direction.RIGHT);
 		assertEquals(right.getImage(0), images.get(3));
 		assertEquals(right.getImage(1), images.get(4));
 		assertEquals(right.getImage(2), images.get(5));
 		assertEquals(right.getImage(3), images.get(4));
 		assertEquals(right.getDuration(0), duration);
 
-		Animation down = result.getDown();
+		Animation down = result.getAnimation(Direction.DOWN);
 		assertEquals(down.getImage(0), images.get(6));
 		assertEquals(down.getImage(1), images.get(7));
 		assertEquals(down.getImage(2), images.get(8));
 		assertEquals(down.getImage(3), images.get(7));
 		assertEquals(down.getDuration(0), duration);
 
-		Animation left = result.getLeft();
+		Animation left = result.getAnimation(Direction.LEFT);
 		assertEquals(left.getImage(0), images.get(9));
 		assertEquals(left.getImage(1), images.get(10));
 		assertEquals(left.getImage(2), images.get(11));

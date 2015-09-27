@@ -12,6 +12,7 @@ import org.newdawn.slick.SpriteSheet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import by.segg3r.game.objects.Direction;
 import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.characters.animations.AnimationSet;
 import by.segg3r.game.objects.prefabs.options.GameCharacterPrefabAnimationOptions;
@@ -26,6 +27,8 @@ public class ImageHolder {
 
 	@Value("#{animationPartPathResolvers}")
 	private Map<AnimationPart, PathResolver> animationPartPathResolvers;
+	@Value("#{directionImageRows}")
+	private Map<Direction, Integer> directionImageRows;
 
 	private Map<String, SpriteSheet> characterSpriteSheetCache = new HashMap<String, SpriteSheet>();
 
@@ -44,16 +47,16 @@ public class ImageHolder {
 					.resolve(partName);
 			SpriteSheet spriteSheet = getGameCharacterSpriteSheet(fileName,
 					animationOptions);
-			Animation top = buildGameCharacterAnimation(spriteSheet, 0,
-					animationOptions);
-			Animation right = buildGameCharacterAnimation(spriteSheet, 1,
-					animationOptions);
-			Animation down = buildGameCharacterAnimation(spriteSheet, 2,
-					animationOptions);
-			Animation left = buildGameCharacterAnimation(spriteSheet, 3,
-					animationOptions);
+			Map<Direction, Animation> animations = new HashMap<Direction, Animation>();
+			for (Direction direction : Direction.values()) {
+				animations.put(
+						direction,
+						buildGameCharacterAnimation(spriteSheet,
+								directionImageRows.get(direction),
+								animationOptions));
+			}
 
-			result = new AnimationSet(left, right, top, down);
+			result = new AnimationSet(animations);
 		}
 		return result;
 	}
@@ -106,6 +109,14 @@ public class ImageHolder {
 	public void setAnimationPartPathResolvers(
 			Map<AnimationPart, PathResolver> animationPartPathResolvers) {
 		this.animationPartPathResolvers = animationPartPathResolvers;
+	}
+
+	public Map<Direction, Integer> getDirectionImageRows() {
+		return directionImageRows;
+	}
+
+	public void setDirectionImageRows(Map<Direction, Integer> directionImageRows) {
+		this.directionImageRows = directionImageRows;
 	}
 
 }
