@@ -98,19 +98,20 @@ public class ImageHolderTest {
 				spriteSheet);
 	}
 
-	@Test(description = "should correctly get images from sprite sheet")
-	public void testGetImagesFromSpriteSheet() throws SlickException {
+	@Test(description = "should correctly instantiate game character animation")
+	public void testGameCharacterBuiling() throws SlickException {
 		//data
 		String partName = "sheet";
 		String fileName = "sheet.png";
 		int duration = 20;
 
 		//animation options
-		GameCharacterPrefabAnimationOptions animationOptions = mock(GameCharacterPrefabAnimationOptions.class);
+		Map<AnimationPart, String> animationPartFileNames = new HashMap<AnimationPart, String>();
 		AnimationPart animationPart = AnimationPart.ARMOR;
-		when(animationOptions.getAnimationPartName(eq(animationPart)))
-				.thenReturn(partName);
-		
+		animationPartFileNames.put(animationPart, partName);
+		GameCharacterPrefabAnimationOptions animationOptions
+			= new GameCharacterPrefabAnimationOptions(animationPartFileNames);
+
 		//path resolver
 		Map<AnimationPart, PathResolver> animationPartPathResolvers = new HashMap<AnimationPart, PathResolver>();
 		PathResolver armorPathResolver = mock(PathResolver.class);
@@ -135,7 +136,7 @@ public class ImageHolderTest {
 		imageHolder = spy(imageHolder);
 		doReturn(spriteSheet).when(imageHolder).getGameCharacterSpriteSheet(
 				eq(fileName), eq(animationOptions));
-		when(animationOptions.getDuration()).thenReturn(duration);
+		animationOptions.setDuration(duration);
 
 		//method call
 		AnimationSet result = imageHolder.getGameCharacterAnimationSet(
