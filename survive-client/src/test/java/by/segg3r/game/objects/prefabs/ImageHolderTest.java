@@ -26,6 +26,8 @@ import org.testng.annotations.Test;
 
 import by.segg3r.game.config.GameResourceConfig;
 import by.segg3r.game.objects.Direction;
+import by.segg3r.game.objects.Position;
+import by.segg3r.game.objects.animations.GameAnimation;
 import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.characters.animations.AnimationSet;
 import by.segg3r.game.objects.prefabs.options.GameCharacterPrefabAnimationOptions;
@@ -111,6 +113,7 @@ public class ImageHolderTest {
 		animationPartFileNames.put(animationPart, partName);
 		GameCharacterPrefabAnimationOptions animationOptions
 			= new GameCharacterPrefabAnimationOptions(animationPartFileNames);
+		animationOptions.setOffset(new Position(40, 30));
 
 		//path resolver
 		Map<AnimationPart, PathResolver> animationPartPathResolvers = new HashMap<AnimationPart, PathResolver>();
@@ -143,33 +146,41 @@ public class ImageHolderTest {
 				animationPart, animationOptions);
 
 		//assert
-		Animation top = result.getAnimation(Direction.TOP);
+		GameAnimation topGameAnimation = result.getAnimation(Direction.TOP);
+		Animation top = topGameAnimation.getAnimation();
 		assertEquals(top.getImage(0), images.get(0));
 		assertEquals(top.getImage(1), images.get(1));
 		assertEquals(top.getImage(2), images.get(2));
 		assertEquals(top.getImage(3), images.get(1));
 		assertEquals(top.getDuration(0), duration);
+		assertEquals(topGameAnimation.getOffset(), new Position(40, 30));
 
-		Animation right = result.getAnimation(Direction.RIGHT);
+		GameAnimation rightGameAnimation = result.getAnimation(Direction.RIGHT);
+		Animation right = rightGameAnimation.getAnimation();
 		assertEquals(right.getImage(0), images.get(3));
 		assertEquals(right.getImage(1), images.get(4));
 		assertEquals(right.getImage(2), images.get(5));
 		assertEquals(right.getImage(3), images.get(4));
 		assertEquals(right.getDuration(0), duration);
+		assertEquals(rightGameAnimation.getOffset(), new Position(40, 30));
 
-		Animation down = result.getAnimation(Direction.DOWN);
+		GameAnimation downGameAnimation = result.getAnimation(Direction.DOWN);
+		Animation down = downGameAnimation.getAnimation();
 		assertEquals(down.getImage(0), images.get(6));
 		assertEquals(down.getImage(1), images.get(7));
 		assertEquals(down.getImage(2), images.get(8));
 		assertEquals(down.getImage(3), images.get(7));
 		assertEquals(down.getDuration(0), duration);
+		assertEquals(downGameAnimation.getOffset(), new Position(40, 30));
 
-		Animation left = result.getAnimation(Direction.LEFT);
+		GameAnimation leftGameAnimation = result.getAnimation(Direction.LEFT);
+		Animation left = leftGameAnimation.getAnimation();
 		assertEquals(left.getImage(0), images.get(9));
 		assertEquals(left.getImage(1), images.get(10));
 		assertEquals(left.getImage(2), images.get(11));
 		assertEquals(left.getImage(3), images.get(10));
 		assertEquals(left.getDuration(0), duration);
+		assertEquals(leftGameAnimation.getOffset(), new Position(40, 30));
 	}
 
 	@Test(description = "should return NULL animation set if there is no file for"

@@ -1,15 +1,20 @@
 package by.segg3r.game.objects.characters.animations;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.newdawn.slick.Animation;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import by.segg3r.game.objects.animations.GameAnimation;
 import by.segg3r.game.objects.characters.GameCharacter;
 
 public class GameCharacterAnimationTest {
@@ -17,11 +22,11 @@ public class GameCharacterAnimationTest {
 	private GameCharacterAnimation gameCharacterAnimation;
 	private GameCharacter gameCharacter;
 	private Map<AnimationPart, AnimationSet> animationSets;
-	private Animation mockedCurrentAnimation;
+	private GameAnimation mockedCurrentAnimation;
 
 	@BeforeMethod
 	public void init() {
-		mockedCurrentAnimation = mock(Animation.class);
+		mockedCurrentAnimation = mock(GameAnimation.class);
 
 		animationSets = new HashMap<AnimationPart, AnimationSet>();
 		animationSets.put(AnimationPart.BODY, mock(AnimationSet.class));

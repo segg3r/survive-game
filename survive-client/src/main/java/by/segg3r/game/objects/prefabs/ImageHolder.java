@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import by.segg3r.game.objects.Direction;
+import by.segg3r.game.objects.animations.GameAnimation;
 import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.characters.animations.AnimationSet;
 import by.segg3r.game.objects.prefabs.options.GameCharacterPrefabAnimationOptions;
@@ -47,7 +48,7 @@ public class ImageHolder {
 					.resolve(partName);
 			SpriteSheet spriteSheet = getGameCharacterSpriteSheet(fileName,
 					animationOptions);
-			Map<Direction, Animation> animations = new HashMap<Direction, Animation>();
+			Map<Direction, GameAnimation> animations = new HashMap<Direction, GameAnimation>();
 			for (Direction direction : Direction.values()) {
 				animations.put(
 						direction,
@@ -61,7 +62,7 @@ public class ImageHolder {
 		return result;
 	}
 
-	private Animation buildGameCharacterAnimation(SpriteSheet spriteSheet,
+	private GameAnimation buildGameCharacterAnimation(SpriteSheet spriteSheet,
 			int rowIndex, PrefabAnimationOptions<?> animationOptions) {
 		List<Image> images = new ArrayList<Image>();
 		for (int i = 0; i < GAME_CHARACTER_ANIMATION_SET_HORIZONTAL_IMAGES; i++) {
@@ -71,7 +72,8 @@ public class ImageHolder {
 		images.add(spriteSheet.getSprite(1, rowIndex));
 		Image[] imageArray = images
 				.toArray(new Image[GAME_CHARACTER_ANIMATION_SET_HORIZONTAL_IMAGES]);
-		return new Animation(imageArray, animationOptions.getDuration());
+		return new GameAnimation(new Animation(imageArray,
+				animationOptions.getDuration()), animationOptions.getOffset());
 	}
 
 	public SpriteSheet getGameCharacterSpriteSheet(String fileName,

@@ -4,25 +4,26 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.testng.Assert.assertEquals;
 
-import org.newdawn.slick.Animation;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import by.segg3r.game.objects.animations.GameAnimation;
+
 public class AnimationSetTest {
 
-	private Animation left;
-	private Animation right;
-	private Animation top;
-	private Animation down;
+	private GameAnimation left;
+	private GameAnimation right;
+	private GameAnimation top;
+	private GameAnimation down;
 	private AnimationSet animationSet;
 
 	@BeforeMethod
 	public void init() {
-		left = mock(Animation.class);
-		right = mock(Animation.class);
-		top = mock(Animation.class);
-		down = mock(Animation.class);
+		left = mock(GameAnimation.class);
+		right = mock(GameAnimation.class);
+		top = mock(GameAnimation.class);
+		down = mock(GameAnimation.class);
 		animationSet = new AnimationSet(left, right, top, down);
 	}
 
