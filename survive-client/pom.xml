@@ -154,7 +154,7 @@
 				</plugins>
 			</build>
 		</profile>
-		
+
 		<profile>
 			<id>debug</id>
 			<activation>
@@ -208,6 +208,12 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>4.2.0.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>by.segg3r</groupId>
+			<artifactId>survive-common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

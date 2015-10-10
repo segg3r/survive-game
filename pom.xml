@@ -7,6 +7,7 @@
 	<packaging>pom</packaging>
 
 	<properties>
+		<module.common>survive-common</module.common>
 		<module.client>survive-client</module.client>
 		<module.server>survive-server</module.server>
 		<deploy.path>${project.basedir}/deploy</deploy.path>
@@ -15,6 +16,7 @@
 	</properties>
 
 	<modules>
+		<module>${module.common}</module>
 		<module>${module.server}</module>
 		<module>${module.client}</module>
 	</modules>
