@@ -9,7 +9,7 @@ import by.segg3r.game.config.GameResourceConfig;
 
 public final class Runner {
 
-	private Runner() {};
+	private Runner() {}
 	
 	public static void main(String[] args) {
 		try (AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(

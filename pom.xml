@@ -8,12 +8,14 @@
 
 	<properties>
 		<module.client>survive-client</module.client>
+		<module.server>survive-server</module.server>
 		<deploy.path>${project.basedir}/deploy</deploy.path>
 
 		<spring.version>4.2.0.RELEASE</spring.version>
 	</properties>
 
 	<modules>
+		<module>${module.server}</module>
 		<module>${module.client}</module>
 	</modules>
 
