@@ -13,7 +13,8 @@ public final class Runner {
 		try (AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				ServerConfig.class)) {
 			Server server = ctx.getBean(Server.class);
-			server.start();
+			Thread serverThread = new Thread(server);
+			serverThread.start();
 			
 			ctx.close();
 		}
