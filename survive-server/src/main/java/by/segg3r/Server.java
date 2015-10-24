@@ -39,7 +39,7 @@ public class Server implements Runnable {
 			serverSocket = connectionService.createServerSocket(port);
 			while (!stopped) {
 				clientSocket = serverSocket.accept();
-				Connection connection = new Connection(clientSocket);
+				Connection connection = connectionService.createConnection(clientSocket);
 				connections.add(connection);
 			}
 		} catch (IOException | ConnectionException e) {

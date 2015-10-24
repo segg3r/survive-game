@@ -1,20 +1,14 @@
 package by.segg3r.server;
 
-import java.io.IOException;
 import java.net.ServerSocket;
-
-import org.springframework.stereotype.Component;
+import java.net.Socket;
 
 import by.segg3r.exception.ConnectionException;
 
-@Component
-public class ConnectionService {
+public interface ConnectionService {
 
-	public ServerSocket createServerSocket(int port) throws ConnectionException {
-		try {
-			return new ServerSocket(port);
-		} catch (IOException e) {
-			throw new ConnectionException("Error creating server socket", e);
-		}
-	}
+	ServerSocket createServerSocket(int port) throws ConnectionException;
+
+	Connection createConnection(Socket clientSocket) throws ConnectionException;
+	
 }

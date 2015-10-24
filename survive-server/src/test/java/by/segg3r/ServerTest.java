@@ -1,11 +1,13 @@
 package by.segg3r;
 
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
@@ -14,23 +16,37 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.List;
 
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import by.segg3r.exception.ConnectionException;
+import by.segg3r.server.Connection;
 import by.segg3r.server.ConnectionService;
 
 public class ServerTest {
 
 	private int port;
 
+	@Mock
 	private ServerSocket serverSocket;
+	@Mock
 	private ConnectionService connectionService;
-
+	@Mock
+	private Connection connection;
+	
 	private Server server;
 
+	@BeforeClass
+	public void initMocks() {
+		MockitoAnnotations.initMocks(this);
+	}
+	
 	@BeforeMethod
 	public void init() throws ConnectionException {
 		port = 11099;
@@ -39,9 +55,16 @@ public class ServerTest {
 		connectionService = mock(ConnectionService.class);
 		when(connectionService.createServerSocket(anyInt())).thenReturn(
 				serverSocket);
+		when(connectionService.createConnection(any(Socket.class)))
+			.thenReturn(connection);
 
 		server = new Server(port);
 		server.setConnectionService(connectionService);
+	}
+	
+	@AfterMethod
+	public void resetMocks() {
+		reset(serverSocket, connectionService);
 	}
 
 	@Test(description = "should accept incoming connections")
