@@ -4,8 +4,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import by.segg3r.exception.ConnectionException;
+import by.segg3r.messaging.Connection;
 
-public interface ConnectionService {
+public interface ServerConnectionService {
 
 	ServerSocket createServerSocket(int port) throws ConnectionException;
 

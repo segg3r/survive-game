@@ -26,8 +26,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import by.segg3r.exception.ConnectionException;
-import by.segg3r.server.Connection;
-import by.segg3r.server.ConnectionService;
+import by.segg3r.messaging.Connection;
+import by.segg3r.server.ServerConnectionService;
 
 public class ServerTest {
 
@@ -36,7 +36,7 @@ public class ServerTest {
 	@Mock
 	private ServerSocket serverSocket;
 	@Mock
-	private ConnectionService connectionService;
+	private ServerConnectionService connectionService;
 	@Mock
 	private Connection connection;
 	
@@ -52,7 +52,7 @@ public class ServerTest {
 		port = 11099;
 
 		serverSocket = mock(ServerSocket.class);
-		connectionService = mock(ConnectionService.class);
+		connectionService = mock(ServerConnectionService.class);
 		when(connectionService.createServerSocket(anyInt())).thenReturn(
 				serverSocket);
 		when(connectionService.createConnection(any(Socket.class)))

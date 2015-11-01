@@ -8,7 +8,7 @@ import java.util.Map;
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
 
 @SuppressWarnings("unchecked")
-public final class MessageProcessor {
+public class MessageProcessor {
 
 	public static MessageProcessor withHandlers(
 			Collection<MessageHandler<?>> handlers) {
@@ -21,7 +21,7 @@ public final class MessageProcessor {
 
 	private Map<Class<?>, MessageHandler<?>> handlers = new HashMap<Class<?>, MessageHandler<?>>();
 
-	private MessageProcessor(
+	public MessageProcessor(
 			Collection<MessageHandler<? extends Message>> handlers) {
 		super();
 		handlers.forEach(handler -> {

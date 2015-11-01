@@ -11,15 +11,15 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import by.segg3r.exception.ConnectionException;
-import by.segg3r.server.Connection;
-import by.segg3r.server.ConnectionService;
+import by.segg3r.messaging.Connection;
+import by.segg3r.server.ServerConnectionService;
 
 public class Server implements Runnable {
 
 	private static final Logger LOG = LogManager.getLogger(Server.class);
 
 	@Autowired
-	private ConnectionService connectionService;
+	private ServerConnectionService connectionService;
 
 	private boolean stopped;
 	private int port;
@@ -55,7 +55,7 @@ public class Server implements Runnable {
 		this.connections = connections;
 	}
 
-	public void setConnectionService(ConnectionService connectionService) {
+	public void setConnectionService(ServerConnectionService connectionService) {
 		this.connectionService = connectionService;
 	}
 
