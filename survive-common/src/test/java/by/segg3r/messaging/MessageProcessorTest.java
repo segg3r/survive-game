@@ -2,6 +2,9 @@ package by.segg3r.messaging;
 
 import static org.testng.Assert.*;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -21,6 +24,8 @@ public class MessageProcessorTest {
 	private static final TestMessage MESSAGE = new TestMessage();
 	private static final TestResponseMessage RESPONSE_MESSAGE = new TestResponseMessage();
 	private static final UnrecognizedTestMessage UNRECOGNIZED_MESSAGE = new UnrecognizedTestMessage();
+	private static final Collection<Message> RESPONSE_MESSAGE_COLLECTION = Arrays
+			.asList(RESPONSE_MESSAGE);
 
 	private static final class TestMessageHandler extends
 			MessageHandler<TestMessage> {
@@ -29,8 +34,8 @@ public class MessageProcessorTest {
 		}
 
 		@Override
-		public Message handle(TestMessage message) {
-			return RESPONSE_MESSAGE;
+		public Collection<Message> handle(TestMessage message) {
+			return RESPONSE_MESSAGE_COLLECTION;
 		}
 	}
 
@@ -42,9 +47,10 @@ public class MessageProcessorTest {
 				.withHandlers(new TestMessageHandler());
 	}
 
-	@Test(description = "should return response according to message type")
+	@Test(description = "should return response collection according to message type")
 	public void testProcessPositive() throws UnrecognizedMessageTypeException {
-		assertEquals(messageProcessor.process(MESSAGE), RESPONSE_MESSAGE);
+		assertEquals(messageProcessor.process(MESSAGE),
+				RESPONSE_MESSAGE_COLLECTION);
 	}
 
 	@Test(description = "should throw exception if no handler found", expectedExceptions = UnrecognizedMessageTypeException.class)

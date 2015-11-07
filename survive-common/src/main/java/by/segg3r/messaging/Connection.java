@@ -1,7 +1,13 @@
 package by.segg3r.messaging;
 
+import java.util.Collection;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+
+import by.segg3r.messaging.exception.MessageReceievingException;
+import by.segg3r.messaging.exception.MessageSendingException;
+import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
 
 public class Connection implements Runnable {
 
@@ -26,12 +32,17 @@ public class Connection implements Runnable {
 		while (!stopped) {
 			try {
 				Message message = in.readMessage();
-				Message response = messageProcessor.process(message);
-				if (response != null) {
-					out.writeMessage(response);
+				Collection<Message> response = messageProcessor.process(message);
+				
+				for (Message responseMessage : response) {
+					out.writeMessage(responseMessage);
 				}
-			} catch (Exception e) {
-				LOG.error("Could not read message", e);
+			} catch (UnrecognizedMessageTypeException e) {
+				LOG.error("Could not recognize the message", e);
+			} catch (MessageSendingException e) {
+				LOG.error("Error sending response message", e);
+			} catch (MessageReceievingException e) {
+				LOG.error("Error receiving message", e);
 			}
 		}
 	}

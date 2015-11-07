@@ -8,6 +8,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -21,10 +25,12 @@ import org.testng.annotations.Test;
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
 
 public class ConnectionTest {
-	
-	private static final class StopMessage extends Message {};
+
+	private static final class StopMessage extends Message {
+	};
+
 	private static final StopMessage STOP_MESSAGE = new StopMessage();
-	
+
 	@Mock
 	private MessageInputStream in;
 	@Mock
@@ -33,63 +39,69 @@ public class ConnectionTest {
 	private MessageProcessor messageProcessor;
 	@InjectMocks
 	private Connection connection;
-	
+
 	@BeforeClass
 	public void initMocks() {
 		MockitoAnnotations.initMocks(this);
 	}
-	
+
 	@BeforeMethod
 	public void setCommonMocks() throws UnrecognizedMessageTypeException {
 		connection.setStopped(false);
-		
-		when(messageProcessor.process(eq(STOP_MESSAGE))).then(new Answer<Message>() {
-			@Override
-			public Message answer(InvocationOnMock invocation) throws Throwable {
-				connection.setStopped(true);
-				return null;
-			}
-		});
+
+		when(messageProcessor.process(eq(STOP_MESSAGE))).then(
+				new Answer<Collection<Message>>() {
+					@Override
+					public Collection<Message> answer(
+							InvocationOnMock invocation) throws Throwable {
+						connection.setStopped(true);
+						return Collections.emptyList();
+					}
+				});
 	}
-	
+
 	@AfterMethod
 	public void resetMocks() {
 		reset(in, out, messageProcessor);
 	}
-	
+
 	@Test(description = "should process messages while not stopped")
-	public void testProcessingWhileNotStopped()
-			throws Exception {
-		Message simpleMessage = new Message() {};
-		when(messageProcessor.process(eq(simpleMessage)))
-			.thenReturn(null);
-		when(in.readMessage()).thenReturn(simpleMessage, simpleMessage, STOP_MESSAGE);
-		
+	public void testProcessingWhileNotStopped() throws Exception {
+		Message simpleMessage = new Message() {
+		};
+		when(messageProcessor.process(eq(simpleMessage))).thenReturn(
+				Collections.emptyList());
+		when(in.readMessage()).thenReturn(simpleMessage, simpleMessage,
+				STOP_MESSAGE);
+
 		connection.run();
-		verify(messageProcessor, times(3)).process(any());
-	}
-	
-	@Test(description = "should send response message to player")
-	public void testSendResponse() throws Exception {
-		Message simpleMessage = new Message() {};
-		Message responseMessage = new Message() {};
-		when(messageProcessor.process(eq(simpleMessage)))
-			.thenReturn(responseMessage);
-		when(in.readMessage()).thenReturn(simpleMessage, STOP_MESSAGE);
-	
-		connection.run();
-		verify(out, times(1)).writeMessage(eq(responseMessage));
+		verify(messageProcessor, times(2)).process(eq(simpleMessage));
 	}
 
-	@Test(description = "should not send response message to player if there is no such")
-	public void testNotSendResponse() throws Exception {
-		Message simpleMessage = new Message() {};
-		when(messageProcessor.process(eq(simpleMessage)))
-			.thenReturn(null);
+	@Test(description = "should send collection of response messages to player")
+	public void testSendResponse() throws Exception {
+		Message simpleMessage = new Message() {
+		};
+		Message responseMessage = new Message() {
+		};
+		// 2 response messages in collection should be sent 2 times
+		when(messageProcessor.process(eq(simpleMessage))).thenReturn(
+				Arrays.asList(responseMessage, responseMessage));
 		when(in.readMessage()).thenReturn(simpleMessage, STOP_MESSAGE);
-	
+
+		connection.run();
+		verify(out, times(2)).writeMessage(eq(responseMessage));
+	}
+
+	@Test(description = "should not send any response message to player if response collection is empty")
+	public void testNotSendResponse() throws Exception {
+		Message simpleMessage = new Message() {
+		};
+		when(messageProcessor.process(eq(simpleMessage))).thenReturn(Collections.emptyList());
+		when(in.readMessage()).thenReturn(simpleMessage, STOP_MESSAGE);
+
 		connection.run();
 		verify(out, never()).writeMessage(any());
 	}
-	
+
 }

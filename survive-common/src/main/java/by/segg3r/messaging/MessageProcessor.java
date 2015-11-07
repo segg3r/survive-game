@@ -34,7 +34,7 @@ public class MessageProcessor {
 		handlers.put(messageClass, handler);
 	}
 
-	public <MessageType extends Message> Message process(MessageType message)
+	public <MessageType extends Message> Collection<Message> process(MessageType message)
 			throws UnrecognizedMessageTypeException {
 		Class<?> messageClass = message.getClass();
 		MessageHandler<MessageType> handler = (MessageHandler<MessageType>) handlers
