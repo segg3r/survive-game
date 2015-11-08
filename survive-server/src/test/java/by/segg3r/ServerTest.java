@@ -1,14 +1,14 @@
 package by.segg3r;
 
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
 
 import by.segg3r.exception.ConnectionException;
 import by.segg3r.messaging.Connection;
-import by.segg3r.server.ServerConnectionService;
+import by.segg3r.messaging.ConnectionPool;
+import by.segg3r.server.ServerConnectionFactory;
 
 public class ServerTest {
 
@@ -36,7 +37,9 @@ public class ServerTest {
 	@Mock
 	private ServerSocket serverSocket;
 	@Mock
-	private ServerConnectionService connectionService;
+	private ServerConnectionFactory connectionService;
+	@Mock
+	private ConnectionPool connectionPool;
 	@Mock
 	private Connection connection;
 	
@@ -52,7 +55,6 @@ public class ServerTest {
 		port = 11099;
 
 		serverSocket = mock(ServerSocket.class);
-		connectionService = mock(ServerConnectionService.class);
 		when(connectionService.createServerSocket(anyInt())).thenReturn(
 				serverSocket);
 		when(connectionService.createConnection(any(Socket.class)))
@@ -60,11 +62,12 @@ public class ServerTest {
 
 		server = new Server(port);
 		server.setConnectionService(connectionService);
+		server.setConnectionPool(connectionPool);
 	}
 	
 	@AfterMethod
 	public void resetMocks() {
-		reset(serverSocket, connectionService);
+		reset(serverSocket, connectionService, connectionPool);
 	}
 
 	@Test(description = "should accept incoming connections")
@@ -74,7 +77,7 @@ public class ServerTest {
 
 		server.run();
 
-		assertEquals(server.getConnections().size(), 2);
+		verify(connectionPool, times(2)).addConnection(any(Connection.class));
 	}
 	
 	@Test(description = "should create server socket on specified port")
@@ -95,7 +98,7 @@ public class ServerTest {
 		server.setStopped(true);
 		server.run();
 
-		assertEquals(server.getConnections().size(), 0);
+		verify(connectionPool, never()).addConnection(any(Connection.class));
 	}
 	
 	private static final class SocketAnswer implements Answer<Socket> {

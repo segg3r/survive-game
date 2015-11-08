@@ -13,7 +13,7 @@ public class MessageInputStream extends ObjectInputStream {
 		super(in);
 	}
 
-	public Message readMessage() throws MessageReceievingException {
+	public synchronized Message readMessage() throws MessageReceievingException {
 		try {
 			Object object = readObjectFromStream();
 			Message message = (Message) object;
@@ -23,7 +23,7 @@ public class MessageInputStream extends ObjectInputStream {
 		}
 	}
 	
-	public Object readObjectFromStream() throws Exception {
+	public synchronized Object readObjectFromStream() throws Exception {
 		return readObject();
 	}
 

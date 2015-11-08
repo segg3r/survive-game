@@ -9,15 +9,18 @@ import org.springframework.stereotype.Component;
 
 import by.segg3r.exception.ConnectionException;
 import by.segg3r.messaging.Connection;
+import by.segg3r.messaging.ConnectionPool;
 import by.segg3r.messaging.MessageInputStream;
 import by.segg3r.messaging.MessageOutputStream;
 import by.segg3r.messaging.MessageProcessor;
 
 @Component
-public class ServerConnectionServiceImpl implements ServerConnectionService {
+public class ServerConnectionFactoryImpl implements ServerConnectionFactory {
 
 	@Autowired
 	private MessageProcessor messageProcessor;
+	@Autowired
+	private ConnectionPool connectionPool;
 	
 	public ServerSocket createServerSocket(int port) throws ConnectionException {
 		try {
@@ -35,7 +38,7 @@ public class ServerConnectionServiceImpl implements ServerConnectionService {
 					clientSocket.getInputStream());
 			MessageOutputStream out = new MessageOutputStream(
 					clientSocket.getOutputStream());
-			Connection connection = new Connection(in, out, messageProcessor);
+			Connection connection = new Connection(in, out, messageProcessor, connectionPool);
 			new Thread(connection).start();
 			return connection;
 		} catch (Exception e) {

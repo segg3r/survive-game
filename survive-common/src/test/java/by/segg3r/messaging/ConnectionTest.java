@@ -23,6 +23,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
+import by.segg3r.messaging.messages.AllPlayersResponseMessage;
+import by.segg3r.messaging.messages.SinglePlayerResponseMessage;
 
 public class ConnectionTest {
 
@@ -30,13 +32,15 @@ public class ConnectionTest {
 	};
 
 	private static final StopMessage STOP_MESSAGE = new StopMessage();
-
+	
 	@Mock
 	private MessageInputStream in;
 	@Mock
 	private MessageOutputStream out;
 	@Mock
 	private MessageProcessor messageProcessor;
+	@Mock
+	private ConnectionPool connectionPool;
 	@InjectMocks
 	private Connection connection;
 
@@ -62,7 +66,7 @@ public class ConnectionTest {
 
 	@AfterMethod
 	public void resetMocks() {
-		reset(in, out, messageProcessor);
+		reset(in, out, messageProcessor, connectionPool);
 	}
 
 	@Test(description = "should process messages while not stopped")
@@ -79,10 +83,10 @@ public class ConnectionTest {
 	}
 
 	@Test(description = "should send collection of response messages to player")
-	public void testSendResponse() throws Exception {
+	public void testSendResponseToPlayer() throws Exception {
 		Message simpleMessage = new Message() {
 		};
-		Message responseMessage = new Message() {
+		Message responseMessage = new SinglePlayerResponseMessage() {
 		};
 		// 2 response messages in collection should be sent 2 times
 		when(messageProcessor.process(eq(simpleMessage))).thenReturn(
@@ -91,13 +95,31 @@ public class ConnectionTest {
 
 		connection.run();
 		verify(out, times(2)).writeMessage(eq(responseMessage));
+		verify(connectionPool, never()).sendAll(any(Message.class));
+	}
+
+	@Test(description = "should send collection of response messages to all players")
+	public void testSendResponseToAll() throws Exception {
+		Message simpleMessage = new Message() {
+		};
+		Message responseMessage = new AllPlayersResponseMessage() {
+		};
+		// 2 response messages in collection should be sent 2 times
+		when(messageProcessor.process(eq(simpleMessage))).thenReturn(
+				Arrays.asList(responseMessage, responseMessage));
+		when(in.readMessage()).thenReturn(simpleMessage, STOP_MESSAGE);
+
+		connection.run();
+		verify(out, never()).writeMessage(any(Message.class));
+		verify(connectionPool, times(2)).sendAll(eq(responseMessage));
 	}
 
 	@Test(description = "should not send any response message to player if response collection is empty")
 	public void testNotSendResponse() throws Exception {
 		Message simpleMessage = new Message() {
 		};
-		when(messageProcessor.process(eq(simpleMessage))).thenReturn(Collections.emptyList());
+		when(messageProcessor.process(eq(simpleMessage))).thenReturn(
+				Collections.emptyList());
 		when(in.readMessage()).thenReturn(simpleMessage, STOP_MESSAGE);
 
 		connection.run();

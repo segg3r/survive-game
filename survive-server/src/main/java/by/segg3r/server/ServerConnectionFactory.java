@@ -6,7 +6,7 @@ import java.net.Socket;
 import by.segg3r.exception.ConnectionException;
 import by.segg3r.messaging.Connection;
 
-public interface ServerConnectionService {
+public interface ServerConnectionFactory {
 
 	ServerSocket createServerSocket(int port) throws ConnectionException;
 

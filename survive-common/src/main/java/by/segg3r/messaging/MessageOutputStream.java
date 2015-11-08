@@ -14,7 +14,7 @@ public class MessageOutputStream extends ObjectOutputStream {
 		super(out);
 	}
 
-	public void writeMessage(Message message) throws MessageSendingException {
+	public synchronized void writeMessage(Message message) throws MessageSendingException {
 		try {
 			writeObjectToStream(message);
 		} catch (Exception e) {
@@ -23,7 +23,7 @@ public class MessageOutputStream extends ObjectOutputStream {
 		}
 	}
 
-	public void writeObjectToStream(Object object) throws Exception {
+	public synchronized void writeObjectToStream(Object object) throws Exception {
 		writeObject(object);
 	}
 

@@ -3,8 +3,6 @@ package by.segg3r;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -12,22 +10,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import by.segg3r.exception.ConnectionException;
 import by.segg3r.messaging.Connection;
-import by.segg3r.server.ServerConnectionService;
+import by.segg3r.messaging.ConnectionPool;
+import by.segg3r.server.ServerConnectionFactory;
 
 public class Server implements Runnable {
 
 	private static final Logger LOG = LogManager.getLogger(Server.class);
 
 	@Autowired
-	private ServerConnectionService connectionService;
+	private ServerConnectionFactory connectionService;
+	@Autowired
+	private ConnectionPool connectionPool;
 
 	private boolean stopped;
 	private int port;
-	private List<Connection> connections;
 
 	public Server(int port) {
 		this.port = port;
-		this.connections = new LinkedList<Connection>();
 	}
 
 	@Override
@@ -39,24 +38,21 @@ public class Server implements Runnable {
 			serverSocket = connectionService.createServerSocket(port);
 			while (!stopped) {
 				clientSocket = serverSocket.accept();
-				Connection connection = connectionService.createConnection(clientSocket);
-				connections.add(connection);
+				Connection connection = connectionService
+						.createConnection(clientSocket);
+				connectionPool.addConnection(connection);
 			}
 		} catch (IOException | ConnectionException e) {
 			LOG.error("Error starting server", e);
 		}
 	}
 
-	public List<Connection> getConnections() {
-		return connections;
-	}
-
-	public void setConnections(List<Connection> connections) {
-		this.connections = connections;
-	}
-
-	public void setConnectionService(ServerConnectionService connectionService) {
+	public void setConnectionService(ServerConnectionFactory connectionService) {
 		this.connectionService = connectionService;
+	}
+
+	public void setConnectionPool(ConnectionPool connectionPool) {
+		this.connectionPool = connectionPool;
 	}
 
 	public boolean isStopped() {
