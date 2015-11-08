@@ -18,15 +18,13 @@ public class Connection implements Runnable {
 	private MessageInputStream in;
 	private MessageOutputStream out;
 	private MessageProcessor messageProcessor;
-	private ConnectionPool connectionPool;
 	
 	public Connection(MessageInputStream in, MessageOutputStream out,
-			MessageProcessor messageProcessor, ConnectionPool connectionPool) {
+			MessageProcessor messageProcessor) {
 		super();
 		this.in = in;
 		this.out = out;
 		this.messageProcessor = messageProcessor;
-		this.connectionPool = connectionPool;
 	}
 
 	@Override
@@ -37,12 +35,7 @@ public class Connection implements Runnable {
 				Collection<Message> response = messageProcessor.process(message);
 				
 				for (Message responseMessage : response) {
-					MessageTarget target = responseMessage.getTarget();
-					if (target == MessageTarget.SINGLE) {
-						sendMessage(responseMessage);
-					} else if (target == MessageTarget.ALL) {
-						connectionPool.sendAll(responseMessage);
-					}
+					processResponseMessage(responseMessage);
 				}
 			} catch (UnrecognizedMessageTypeException e) {
 				LOG.error("Could not recognize the message", e);
@@ -52,6 +45,10 @@ public class Connection implements Runnable {
 				LOG.error("Error receiving message", e);
 			}
 		}
+	}
+	
+	protected void processResponseMessage(Message message) throws MessageSendingException {
+		sendMessage(message);
 	}
 	
 	public void sendMessage(Message message) throws MessageSendingException {
