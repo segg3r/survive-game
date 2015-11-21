@@ -62,14 +62,14 @@ public class ServerConnectionTest {
 
 	@BeforeMethod
 	public void setCommonMocks() throws UnrecognizedMessageTypeException {
-		serverConnection.setStopped(false);
+		serverConnection.reset();
 
 		when(messageProcessor.process(eq(STOP_MESSAGE))).then(
 				new Answer<Collection<Message>>() {
 					@Override
 					public Collection<Message> answer(
 							InvocationOnMock invocation) throws Throwable {
-						serverConnection.setStopped(true);
+						serverConnection.stop();
 						return Collections.emptyList();
 					}
 				});
@@ -124,6 +124,12 @@ public class ServerConnectionTest {
 
 		serverConnection.run();
 		verify(out, never()).writeMessage(any());
+	}
+	
+	@Test(description = "connection should remove itself from connection pool when stopped")
+	public void testConnectionRemovesItselfFromConnectionPool() {
+		serverConnection.stop();
+		verify(connectionPool, times(1)).removeConnection(eq(serverConnection));
 	}
 
 }

@@ -26,9 +26,14 @@ public class ServerConnectionPoolImpl implements ConnectionPool {
 			connection.sendMessage(message);
 		}
 	}
-	
+
+	@Override
+	public void removeConnection(Connection connection) {
+		connections.remove(connection);
+	}
+
 	public Collection<Connection> getConnections() {
 		return connections;
 	}
-	
+
 }

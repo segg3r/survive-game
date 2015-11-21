@@ -1,10 +1,14 @@
 package by.segg3r.messaging;
 
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -56,14 +60,14 @@ public class ConnectionTest {
 
 	@BeforeMethod
 	public void setCommonMocks() throws UnrecognizedMessageTypeException {
-		connection.setStopped(false);
+		connection.reset();
 
 		when(messageProcessor.process(eq(STOP_MESSAGE))).then(
 				new Answer<Collection<Message>>() {
 					@Override
 					public Collection<Message> answer(
 							InvocationOnMock invocation) throws Throwable {
-						connection.setStopped(true);
+						connection.stop();
 						return Collections.emptyList();
 					}
 				});
@@ -118,11 +122,13 @@ public class ConnectionTest {
 	@Test(description = "should stop connection if message receiving exception is thrown")
 	public void testStopWhenMessageReceivingExceptionIsThrown()
 			throws Exception {
+		Connection connectionSpy = spy(connection);
+		doCallRealMethod().when(connectionSpy).stop();
 		when(in.readMessage()).thenThrow(new MessageReceievingException());
 
-		connection.run();
+		connectionSpy.run();
 
-		assertTrue(connection.isStopped());
+		verify(connectionSpy, times(1)).stop();
 	}
 
 	@Test(description = "should close socket when stopped")
@@ -131,6 +137,14 @@ public class ConnectionTest {
 
 		connection.run();
 		verify(socket, times(1)).close();
+	}
+
+	@Test(description = "stop and reset methods should trigger connection state change")
+	public void testStopAndReset() {
+		connection.stop();
+		assertTrue(connection.isStopped());
+		connection.reset();
+		assertFalse(connection.isStopped());
 	}
 
 }

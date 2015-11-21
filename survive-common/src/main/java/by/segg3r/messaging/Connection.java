@@ -68,17 +68,15 @@ public class Connection implements Runnable {
 	}
 
 	public void stop() {
-		this.setStopped(true);
+		LOG.info("Stopping the connection: "
+				+ socket.getInetAddress().getCanonicalHostName() + ":"
+				+ socket.getPort());
+		
+		this.stopped = true;
 	}
 
-	public void setStopped(boolean stopped) {
-		if (stopped) {
-			LOG.info("Stopping the connection: "
-					+ socket.getInetAddress().getCanonicalHostName() + ":"
-					+ socket.getPort());
-		}
-
-		this.stopped = stopped;
+	public void reset() {
+		this.stopped = false;
 	}
 
 	public boolean isStopped() {

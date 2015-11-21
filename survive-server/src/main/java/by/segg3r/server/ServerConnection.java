@@ -30,5 +30,11 @@ public class ServerConnection extends Connection {
 			connectionPool.sendAll(message);
 		}
 	}
+	
+	@Override
+	public void stop() {
+		super.stop();
+		connectionPool.removeConnection(this);
+	}
 
 }
