@@ -94,22 +94,6 @@
 							</target>
 						</configuration>
 					</execution>
-
-					<execution>
-						<id>run-server</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<target>
-								<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
-									dest="${deploy.path}" />
-								<exec executable="${deploy.runPath}" dir="${deploy.fullPath}"
-									spawn="true" />
-							</target>
-						</configuration>
-					</execution>
 				</executions>
 			</plugin>
 		</plugins>
@@ -129,7 +113,7 @@
 						<version>1.7</version>
 						<executions>
 							<execution>
-								<id>run-client</id>
+								<id>run-server</id>
 								<phase>deploy</phase>
 								<goals>
 									<goal>run</goal>
@@ -164,7 +148,7 @@
 						<version>1.7</version>
 						<executions>
 							<execution>
-								<id>debug-client</id>
+								<id>debug-server</id>
 								<phase>deploy</phase>
 								<goals>
 									<goal>run</goal>
@@ -208,6 +192,14 @@
 			<groupId>by.segg3r</groupId>
 			<artifactId>survive-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>by.segg3r</groupId>
+			<artifactId>survive-common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>

@@ -1,5 +1,7 @@
 package by.segg3r.config;
 
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -38,7 +40,7 @@ public class ServerConfig {
 
 	@Bean
 	public MessageProcessor messageProcessor() {
-		return MessageProcessor.withHandlers();
+		return MessageProcessor.withHandlers(Collections.emptyList());
 	}
 
 }

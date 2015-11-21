@@ -8,6 +8,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,6 +41,10 @@ public class ServerConnectionTest {
 	private static final StopMessage STOP_MESSAGE = new StopMessage();
 	
 	@Mock
+	private InetAddress inetAddress;
+	@Mock
+	private Socket socket;
+	@Mock
 	private MessageInputStream in;
 	@Mock
 	private MessageOutputStream out;
@@ -67,11 +73,13 @@ public class ServerConnectionTest {
 						return Collections.emptyList();
 					}
 				});
+		
+		when(socket.getInetAddress()).thenReturn(inetAddress);
 	}
 
 	@AfterMethod
 	public void resetMocks() {
-		reset(in, out, messageProcessor, connectionPool);
+		reset(in, out, socket, inetAddress, messageProcessor, connectionPool);
 	}
 
 	@Test(description = "should send collection of response messages to player")

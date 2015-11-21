@@ -1,5 +1,7 @@
 package by.segg3r.server;
 
+import java.net.Socket;
+
 import by.segg3r.messaging.Connection;
 import by.segg3r.messaging.ConnectionPool;
 import by.segg3r.messaging.Message;
@@ -13,9 +15,9 @@ public class ServerConnection extends Connection {
 
 	private ConnectionPool connectionPool;
 	
-	public ServerConnection(MessageInputStream in, MessageOutputStream out,
+	public ServerConnection(Socket socket, MessageInputStream in, MessageOutputStream out,
 			MessageProcessor messageProcessor, ConnectionPool connectionPool) {
-		super(in, out, messageProcessor);
+		super(socket, in, out, messageProcessor);
 		this.connectionPool = connectionPool;
 	}
 	

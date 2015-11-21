@@ -1,4 +1,4 @@
-package by.segg3r.exception;
+package by.segg3r.messaging.exception;
 
 public class ConnectionException extends Exception {
 

@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
@@ -25,15 +26,19 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import by.segg3r.exception.ConnectionException;
 import by.segg3r.messaging.Connection;
 import by.segg3r.messaging.ConnectionPool;
+import by.segg3r.messaging.exception.ConnectionException;
 import by.segg3r.server.ServerConnectionFactory;
 
 public class ServerTest {
 
 	private int port;
 
+	@Mock
+	private InetAddress inetAddress;
+	@Mock
+	private Socket clientSocket;
 	@Mock
 	private ServerSocket serverSocket;
 	@Mock
@@ -59,6 +64,8 @@ public class ServerTest {
 				serverSocket);
 		when(connectionService.createConnection(any(Socket.class)))
 			.thenReturn(connection);
+		
+		when(clientSocket.getInetAddress()).thenReturn(inetAddress);
 
 		server = new Server(port);
 		server.setConnectionService(connectionService);
@@ -73,7 +80,7 @@ public class ServerTest {
 	@Test(description = "should accept incoming connections")
 	public void testAcceptIncomingConnections() throws Exception {
 		when(serverSocket.accept()).thenAnswer(
-				new SocketAnswer(mock(Socket.class), mock(Socket.class)));
+				new SocketAnswer(clientSocket, clientSocket));
 
 		server.run();
 
@@ -93,7 +100,7 @@ public class ServerTest {
 	@Test(description = "should not accept any connections if stopped")
 	public void testAcceptingConnectionsWhenStopped() throws Exception {
 		when(serverSocket.accept()).thenAnswer(
-				new SocketAnswer(mock(Socket.class), mock(Socket.class)));
+				new SocketAnswer(clientSocket, clientSocket));
 
 		server.setStopped(true);
 		server.run();

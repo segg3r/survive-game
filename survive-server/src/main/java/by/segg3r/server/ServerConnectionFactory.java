@@ -3,8 +3,8 @@ package by.segg3r.server;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import by.segg3r.exception.ConnectionException;
 import by.segg3r.messaging.Connection;
+import by.segg3r.messaging.exception.ConnectionException;
 
 public interface ServerConnectionFactory {
 

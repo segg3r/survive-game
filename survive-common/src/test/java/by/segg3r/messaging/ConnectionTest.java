@@ -1,5 +1,6 @@
 package by.segg3r.messaging;
 
+import static org.testng.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -8,6 +9,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +25,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import by.segg3r.messaging.exception.MessageReceievingException;
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
 import by.segg3r.messaging.messages.SinglePlayerResponseMessage;
 
@@ -31,7 +35,11 @@ public class ConnectionTest {
 	};
 
 	private static final StopMessage STOP_MESSAGE = new StopMessage();
-	
+
+	@Mock
+	private InetAddress inetAddress;
+	@Mock
+	private Socket socket;
 	@Mock
 	private MessageInputStream in;
 	@Mock
@@ -59,11 +67,12 @@ public class ConnectionTest {
 						return Collections.emptyList();
 					}
 				});
+		when(socket.getInetAddress()).thenReturn(inetAddress);
 	}
 
 	@AfterMethod
 	public void resetMocks() {
-		reset(in, out, messageProcessor);
+		reset(in, out, inetAddress, socket, messageProcessor);
 	}
 
 	@Test(description = "should process messages while not stopped")
@@ -104,6 +113,24 @@ public class ConnectionTest {
 
 		connection.run();
 		verify(out, never()).writeMessage(any());
+	}
+
+	@Test(description = "should stop connection if message receiving exception is thrown")
+	public void testStopWhenMessageReceivingExceptionIsThrown()
+			throws Exception {
+		when(in.readMessage()).thenThrow(new MessageReceievingException());
+
+		connection.run();
+
+		assertTrue(connection.isStopped());
+	}
+
+	@Test(description = "should close socket when stopped")
+	public void testCloseSocketWhenStopped() throws Exception {
+		connection.stop();
+
+		connection.run();
+		verify(socket, times(1)).close();
 	}
 
 }

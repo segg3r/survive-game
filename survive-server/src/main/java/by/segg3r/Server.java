@@ -8,9 +8,9 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import by.segg3r.exception.ConnectionException;
 import by.segg3r.messaging.Connection;
 import by.segg3r.messaging.ConnectionPool;
+import by.segg3r.messaging.exception.ConnectionException;
 import by.segg3r.server.ServerConnectionFactory;
 
 public class Server implements Runnable {
@@ -18,7 +18,7 @@ public class Server implements Runnable {
 	private static final Logger LOG = LogManager.getLogger(Server.class);
 
 	@Autowired
-	private ServerConnectionFactory connectionService;
+	private ServerConnectionFactory connectionFactory;
 	@Autowired
 	private ConnectionPool connectionPool;
 
@@ -35,12 +35,18 @@ public class Server implements Runnable {
 		Socket clientSocket;
 
 		try {
-			serverSocket = connectionService.createServerSocket(port);
+			serverSocket = connectionFactory.createServerSocket(port);
+			LOG.info("Initialized server socket on port " + this.port);
+			
 			while (!stopped) {
 				clientSocket = serverSocket.accept();
-				Connection connection = connectionService
+				Connection connection = connectionFactory
 						.createConnection(clientSocket);
 				connectionPool.addConnection(connection);
+
+				LOG.info("New client connection: "
+						+ clientSocket.getInetAddress().getCanonicalHostName()
+						+ ":" + clientSocket.getPort());
 			}
 		} catch (IOException | ConnectionException e) {
 			LOG.error("Error starting server", e);
@@ -48,7 +54,7 @@ public class Server implements Runnable {
 	}
 
 	public void setConnectionService(ServerConnectionFactory connectionService) {
-		this.connectionService = connectionService;
+		this.connectionFactory = connectionService;
 	}
 
 	public void setConnectionPool(ConnectionPool connectionPool) {

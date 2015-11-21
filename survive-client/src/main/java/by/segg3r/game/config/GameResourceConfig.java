@@ -15,7 +15,7 @@ import by.segg3r.game.util.pathresolver.PatternPathResolver;
 public class GameResourceConfig {
 
 	private PathResolver imageResolver = new PatternPathResolver(
-			AppConfig.RESOURCES_FOLDER + "/img/${path}");
+			ClientConfig.RESOURCES_FOLDER + "/img/${path}");
 	private PathResolver characterImageResolver = new PatternPathResolver(
 			"characters/${path}", imageResolver);
 
@@ -25,7 +25,7 @@ public class GameResourceConfig {
 
 		for (AnimationPart animationPart : AnimationPart.values()) {
 			String folderName = animationPart.toString().toLowerCase(
-					AppConfig.DEFAULT_LOCALE);
+					ClientConfig.DEFAULT_LOCALE);
 			result.put(animationPart, new PatternPathResolver(folderName
 					+ "/${path}.png", characterImageResolver));
 		}
