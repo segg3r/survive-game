@@ -32,14 +32,14 @@ public class ServerConnectionPoolTest {
 	
 	@Test(description = "should add connection to pool")
 	public void testAddConnection() {
-		Connection<?> connection = mock(Connection.class);
+		Connection connection = mock(Connection.class);
 		connectionPool.addConnection(connection);
 		assertEquals(connectionPool.getConnections().size(), 1);
 	}
 	
 	@Test(description = "should remove connection from pool")
 	public void testRemoveConnection() {
-		Connection<?> connection = mock(Connection.class);
+		Connection connection = mock(Connection.class);
 		connectionPool.getConnections().add(connection);
 		
 		connectionPool.removeConnection(connection);
@@ -48,7 +48,7 @@ public class ServerConnectionPoolTest {
 	
 	@Test(description = "should send message to all connected players")
 	public void testSendAll() throws MessageSendingException {
-		Connection<?> connection = mock(Connection.class);
+		Connection connection = mock(Connection.class);
 		connectionPool.getConnections().addAll(Arrays.asList(connection, connection));
 		
 		Message message = mock(Message.class);

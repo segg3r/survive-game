@@ -29,7 +29,6 @@ import org.testng.annotations.Test;
 import by.segg3r.messaging.Connection;
 import by.segg3r.messaging.ConnectionPool;
 import by.segg3r.messaging.exception.ConnectionException;
-import by.segg3r.server.ServerConnection;
 import by.segg3r.server.ServerConnectionFactory;
 
 public class ServerTest {
@@ -47,7 +46,7 @@ public class ServerTest {
 	@Mock
 	private ConnectionPool connectionPool;
 	@Mock
-	private ServerConnection serverConnection;
+	private Connection connection;
 	
 	private Server server;
 
@@ -64,7 +63,7 @@ public class ServerTest {
 		when(connectionService.createServerSocket(anyInt())).thenReturn(
 				serverSocket);
 		when(connectionService.createConnection(any(Socket.class)))
-			.thenReturn(serverConnection);
+			.thenReturn(connection);
 		
 		when(clientSocket.getInetAddress()).thenReturn(inetAddress);
 

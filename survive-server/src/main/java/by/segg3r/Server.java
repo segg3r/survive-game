@@ -8,9 +8,9 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import by.segg3r.messaging.Connection;
 import by.segg3r.messaging.ConnectionPool;
 import by.segg3r.messaging.exception.ConnectionException;
-import by.segg3r.server.ServerConnection;
 import by.segg3r.server.ServerConnectionFactory;
 
 public class Server implements Runnable {
@@ -40,7 +40,7 @@ public class Server implements Runnable {
 			
 			while (!stopped) {
 				clientSocket = serverSocket.accept();
-				ServerConnection connection = connectionFactory
+				Connection connection = connectionFactory
 						.createConnection(clientSocket);
 				connectionPool.addConnection(connection);
 

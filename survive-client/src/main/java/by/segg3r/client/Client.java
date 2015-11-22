@@ -6,6 +6,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import by.segg3r.messaging.Connection;
 import by.segg3r.messaging.exception.ConnectionException;
 
 public class Client {
@@ -24,9 +25,9 @@ public class Client {
 		this.port = port;
 	}
 
-	public ClientConnection start() throws ConnectionException {
+	public Connection start() throws ConnectionException {
 		Socket socket = connectionFactory.createSocket(host, port);
-		ClientConnection result = connectionFactory.createConnection(socket);
+		Connection result = connectionFactory.createConnection(socket);
 
 		LOG.info("Successfully connected to server : "
 				+ socket.getInetAddress().getCanonicalHostName() + ":"

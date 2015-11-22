@@ -10,7 +10,7 @@ import by.segg3r.messaging.exception.MessageReceievingException;
 import by.segg3r.messaging.exception.MessageSendingException;
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
 
-public class Connection<StateType> implements Runnable {
+public class Connection implements Runnable {
 
 	private static final Logger LOG = LogManager.getLogger(Connection.class);
 
@@ -20,17 +20,14 @@ public class Connection<StateType> implements Runnable {
 	private MessageInputStream in;
 	private MessageOutputStream out;
 	private MessageProcessor messageProcessor;
-	private StateType state;
 
 	public Connection(Socket socket, MessageInputStream in,
-			MessageOutputStream out, MessageProcessor messageProcessor,
-			StateType state) {
+			MessageOutputStream out, MessageProcessor messageProcessor) {
 		super();
 		this.socket = socket;
 		this.in = in;
 		this.out = out;
 		this.messageProcessor = messageProcessor;
-		this.state = state;
 	}
 
 	@Override
@@ -61,6 +58,11 @@ public class Connection<StateType> implements Runnable {
 		}
 	}
 
+	protected void processResponseMessage(Message message)
+			throws MessageSendingException {
+		sendMessage(message);
+	}
+
 	public void sendMessage(Message message) throws MessageSendingException {
 		out.writeMessage(message);
 	}
@@ -69,7 +71,7 @@ public class Connection<StateType> implements Runnable {
 		LOG.info("Stopping the connection: "
 				+ socket.getInetAddress().getCanonicalHostName() + ":"
 				+ socket.getPort());
-
+		
 		this.stopped = true;
 	}
 
@@ -79,15 +81,6 @@ public class Connection<StateType> implements Runnable {
 
 	public boolean isStopped() {
 		return this.stopped;
-	}
-	
-	protected StateType getState() {
-		return this.state;
-	}
-
-	protected void processResponseMessage(Message message)
-			throws MessageSendingException {
-		sendMessage(message);
 	}
 
 }
