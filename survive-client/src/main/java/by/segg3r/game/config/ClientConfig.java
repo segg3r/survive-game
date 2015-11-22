@@ -14,8 +14,10 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.FileSystemResource;
 
 import by.segg3r.client.Client;
+import by.segg3r.client.ClientConnection;
 import by.segg3r.game.Game;
 import by.segg3r.messaging.MessageProcessor;
+import by.segg3r.messaging.exception.ConnectionException;
 
 @Configuration
 @ComponentScan(basePackages = "by.segg3r")
@@ -61,6 +63,11 @@ public class ClientConfig {
 	@Bean
 	public Client client() {
 		return new Client(host, port);
+	}
+	
+	@Bean
+	public ClientConnection clientConnection(Client client) throws ConnectionException {
+		return client.start();
 	}
 	
 	@Bean

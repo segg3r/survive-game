@@ -5,7 +5,6 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import by.segg3r.client.Client;
 import by.segg3r.game.config.ClientConfig;
 import by.segg3r.game.config.GameResourceConfig;
 
@@ -19,10 +18,6 @@ public final class Runner {
 
 		try (AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				ClientConfig.class, GameResourceConfig.class)) {
-			Client client = ctx.getBean(Client.class);
-			Thread clientThread = new Thread(client);
-			clientThread.start();
-
 			AppGameContainer appGameContainer = ctx
 					.getBean(AppGameContainer.class);
 			appGameContainer.start();

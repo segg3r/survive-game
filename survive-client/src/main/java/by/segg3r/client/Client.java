@@ -6,7 +6,9 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class Client implements Runnable {
+import by.segg3r.messaging.exception.ConnectionException;
+
+public class Client {
 
 	private static final Logger LOG = LogManager.getLogger(Client.class);
 
@@ -22,20 +24,14 @@ public class Client implements Runnable {
 		this.port = port;
 	}
 
-	@Override
-	public void run() {
-		Socket socket;
+	public ClientConnection start() throws ConnectionException {
+		Socket socket = connectionFactory.createSocket(host, port);
+		ClientConnection result = connectionFactory.createConnection(socket);
 
-		try {
-			socket = connectionFactory.createSocket(host, port);
-			connectionFactory.createConnection(socket);
-			
-			LOG.info("Successfully connected to server : "
-					+ socket.getInetAddress().getCanonicalHostName() + ":"
-					+ socket.getPort());
-		} catch (Exception e) {
-			LOG.error("Error starting client", e);
-		}
+		LOG.info("Successfully connected to server : "
+				+ socket.getInetAddress().getCanonicalHostName() + ":"
+				+ socket.getPort());
+		return result;
 	}
 
 	public boolean isStopped() {

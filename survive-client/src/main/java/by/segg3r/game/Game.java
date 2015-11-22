@@ -11,6 +11,7 @@ import org.newdawn.slick.SlickException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import by.segg3r.client.ClientConnection;
 import by.segg3r.game.actions.GameObjectMoveInputAction;
 import by.segg3r.game.input.InputHandler;
 import by.segg3r.game.input.processors.MouseInputProcessor;
@@ -28,6 +29,8 @@ public class Game extends BasicGame {
 	private GameObjectFactory gameObjectFactory;
 	@Autowired
 	private InputHandler inputHandler;
+	@Autowired
+	private ClientConnection clientConnection;
 
 	private Room currentRoom;
 	private GameCharacter playerCharacter;
