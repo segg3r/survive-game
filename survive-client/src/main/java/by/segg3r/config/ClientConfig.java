@@ -1,22 +1,24 @@
-package by.segg3r.game.config;
+package by.segg3r.config;
 
-import java.util.Collections;
 import java.util.Locale;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.FileSystemResource;
 
 import by.segg3r.client.Client;
-import by.segg3r.game.Game;
+import by.segg3r.client.ClientMessageHandler;
+import by.segg3r.game.SurviveGame;
+import by.segg3r.game.SurviveGameContainer;
 import by.segg3r.messaging.Connection;
-import by.segg3r.messaging.MessageProcessor;
 import by.segg3r.messaging.exception.ConnectionException;
 
 @Configuration
@@ -54,25 +56,27 @@ public class ClientConfig {
 	}
 
 	@Bean
-	public AppGameContainer appGameContainer(Game game) throws SlickException {
-		AppGameContainer appGameContainer = new AppGameContainer(game);
-		appGameContainer.setDisplayMode(windowWidth, windowHeight, false);
-		return appGameContainer;
+	public SurviveGameContainer appGameContainer(SurviveGame game) throws SlickException {
+		SurviveGameContainer result = new SurviveGameContainer(game);
+		result.setDisplayMode(windowWidth, windowHeight, false);
+		return result;
 	}
 
 	@Bean
 	public Client client() {
 		return new Client(host, port);
 	}
-	
+
 	@Bean
-	public Connection clientConnection(Client client) throws ConnectionException {
+	@DependsOn(value = "messageProcessor")
+	public Connection clientConnection(Client client)
+			throws ConnectionException {
 		return client.start();
 	}
 	
-	@Bean
-	public MessageProcessor messageProcessor() {
-		return MessageProcessor.withHandlers(Collections.emptyList());
+	@Bean(name = "messageQueue")
+	public Queue<ClientMessageHandler<?>> messageQueue() {
+		return new ConcurrentLinkedQueue<ClientMessageHandler<?>>();
 	}
 
 }

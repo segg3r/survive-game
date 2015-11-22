@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import by.segg3r.messaging.exception.MessageHandlingException;
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
 
 @SuppressWarnings("unchecked")
@@ -35,7 +36,7 @@ public class MessageProcessor {
 	}
 
 	public <MessageType extends Message> Collection<Message> process(MessageType message)
-			throws UnrecognizedMessageTypeException {
+			throws UnrecognizedMessageTypeException, MessageHandlingException {
 		Class<?> messageClass = message.getClass();
 		MessageHandler<MessageType> handler = (MessageHandler<MessageType>) handlers
 				.get(messageClass);

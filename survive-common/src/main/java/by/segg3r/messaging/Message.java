@@ -1,5 +1,6 @@
 package by.segg3r.messaging;
 
+
 public abstract class Message {
 
 	private final MessageTarget target;

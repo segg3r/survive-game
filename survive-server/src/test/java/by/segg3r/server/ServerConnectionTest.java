@@ -29,6 +29,7 @@ import by.segg3r.messaging.Message;
 import by.segg3r.messaging.MessageInputStream;
 import by.segg3r.messaging.MessageOutputStream;
 import by.segg3r.messaging.MessageProcessor;
+import by.segg3r.messaging.exception.MessageHandlingException;
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
 import by.segg3r.messaging.messages.AllPlayersResponseMessage;
 import by.segg3r.messaging.messages.SinglePlayerResponseMessage;
@@ -39,7 +40,7 @@ public class ServerConnectionTest {
 	};
 
 	private static final StopMessage STOP_MESSAGE = new StopMessage();
-	
+
 	@Mock
 	private InetAddress inetAddress;
 	@Mock
@@ -61,7 +62,8 @@ public class ServerConnectionTest {
 	}
 
 	@BeforeMethod
-	public void setCommonMocks() throws UnrecognizedMessageTypeException {
+	public void setCommonMocks() throws UnrecognizedMessageTypeException,
+			MessageHandlingException {
 		serverConnection.reset();
 
 		when(messageProcessor.process(eq(STOP_MESSAGE))).then(
@@ -73,7 +75,7 @@ public class ServerConnectionTest {
 						return Collections.emptyList();
 					}
 				});
-		
+
 		when(socket.getInetAddress()).thenReturn(inetAddress);
 	}
 
@@ -125,7 +127,7 @@ public class ServerConnectionTest {
 		serverConnection.run();
 		verify(out, never()).writeMessage(any());
 	}
-	
+
 	@Test(description = "connection should remove itself from connection pool when stopped")
 	public void testConnectionRemovesItselfFromConnectionPool() {
 		serverConnection.stop();

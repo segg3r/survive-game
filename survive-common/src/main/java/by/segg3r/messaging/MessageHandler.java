@@ -2,6 +2,8 @@ package by.segg3r.messaging;
 
 import java.util.Collection;
 
+import by.segg3r.messaging.exception.MessageHandlingException;
+
 public abstract class MessageHandler<MessageType extends Message> {
 
 	private final Class<MessageType> messageClass;
@@ -10,7 +12,7 @@ public abstract class MessageHandler<MessageType extends Message> {
 		this.messageClass = messageClass;
 	}
 
-	public abstract Collection<Message> handle(MessageType message);
+	public abstract Collection<Message> handle(MessageType message) throws MessageHandlingException;
 
 	public Class<MessageType> getMessageClass() {
 		return messageClass;

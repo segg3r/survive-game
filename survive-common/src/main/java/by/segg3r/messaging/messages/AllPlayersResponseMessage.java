@@ -8,5 +8,5 @@ public class AllPlayersResponseMessage extends Message {
 	public AllPlayersResponseMessage() {
 		super(MessageTarget.ALL);
 	}
-	
+
 }

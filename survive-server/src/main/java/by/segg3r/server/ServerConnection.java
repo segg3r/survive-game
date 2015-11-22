@@ -14,15 +14,17 @@ import by.segg3r.messaging.exception.MessageSendingException;
 public class ServerConnection extends Connection {
 
 	private ConnectionPool connectionPool;
-	
-	public ServerConnection(Socket socket, MessageInputStream in, MessageOutputStream out,
-			MessageProcessor messageProcessor, ConnectionPool connectionPool) {
+
+	public ServerConnection(Socket socket, MessageInputStream in,
+			MessageOutputStream out, MessageProcessor messageProcessor,
+			ConnectionPool connectionPool) {
 		super(socket, in, out, messageProcessor);
 		this.connectionPool = connectionPool;
 	}
-	
+
 	@Override
-	protected void processResponseMessage(Message message) throws MessageSendingException {
+	protected void processResponseMessage(Message message)
+			throws MessageSendingException {
 		MessageTarget target = message.getTarget();
 		if (target == MessageTarget.SINGLE) {
 			sendMessage(message);
@@ -30,11 +32,12 @@ public class ServerConnection extends Connection {
 			connectionPool.sendAll(message);
 		}
 	}
-	
+
 	@Override
 	public void stop() {
 		super.stop();
 		connectionPool.removeConnection(this);
 	}
+
 
 }

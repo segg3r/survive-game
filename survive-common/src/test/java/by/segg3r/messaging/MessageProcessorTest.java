@@ -8,6 +8,7 @@ import java.util.Collection;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import by.segg3r.messaging.exception.MessageHandlingException;
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
 
 public class MessageProcessorTest {
@@ -48,13 +49,13 @@ public class MessageProcessorTest {
 	}
 
 	@Test(description = "should return response collection according to message type")
-	public void testProcessPositive() throws UnrecognizedMessageTypeException {
+	public void testProcessPositive() throws UnrecognizedMessageTypeException, MessageHandlingException {
 		assertEquals(messageProcessor.process(MESSAGE),
 				RESPONSE_MESSAGE_COLLECTION);
 	}
 
 	@Test(description = "should throw exception if no handler found", expectedExceptions = UnrecognizedMessageTypeException.class)
-	public void testProcessNegative() throws UnrecognizedMessageTypeException {
+	public void testProcessNegative() throws UnrecognizedMessageTypeException, MessageHandlingException {
 		messageProcessor.process(UNRECOGNIZED_MESSAGE);
 	}
 

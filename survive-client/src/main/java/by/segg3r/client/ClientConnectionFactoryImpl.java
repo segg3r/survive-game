@@ -37,8 +37,8 @@ public class ClientConnectionFactoryImpl implements ClientConnectionFactory {
 			MessageInputStream in = new MessageInputStream(
 					socket.getInputStream());
 
-			Connection connection = new Connection(socket, in, out, messageProcessor);
-			new Thread(connection).start();
+			Connection connection = new Connection(socket, in, out,
+					messageProcessor);
 			return connection;
 		} catch (Exception e) {
 			throw new ConnectionException(

@@ -27,6 +27,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import by.segg3r.messaging.Connection;
+import by.segg3r.messaging.ConnectionListener;
 import by.segg3r.messaging.ConnectionPool;
 import by.segg3r.messaging.exception.ConnectionException;
 import by.segg3r.server.ServerConnectionFactory;
@@ -35,6 +36,7 @@ public class ServerTest {
 
 	private int port;
 
+	private List<ConnectionListener> connectionEstablishedListeners;
 	@Mock
 	private InetAddress inetAddress;
 	@Mock
@@ -47,14 +49,14 @@ public class ServerTest {
 	private ConnectionPool connectionPool;
 	@Mock
 	private Connection connection;
-	
+
 	private Server server;
 
 	@BeforeClass
 	public void initMocks() {
 		MockitoAnnotations.initMocks(this);
 	}
-	
+
 	@BeforeMethod
 	public void init() throws ConnectionException {
 		port = 11099;
@@ -62,16 +64,20 @@ public class ServerTest {
 		serverSocket = mock(ServerSocket.class);
 		when(connectionService.createServerSocket(anyInt())).thenReturn(
 				serverSocket);
-		when(connectionService.createConnection(any(Socket.class)))
-			.thenReturn(connection);
-		
+		when(connectionService.createConnection(any(Socket.class))).thenReturn(
+				connection);
+
 		when(clientSocket.getInetAddress()).thenReturn(inetAddress);
+
+		connectionEstablishedListeners = Arrays.asList(
+				mock(ConnectionListener.class), mock(ConnectionListener.class));
 
 		server = new Server(port);
 		server.setConnectionService(connectionService);
 		server.setConnectionPool(connectionPool);
+		server.setConnectionEstablishedListeners(connectionEstablishedListeners);
 	}
-	
+
 	@AfterMethod
 	public void resetMocks() {
 		reset(serverSocket, connectionService, connectionPool);
@@ -86,11 +92,10 @@ public class ServerTest {
 
 		verify(connectionPool, times(2)).addConnection(any(Connection.class));
 	}
-	
+
 	@Test(description = "should create server socket on specified port")
 	public void testCreatingServerSocket() throws Exception {
-		when(serverSocket.accept()).thenAnswer(
-				new SocketAnswer());
+		when(serverSocket.accept()).thenAnswer(new SocketAnswer());
 
 		server.run();
 
@@ -107,7 +112,19 @@ public class ServerTest {
 
 		verify(connectionPool, never()).addConnection(any(Connection.class));
 	}
-	
+
+	@Test(description = "should trigger connection established listeners on new connection")
+	public void testTriggerConnectionEstablishedListeners() throws Exception {
+		when(serverSocket.accept()).thenAnswer(new SocketAnswer(clientSocket));
+
+		server.run();
+
+		for (ConnectionListener connectionEstablishedListener : connectionEstablishedListeners) {
+			verify(connectionEstablishedListener, times(1)).trigger(
+					eq(connection));
+		}
+	}
+
 	private static final class SocketAnswer implements Answer<Socket> {
 
 		private int currentSocketIndex;

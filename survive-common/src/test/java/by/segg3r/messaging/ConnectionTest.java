@@ -2,7 +2,6 @@ package by.segg3r.messaging;
 
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -29,6 +28,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import by.segg3r.messaging.exception.MessageHandlingException;
 import by.segg3r.messaging.exception.MessageReceievingException;
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
 import by.segg3r.messaging.messages.SinglePlayerResponseMessage;
@@ -59,7 +59,7 @@ public class ConnectionTest {
 	}
 
 	@BeforeMethod
-	public void setCommonMocks() throws UnrecognizedMessageTypeException {
+	public void setCommonMocks() throws UnrecognizedMessageTypeException, MessageHandlingException {
 		connection.reset();
 
 		when(messageProcessor.process(eq(STOP_MESSAGE))).then(

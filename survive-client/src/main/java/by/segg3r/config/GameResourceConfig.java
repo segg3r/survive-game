@@ -1,4 +1,4 @@
-package by.segg3r.game.config;
+package by.segg3r.config;
 
 import java.util.HashMap;
 import java.util.Map;

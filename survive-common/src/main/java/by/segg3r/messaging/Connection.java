@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import by.segg3r.messaging.exception.MessageHandlingException;
 import by.segg3r.messaging.exception.MessageReceievingException;
 import by.segg3r.messaging.exception.MessageSendingException;
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
@@ -48,6 +49,8 @@ public class Connection implements Runnable {
 			} catch (MessageReceievingException e) {
 				stop();
 				LOG.error("Error receiving message", e);
+			} catch (MessageHandlingException e) {
+				LOG.error("Error handling message", e);
 			}
 		}
 
