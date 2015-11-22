@@ -6,7 +6,6 @@ import java.net.Socket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import by.segg3r.messaging.Connection;
 import by.segg3r.messaging.MessageInputStream;
 import by.segg3r.messaging.MessageOutputStream;
 import by.segg3r.messaging.MessageProcessor;
@@ -17,6 +16,8 @@ public class ClientConnectionFactoryImpl implements ClientConnectionFactory {
 
 	@Autowired
 	private MessageProcessor messageProcessor;
+	@Autowired
+	private ClientState clientState;
 
 	@Override
 	public Socket createSocket(String host, int port)
@@ -29,7 +30,7 @@ public class ClientConnectionFactoryImpl implements ClientConnectionFactory {
 	}
 
 	@Override
-	public Connection createConnection(Socket socket)
+	public ClientConnection createConnection(Socket socket)
 			throws ConnectionException {
 		try {
 			MessageOutputStream out = new MessageOutputStream(
@@ -37,7 +38,8 @@ public class ClientConnectionFactoryImpl implements ClientConnectionFactory {
 			MessageInputStream in = new MessageInputStream(
 					socket.getInputStream());
 
-			Connection connection = new Connection(socket, in, out, messageProcessor);
+			ClientConnection connection = new ClientConnection(socket, in, out,
+					messageProcessor, clientState);
 			new Thread(connection).start();
 			return connection;
 		} catch (Exception e) {

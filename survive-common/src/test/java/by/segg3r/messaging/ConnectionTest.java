@@ -51,7 +51,7 @@ public class ConnectionTest {
 	@Mock
 	private MessageProcessor messageProcessor;
 	@InjectMocks
-	private Connection connection;
+	private Connection<?> connection;
 
 	@BeforeClass
 	public void initMocks() {
@@ -122,7 +122,7 @@ public class ConnectionTest {
 	@Test(description = "should stop connection if message receiving exception is thrown")
 	public void testStopWhenMessageReceivingExceptionIsThrown()
 			throws Exception {
-		Connection connectionSpy = spy(connection);
+		Connection<?> connectionSpy = spy(connection);
 		doCallRealMethod().when(connectionSpy).stop();
 		when(in.readMessage()).thenThrow(new MessageReceievingException());
 

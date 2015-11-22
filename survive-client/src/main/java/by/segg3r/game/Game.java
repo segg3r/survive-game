@@ -71,11 +71,6 @@ public class Game extends BasicGame {
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
 		inputHandler.handleInput(gc.getInput());
-		if (gc.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-			playerCharacter.setDestination(gc.getInput().getMouseX(), gc
-					.getInput().getMouseY());
-		}
-
 		this.currentRoom.update(gc, delta);
 	}
 

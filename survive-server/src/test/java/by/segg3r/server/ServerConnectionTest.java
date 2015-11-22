@@ -52,6 +52,8 @@ public class ServerConnectionTest {
 	private MessageProcessor messageProcessor;
 	@Mock
 	private ConnectionPool connectionPool;
+	@Mock
+	private ServerState state;
 	@InjectMocks
 	private ServerConnection serverConnection;
 
@@ -75,6 +77,7 @@ public class ServerConnectionTest {
 				});
 		
 		when(socket.getInetAddress()).thenReturn(inetAddress);
+		when(state.getConnectionPool()).thenReturn(connectionPool);
 	}
 
 	@AfterMethod

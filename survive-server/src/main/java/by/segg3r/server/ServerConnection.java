@@ -3,7 +3,6 @@ package by.segg3r.server;
 import java.net.Socket;
 
 import by.segg3r.messaging.Connection;
-import by.segg3r.messaging.ConnectionPool;
 import by.segg3r.messaging.Message;
 import by.segg3r.messaging.MessageInputStream;
 import by.segg3r.messaging.MessageOutputStream;
@@ -11,14 +10,11 @@ import by.segg3r.messaging.MessageProcessor;
 import by.segg3r.messaging.MessageTarget;
 import by.segg3r.messaging.exception.MessageSendingException;
 
-public class ServerConnection extends Connection {
+public class ServerConnection extends Connection<ServerState> {
 
-	private ConnectionPool connectionPool;
-	
 	public ServerConnection(Socket socket, MessageInputStream in, MessageOutputStream out,
-			MessageProcessor messageProcessor, ConnectionPool connectionPool) {
-		super(socket, in, out, messageProcessor);
-		this.connectionPool = connectionPool;
+			MessageProcessor messageProcessor, ServerState serverState) {
+		super(socket, in, out, messageProcessor, serverState);
 	}
 	
 	@Override
@@ -27,14 +23,14 @@ public class ServerConnection extends Connection {
 		if (target == MessageTarget.SINGLE) {
 			sendMessage(message);
 		} else if (target == MessageTarget.ALL) {
-			connectionPool.sendAll(message);
+			getState().getConnectionPool().sendAll(message);
 		}
 	}
 	
 	@Override
 	public void stop() {
 		super.stop();
-		connectionPool.removeConnection(this);
+		getState().getConnectionPool().removeConnection(this);
 	}
 
 }
