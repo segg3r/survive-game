@@ -1,4 +1,4 @@
-package by.segg3r.messaging;
+package by.segg3r.messaging.connection;
 
 import java.net.Socket;
 import java.util.Collection;
@@ -6,6 +6,10 @@ import java.util.Collection;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import by.segg3r.messaging.Message;
+import by.segg3r.messaging.MessageInputStream;
+import by.segg3r.messaging.MessageOutputStream;
+import by.segg3r.messaging.MessageProcessor;
 import by.segg3r.messaging.exception.MessageHandlingException;
 import by.segg3r.messaging.exception.MessageReceievingException;
 import by.segg3r.messaging.exception.MessageSendingException;

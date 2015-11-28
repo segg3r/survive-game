@@ -24,11 +24,11 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import by.segg3r.messaging.ConnectionPool;
 import by.segg3r.messaging.Message;
 import by.segg3r.messaging.MessageInputStream;
 import by.segg3r.messaging.MessageOutputStream;
 import by.segg3r.messaging.MessageProcessor;
+import by.segg3r.messaging.connection.ConnectionPool;
 import by.segg3r.messaging.exception.MessageHandlingException;
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
 import by.segg3r.messaging.messages.AllPlayersResponseMessage;

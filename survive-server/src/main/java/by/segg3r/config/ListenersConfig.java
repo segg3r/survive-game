@@ -1,23 +1,25 @@
 package by.segg3r.config;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import by.segg3r.listeners.PlayerCreationListener;
-import by.segg3r.messaging.ConnectionListener;
+import by.segg3r.messaging.connection.listeners.ListenerType;
+import by.segg3r.messaging.connection.listeners.Listeners;
+import by.segg3r.server.ServerConnection;
 
 @Configuration
 @ComponentScan(basePackages = "by.segg3r")
 public class ListenersConfig {
 	
-	@Bean(name = "connectionEstablishedListeners")
-	public List<ConnectionListener> connectionEstablishedListeners(
+	@SuppressWarnings("unchecked")
+	@Bean(name = "listeners")
+	public Listeners<ServerConnection> connectionEstablishedListeners(
 			PlayerCreationListener playerCreationListener) {
-		return Arrays.asList(playerCreationListener);
+		Listeners<ServerConnection> listeners = new Listeners<ServerConnection>();
+		listeners.add(ListenerType.PLAYER_CONNECTED, playerCreationListener);
+		return listeners;
 	}
 	
 }

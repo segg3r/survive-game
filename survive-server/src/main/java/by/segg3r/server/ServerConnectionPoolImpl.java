@@ -5,9 +5,9 @@ import java.util.LinkedList;
 
 import org.springframework.stereotype.Component;
 
-import by.segg3r.messaging.Connection;
-import by.segg3r.messaging.ConnectionPool;
 import by.segg3r.messaging.Message;
+import by.segg3r.messaging.connection.Connection;
+import by.segg3r.messaging.connection.ConnectionPool;
 import by.segg3r.messaging.exception.MessageSendingException;
 
 @Component

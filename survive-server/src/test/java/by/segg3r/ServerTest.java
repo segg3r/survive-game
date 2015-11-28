@@ -26,17 +26,19 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import by.segg3r.messaging.Connection;
-import by.segg3r.messaging.ConnectionListener;
-import by.segg3r.messaging.ConnectionPool;
+import by.segg3r.messaging.connection.Connection;
+import by.segg3r.messaging.connection.ConnectionPool;
+import by.segg3r.messaging.connection.listeners.ListenerType;
+import by.segg3r.messaging.connection.listeners.Listeners;
 import by.segg3r.messaging.exception.ConnectionException;
+import by.segg3r.server.ServerConnection;
 import by.segg3r.server.ServerConnectionFactory;
 
 public class ServerTest {
 
 	private int port;
 
-	private List<ConnectionListener> connectionEstablishedListeners;
+	private Listeners<ServerConnection> listeners;
 	@Mock
 	private InetAddress inetAddress;
 	@Mock
@@ -48,7 +50,7 @@ public class ServerTest {
 	@Mock
 	private ConnectionPool connectionPool;
 	@Mock
-	private Connection connection;
+	private ServerConnection connection;
 
 	private Server server;
 
@@ -57,6 +59,7 @@ public class ServerTest {
 		MockitoAnnotations.initMocks(this);
 	}
 
+	@SuppressWarnings("unchecked")
 	@BeforeMethod
 	public void init() throws ConnectionException {
 		port = 11099;
@@ -69,13 +72,12 @@ public class ServerTest {
 
 		when(clientSocket.getInetAddress()).thenReturn(inetAddress);
 
-		connectionEstablishedListeners = Arrays.asList(
-				mock(ConnectionListener.class), mock(ConnectionListener.class));
+		listeners = mock(Listeners.class);
 
 		server = new Server(port);
 		server.setConnectionService(connectionService);
 		server.setConnectionPool(connectionPool);
-		server.setConnectionEstablishedListeners(connectionEstablishedListeners);
+		server.setListeners(listeners);
 	}
 
 	@AfterMethod
@@ -119,10 +121,8 @@ public class ServerTest {
 
 		server.run();
 
-		for (ConnectionListener connectionEstablishedListener : connectionEstablishedListeners) {
-			verify(connectionEstablishedListener, times(1)).trigger(
-					eq(connection));
-		}
+		verify(listeners, times(1)).trigger(eq(ListenerType.PLAYER_CONNECTED),
+				eq(connection));
 	}
 
 	private static final class SocketAnswer implements Answer<Socket> {

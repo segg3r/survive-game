@@ -1,5 +1,6 @@
-package by.segg3r.messaging;
+package by.segg3r.messaging.connection;
 
+import by.segg3r.messaging.Message;
 import by.segg3r.messaging.exception.MessageSendingException;
 
 

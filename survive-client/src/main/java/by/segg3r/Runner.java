@@ -8,7 +8,7 @@ import by.segg3r.config.ClientConfig;
 import by.segg3r.config.GameResourceConfig;
 import by.segg3r.config.MessageProcessorConfig;
 import by.segg3r.game.SurviveGameContainer;
-import by.segg3r.messaging.Connection;
+import by.segg3r.messaging.connection.Connection;
 
 public final class Runner {
 

@@ -26,8 +26,8 @@ import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.prefabs.GameCharacterPrefab;
 import by.segg3r.game.objects.prefabs.options.GameCharacterPrefabAnimationOptions;
 import by.segg3r.game.rooms.Room;
-import by.segg3r.messaging.Connection;
 import by.segg3r.messaging.Message;
+import by.segg3r.messaging.connection.Connection;
 import by.segg3r.messaging.exception.MessageHandlingException;
 import by.segg3r.messaging.exception.MessageSendingException;
 

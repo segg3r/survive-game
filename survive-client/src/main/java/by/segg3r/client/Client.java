@@ -6,7 +6,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import by.segg3r.messaging.Connection;
+import by.segg3r.messaging.connection.Connection;
 import by.segg3r.messaging.exception.ConnectionException;
 
 public class Client {

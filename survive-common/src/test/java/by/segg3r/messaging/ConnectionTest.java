@@ -28,6 +28,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import by.segg3r.messaging.connection.Connection;
 import by.segg3r.messaging.exception.MessageHandlingException;
 import by.segg3r.messaging.exception.MessageReceievingException;
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;

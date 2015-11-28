@@ -4,7 +4,7 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Game;
 import org.newdawn.slick.SlickException;
 
-import by.segg3r.messaging.Connection;
+import by.segg3r.messaging.connection.Connection;
 
 public class SurviveGameContainer extends AppGameContainer {
 

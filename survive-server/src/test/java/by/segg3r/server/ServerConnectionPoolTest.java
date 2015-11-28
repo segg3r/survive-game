@@ -11,8 +11,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import by.segg3r.messaging.Connection;
 import by.segg3r.messaging.Message;
+import by.segg3r.messaging.connection.Connection;
 import by.segg3r.messaging.exception.MessageSendingException;
 
 public class ServerConnectionPoolTest {

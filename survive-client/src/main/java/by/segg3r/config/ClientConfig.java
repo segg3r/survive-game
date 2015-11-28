@@ -18,7 +18,7 @@ import by.segg3r.client.Client;
 import by.segg3r.client.ClientMessageHandler;
 import by.segg3r.game.SurviveGame;
 import by.segg3r.game.SurviveGameContainer;
-import by.segg3r.messaging.Connection;
+import by.segg3r.messaging.connection.Connection;
 import by.segg3r.messaging.exception.ConnectionException;
 
 @Configuration

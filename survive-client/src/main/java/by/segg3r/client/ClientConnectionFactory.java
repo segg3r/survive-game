@@ -2,7 +2,7 @@ package by.segg3r.client;
 
 import java.net.Socket;
 
-import by.segg3r.messaging.Connection;
+import by.segg3r.messaging.connection.Connection;
 import by.segg3r.messaging.exception.ConnectionException;
 
 public interface ClientConnectionFactory {

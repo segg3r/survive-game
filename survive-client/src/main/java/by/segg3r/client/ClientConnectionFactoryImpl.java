@@ -6,10 +6,10 @@ import java.net.Socket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import by.segg3r.messaging.Connection;
 import by.segg3r.messaging.MessageInputStream;
 import by.segg3r.messaging.MessageOutputStream;
 import by.segg3r.messaging.MessageProcessor;
+import by.segg3r.messaging.connection.Connection;
 import by.segg3r.messaging.exception.ConnectionException;
 
 @Component
