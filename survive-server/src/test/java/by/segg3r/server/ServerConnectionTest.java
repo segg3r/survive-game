@@ -31,6 +31,7 @@ import by.segg3r.messaging.MessageProcessor;
 import by.segg3r.messaging.connection.ConnectionPool;
 import by.segg3r.messaging.exception.MessageHandlingException;
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
+import by.segg3r.messaging.messages.AllButOneResponseMessage;
 import by.segg3r.messaging.messages.AllPlayersResponseMessage;
 import by.segg3r.messaging.messages.SinglePlayerResponseMessage;
 
@@ -115,7 +116,23 @@ public class ServerConnectionTest {
 		verify(out, never()).writeMessage(any(Message.class));
 		verify(connectionPool, times(2)).sendAll(eq(responseMessage));
 	}
+	
+	@Test(description = "should send collection of response messages to all but one players")
+	public void testSendResponseToAllButOne() throws Exception {
+		Message simpleMessage = new Message() {
+		};
+		Message responseMessage = new AllButOneResponseMessage() {
+		};
+		// 2 response messages in collection should be sent 2 times
+		when(messageProcessor.process(eq(simpleMessage))).thenReturn(
+				Arrays.asList(responseMessage, responseMessage));
+		when(in.readMessage()).thenReturn(simpleMessage, STOP_MESSAGE);
 
+		serverConnection.run();
+		verify(out, never()).writeMessage(any(Message.class));
+		verify(connectionPool, times(2)).sendAllButOne(eq(serverConnection), eq(responseMessage));
+	}
+	
 	@Test(description = "should not send any response message to player if response collection is empty")
 	public void testNotSendResponse() throws Exception {
 		Message simpleMessage = new Message() {

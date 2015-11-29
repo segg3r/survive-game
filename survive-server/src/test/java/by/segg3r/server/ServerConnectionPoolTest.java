@@ -57,4 +57,17 @@ public class ServerConnectionPoolTest {
 		verify(connection, times(2)).sendMessage(eq(message));
 	}
 	
+	@Test(description = "should send message to all but one")
+	public void testSendAllButOne() throws MessageSendingException {
+		Connection except = mock(Connection.class);
+		Connection connection = mock(Connection.class);
+		connectionPool.getConnections().addAll(Arrays.asList(except, connection));
+		
+		Message message = mock(Message.class);
+		connectionPool.sendAllButOne(except, message);
+		
+		verify(except, never()).sendMessage(any(Message.class));
+		verify(connection, times(1)).sendMessage(eq(message));
+	}
+	
 }

@@ -30,6 +30,8 @@ public class ServerConnection extends Connection {
 			sendMessage(message);
 		} else if (target == MessageTarget.ALL) {
 			connectionPool.sendAll(message);
+		} else if (target == MessageTarget.ALL_BUT_ONE) {
+			connectionPool.sendAllButOne(this, message);
 		}
 	}
 

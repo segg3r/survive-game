@@ -32,6 +32,16 @@ public class ServerConnectionPoolImpl implements ConnectionPool {
 		connections.remove(connection);
 	}
 
+	@Override
+	public void sendAllButOne(Connection except, Message message)
+			throws MessageSendingException {
+		for (Connection connection : connections) {
+			if (!connection.equals(except)) {
+				connection.sendMessage(message);
+			}
+		}
+	}
+
 	public Collection<Connection> getConnections() {
 		return connections;
 	}
