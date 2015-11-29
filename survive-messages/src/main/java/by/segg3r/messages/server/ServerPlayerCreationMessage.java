@@ -1,17 +1,18 @@
-package by.segg3r.messages;
+package by.segg3r.messages.server;
 
 import java.io.Serializable;
 
 import by.segg3r.data.GameObject;
 import by.segg3r.messaging.Message;
 
-public class PlayerCreationMessage extends Message implements Serializable {
+public class ServerPlayerCreationMessage extends Message implements
+		Serializable {
 
-	private static final long serialVersionUID = 7304699834240947387L;
+	private static final long serialVersionUID = 1661386432975138721L;
 
 	private GameObject gameObject;
 
-	public PlayerCreationMessage(GameObject gameObject) {
+	public ServerPlayerCreationMessage(GameObject gameObject) {
 		super();
 		this.gameObject = gameObject;
 	}

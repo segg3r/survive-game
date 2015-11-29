@@ -5,7 +5,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -19,10 +18,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import by.segg3r.client.ClientMessageHandler;
-import by.segg3r.data.GameObject;
 import by.segg3r.game.input.InputHandler;
-import by.segg3r.game.objects.characters.GameCharacter;
-import by.segg3r.game.objects.characters.animations.GameCharacterAnimation;
 import by.segg3r.game.rooms.Room;
 import by.segg3r.messaging.Message;
 import by.segg3r.messaging.connection.Connection;
@@ -32,9 +28,6 @@ import by.segg3r.messaging.exception.MessageSendingException;
 public class GameTest {
 
 	private InputHandler inputHandler;
-	private GameCharacterAnimation gameCharacterAnimation;
-	private GameObject gameObject;
-	private GameCharacter playerCharacter;
 	private Room room;
 	private Input input;
 	private GameContainer gc;
@@ -46,11 +39,6 @@ public class GameTest {
 	@BeforeMethod
 	public void init() {
 		game = new SurviveGame();
-
-		gameCharacterAnimation = mock(GameCharacterAnimation.class);
-		gameObject = new GameObject(1L);
-		playerCharacter = new GameCharacter(gameObject, gameCharacterAnimation);
-		game.setPlayerCharacter(playerCharacter);
 
 		room = mock(Room.class);
 		game.setCurrentRoom(room);
@@ -82,19 +70,6 @@ public class GameTest {
 	public void shouldUpdateCurrentRoom() throws SlickException {
 		game.update(gc, 500);
 		verify(room, times(1)).update(eq(gc), eq(500));
-	}
-
-	@Test(description = "should set character destination on mouse click")
-	public void shouldMoveCharacterOnMouseClick() throws SlickException {
-		when(input.isMousePressed(eq(Input.MOUSE_LEFT_BUTTON)))
-				.thenReturn(true);
-		when(input.getMouseX()).thenReturn(20);
-		when(input.getMouseY()).thenReturn(50);
-		when(gc.getInput()).thenReturn(input);
-
-		game.update(gc, 1000);
-		assertEquals(playerCharacter.getDestination().getX(), 20.);
-		assertEquals(playerCharacter.getDestination().getY(), 50.);
 	}
 
 	@Test(description = "should send response messages handled from queue")

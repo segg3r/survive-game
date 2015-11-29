@@ -18,11 +18,10 @@ import org.springframework.stereotype.Component;
 
 import by.segg3r.client.ClientMessageHandler;
 import by.segg3r.data.GameObject;
-import by.segg3r.game.actions.GameObjectMoveInputAction;
+import by.segg3r.game.actions.MovementAction;
 import by.segg3r.game.input.InputHandler;
 import by.segg3r.game.input.processors.MouseInputProcessor;
 import by.segg3r.game.objects.ClientGameObjectFactory;
-import by.segg3r.game.objects.characters.GameCharacter;
 import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.prefabs.GameCharacterPrefab;
 import by.segg3r.game.objects.prefabs.options.GameCharacterPrefabAnimationOptions;
@@ -47,7 +46,6 @@ public class SurviveGame extends BasicGame {
 	private Connection connection;
 
 	private Room currentRoom;
-	private GameCharacter playerCharacter;
 
 	public SurviveGame() {
 		super("Title");
@@ -75,15 +73,15 @@ public class SurviveGame extends BasicGame {
 				files);
 		GameCharacterPrefab prefab = new GameCharacterPrefab(animationOptions);
 
-		playerCharacter = currentRoom.addGameObject(prefab, gameObject);
+		currentRoom.addGameObject(prefab, gameObject);
 
 		addInputProcessors();
 	}
 
 	public void addInputProcessors() {
 		inputHandler.addInputProcessor(new MouseInputProcessor(
-				Input.MOUSE_LEFT_BUTTON, new GameObjectMoveInputAction(
-						playerCharacter)));
+				Input.MOUSE_LEFT_BUTTON, new MovementAction(
+						this.connection)));
 	}
 
 	@Override
@@ -129,14 +127,6 @@ public class SurviveGame extends BasicGame {
 
 	public Room getCurrentRoom() {
 		return currentRoom;
-	}
-
-	public GameCharacter getPlayerCharacter() {
-		return playerCharacter;
-	}
-
-	public void setPlayerCharacter(GameCharacter gameCharacter) {
-		this.playerCharacter = gameCharacter;
 	}
 
 	public InputHandler getInputHandler() {

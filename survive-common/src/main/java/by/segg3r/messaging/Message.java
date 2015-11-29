@@ -1,6 +1,5 @@
 package by.segg3r.messaging;
 
-
 public abstract class Message {
 
 	private final MessageTarget target;
@@ -8,7 +7,7 @@ public abstract class Message {
 	public Message() {
 		this(MessageTarget.SINGLE);
 	}
-	
+
 	public Message(MessageTarget target) {
 		super();
 		this.target = target;

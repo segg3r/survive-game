@@ -1,6 +1,7 @@
 package by.segg3r.game.rooms;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -21,6 +22,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import by.segg3r.data.GameObject;
+import by.segg3r.game.exception.GameObjectNotFoundException;
 import by.segg3r.game.objects.ClientGameObject;
 import by.segg3r.game.objects.ClientGameObjectFactory;
 import by.segg3r.game.objects.iface.Layer;
@@ -137,6 +139,29 @@ public class RoomTest {
 
 		assertTrue(room.getRenderables().contains(gameObject));
 		assertTrue(room.getUpdatables().contains(gameObject));
+	}
+
+	@Test(description = "should find object by id after adding to the room")
+	public void testFindObject() throws GameObjectNotFoundException {
+		long objectId = 123L;
+		GameObject gameObject = new GameObject(objectId);
+		ClientGameObject clientGameObject = new ClientGameObject(gameObject);
+
+		room.addGameObject(clientGameObject);
+
+		assertNotNull(room.findGameObject(objectId));
+	}
+
+	@Test(description = "finding object should throw exception if no such object", expectedExceptions = GameObjectNotFoundException.class)
+	public void testFindObjectShouldThrowException()
+			throws GameObjectNotFoundException {
+		long objectId = 123L;
+		GameObject gameObject = new GameObject(objectId);
+		ClientGameObject clientGameObject = new ClientGameObject(gameObject);
+
+		room.addGameObject(clientGameObject);
+
+		room.findGameObject(100500L);
 	}
 
 	@SuppressWarnings("unchecked")

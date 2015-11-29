@@ -26,7 +26,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import by.segg3r.messaging.connection.Connection;
 import by.segg3r.messaging.connection.ConnectionPool;
 import by.segg3r.messaging.connection.listeners.ListenerType;
 import by.segg3r.messaging.connection.listeners.Listeners;
@@ -92,7 +91,7 @@ public class ServerTest {
 
 		server.run();
 
-		verify(connectionPool, times(2)).addConnection(any(Connection.class));
+		verify(connectionPool, times(2)).addConnection(any(ServerConnection.class));
 	}
 
 	@Test(description = "should create server socket on specified port")
@@ -112,7 +111,7 @@ public class ServerTest {
 		server.setStopped(true);
 		server.run();
 
-		verify(connectionPool, never()).addConnection(any(Connection.class));
+		verify(connectionPool, never()).addConnection(any(ServerConnection.class));
 	}
 
 	@Test(description = "should trigger connection established listeners on new connection")

@@ -3,12 +3,15 @@ package by.segg3r.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import by.segg3r.data.GameObject;
 import by.segg3r.messaging.MessageInputStream;
+import by.segg3r.messaging.MessageInterceptor;
 import by.segg3r.messaging.MessageOutputStream;
 import by.segg3r.messaging.MessageProcessor;
 import by.segg3r.messaging.connection.ConnectionPool;
@@ -23,6 +26,8 @@ public class ServerConnectionFactoryImpl implements ServerConnectionFactory {
 	private ConnectionPool connectionPool;
 	@Autowired
 	private GameObjectService gameObjectService;
+	@Value("#{messageInterceptors}")
+	private List<MessageInterceptor<ServerConnection>> messageInterceptors;
 
 	public ServerSocket createServerSocket(int port) throws ConnectionException {
 		try {
@@ -42,8 +47,9 @@ public class ServerConnectionFactoryImpl implements ServerConnectionFactory {
 					clientSocket.getInputStream());
 
 			GameObject player = gameObjectService.getNewGameObject();
-			ServerConnection result = new ServerConnection(clientSocket, in, out,
-					messageProcessor, connectionPool, player);
+			ServerConnection result = new ServerConnection(clientSocket, in,
+					out, messageProcessor, connectionPool, messageInterceptors,
+					player);
 			new Thread(result).start();
 			return result;
 		} catch (Exception e) {

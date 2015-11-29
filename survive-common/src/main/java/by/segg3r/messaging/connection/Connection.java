@@ -40,6 +40,7 @@ public class Connection implements Runnable {
 		while (!stopped) {
 			try {
 				Message message = in.readMessage();
+				preprocessMessage(message);
 				Collection<Message> response = messageProcessor
 						.process(message);
 
@@ -63,6 +64,10 @@ public class Connection implements Runnable {
 		} catch (Exception e) {
 			LOG.error("Error closing socket", e);
 		}
+	}
+	
+	protected void preprocessMessage(Message message) {
+		
 	}
 
 	protected void processResponseMessage(Message message)

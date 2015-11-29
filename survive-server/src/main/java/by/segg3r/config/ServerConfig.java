@@ -1,7 +1,5 @@
 package by.segg3r.config;
 
-import java.util.Collections;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,7 +9,6 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.FileSystemResource;
 
 import by.segg3r.Server;
-import by.segg3r.messaging.MessageProcessor;
 
 @Configuration
 @ComponentScan(basePackages = "by.segg3r")
@@ -38,9 +35,5 @@ public class ServerConfig {
 		return new Server(serverPort);
 	}
 
-	@Bean
-	public MessageProcessor messageProcessor() {
-		return MessageProcessor.withHandlers(Collections.emptyList());
-	}
 
 }

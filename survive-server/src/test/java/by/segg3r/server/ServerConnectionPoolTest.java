@@ -1,7 +1,13 @@
 package by.segg3r.server;
 
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -12,7 +18,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import by.segg3r.messaging.Message;
-import by.segg3r.messaging.connection.Connection;
 import by.segg3r.messaging.exception.MessageSendingException;
 
 public class ServerConnectionPoolTest {
@@ -32,14 +37,14 @@ public class ServerConnectionPoolTest {
 	
 	@Test(description = "should add connection to pool")
 	public void testAddConnection() {
-		Connection connection = mock(Connection.class);
+		ServerConnection connection = mock(ServerConnection.class);
 		connectionPool.addConnection(connection);
 		assertEquals(connectionPool.getConnections().size(), 1);
 	}
 	
 	@Test(description = "should remove connection from pool")
 	public void testRemoveConnection() {
-		Connection connection = mock(Connection.class);
+		ServerConnection connection = mock(ServerConnection.class);
 		connectionPool.getConnections().add(connection);
 		
 		connectionPool.removeConnection(connection);
@@ -48,7 +53,7 @@ public class ServerConnectionPoolTest {
 	
 	@Test(description = "should send message to all connected players")
 	public void testSendAll() throws MessageSendingException {
-		Connection connection = mock(Connection.class);
+		ServerConnection connection = mock(ServerConnection.class);
 		connectionPool.getConnections().addAll(Arrays.asList(connection, connection));
 		
 		Message message = mock(Message.class);
@@ -59,8 +64,8 @@ public class ServerConnectionPoolTest {
 	
 	@Test(description = "should send message to all but one")
 	public void testSendAllButOne() throws MessageSendingException {
-		Connection except = mock(Connection.class);
-		Connection connection = mock(Connection.class);
+		ServerConnection except = mock(ServerConnection.class);
+		ServerConnection connection = mock(ServerConnection.class);
 		connectionPool.getConnections().addAll(Arrays.asList(except, connection));
 		
 		Message message = mock(Message.class);

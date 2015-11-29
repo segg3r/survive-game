@@ -12,6 +12,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 import by.segg3r.data.GameObject;
+import by.segg3r.game.exception.GameObjectNotFoundException;
 import by.segg3r.game.objects.ClientGameObject;
 import by.segg3r.game.objects.ClientGameObjectFactory;
 import by.segg3r.game.objects.iface.Layer;
@@ -23,6 +24,7 @@ public class Room {
 
 	private ClientGameObjectFactory gameObjectFactory;
 
+	private Map<Long, ClientGameObject> gameObjects = new HashMap<Long, ClientGameObject>();
 	private Map<Layer, Set<Renderable>> renderables = new HashMap<Layer, Set<Renderable>>();
 	private Set<Updatable> updatables = new HashSet<Updatable>();
 
@@ -31,8 +33,8 @@ public class Room {
 		this.gameObjectFactory = gameObjectFactory;
 	}
 
-	public <T extends ClientGameObject> T addGameObject(Prefab<T, ?> prefab, GameObject gameObject)
-			throws SlickException {
+	public <T extends ClientGameObject> T addGameObject(Prefab<T, ?> prefab,
+			GameObject gameObject) throws SlickException {
 		T result = gameObjectFactory.instantiate(prefab, gameObject);
 		addGameObject(result);
 		return result;
@@ -74,6 +76,16 @@ public class Room {
 	public void addGameObject(ClientGameObject gameObject) {
 		this.addRenderable(Layer.OBJECT, gameObject);
 		this.addUpdatable(gameObject);
+		this.gameObjects.put(gameObject.getId(), gameObject);
+	}
+
+	public ClientGameObject findGameObject(long objectId) throws GameObjectNotFoundException {
+		ClientGameObject result = gameObjects.get(objectId);
+		if (result == null) {
+			throw new GameObjectNotFoundException(
+					"Could not find object with id " + objectId);
+		}
+		return result;
 	}
 
 	public List<Renderable> getRenderables(Layer layer) {

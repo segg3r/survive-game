@@ -4,7 +4,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import by.segg3r.client.handlers.PlayerCreationMessageHandler;
+import by.segg3r.client.handlers.ServerOtherPlayersCreationMessageHandler;
+import by.segg3r.client.handlers.ServerPlayerCreationMessageHandler;
+import by.segg3r.client.handlers.ServerPlayerMovementMessageHandler;
 import by.segg3r.messaging.MessageProcessor;
 
 @Configuration
@@ -13,8 +15,12 @@ public class MessageProcessorConfig {
 
 	@Bean(name = "messageProcessor")
 	public MessageProcessor messageProcessor(
-			PlayerCreationMessageHandler playerCreationMessageHandler) {
-		return MessageProcessor.withHandlers(playerCreationMessageHandler);
+			ServerPlayerCreationMessageHandler playerCreationMessageHandler,
+			ServerPlayerMovementMessageHandler serverPlayerMovementMessageHandler,
+			ServerOtherPlayersCreationMessageHandler serverOtherPlayersCreationMessageHandler) {
+		return MessageProcessor.withHandlers(playerCreationMessageHandler,
+				serverPlayerMovementMessageHandler,
+				serverOtherPlayersCreationMessageHandler);
 	}
 
 }
