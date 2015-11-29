@@ -19,8 +19,10 @@ public class GameObjectServiceImpl implements GameObjectService {
 		ThreadLocalRandom random = ThreadLocalRandom.current();
 		
 		GameObject result = new GameObject(getNextId());
-		result.setPosition(random.nextDouble() * 300, random.nextDouble() * 300);
-		result.setDestination(random.nextDouble() * 300, random.nextDouble() * 300);
+		double x = random.nextDouble() * 300;
+		double y = random.nextDouble() * 300;
+		result.setPosition(x, y);
+		result.setDestination(x, y);
 		
 		return result;
 	}
