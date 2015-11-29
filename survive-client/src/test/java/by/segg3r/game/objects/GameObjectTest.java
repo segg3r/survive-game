@@ -6,6 +6,8 @@ import org.newdawn.slick.SlickException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import by.segg3r.data.Position;
+
 public class GameObjectTest {
 
 	private GameObject gameObject;

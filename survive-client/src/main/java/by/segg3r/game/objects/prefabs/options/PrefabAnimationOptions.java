@@ -2,7 +2,7 @@ package by.segg3r.game.objects.prefabs.options;
 
 import org.newdawn.slick.Color;
 
-import by.segg3r.game.objects.Position;
+import by.segg3r.data.Position;
 
 public abstract class PrefabAnimationOptions<ObjectType> {
 

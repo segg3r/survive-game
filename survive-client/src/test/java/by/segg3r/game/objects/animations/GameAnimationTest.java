@@ -6,7 +6,7 @@ import org.newdawn.slick.Animation;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import by.segg3r.game.objects.Position;
+import by.segg3r.data.Position;
 
 public class GameAnimationTest {
 

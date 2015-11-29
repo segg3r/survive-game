@@ -4,6 +4,8 @@ import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
+import by.segg3r.data.Position;
+
 public class StaticGameObject extends GameObject {
 
 	private Animation animation;

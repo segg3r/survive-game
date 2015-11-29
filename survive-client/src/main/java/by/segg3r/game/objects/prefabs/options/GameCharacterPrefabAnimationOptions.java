@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.newdawn.slick.Color;
 
-import by.segg3r.game.objects.Position;
+import by.segg3r.data.Position;
 import by.segg3r.game.objects.characters.GameCharacter;
 import by.segg3r.game.objects.characters.animations.AnimationPart;
 

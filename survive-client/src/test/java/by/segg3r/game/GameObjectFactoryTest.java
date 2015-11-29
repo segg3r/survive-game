@@ -9,9 +9,9 @@ import org.newdawn.slick.SlickException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import by.segg3r.data.Position;
 import by.segg3r.game.objects.GameObject;
 import by.segg3r.game.objects.GameObjectFactory;
-import by.segg3r.game.objects.Position;
 import by.segg3r.game.objects.prefabs.ImageHolder;
 import by.segg3r.game.objects.prefabs.Prefab;
 
@@ -37,7 +37,10 @@ public class GameObjectFactoryTest {
 
 		gameObjectFactory.instantiate(prefab, 20., 50.);
 		Position position = gameObject.getPosition();
+		Position destination = gameObject.getDestination();
 		assertEquals(position.getX(), 20.);
 		assertEquals(position.getY(), 50.);
+		assertEquals(destination.getX(), 20.);
+		assertEquals(destination.getY(), 50.);
 	}
 }

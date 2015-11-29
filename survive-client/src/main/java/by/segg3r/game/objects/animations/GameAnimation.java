@@ -2,7 +2,7 @@ package by.segg3r.game.objects.animations;
 
 import org.newdawn.slick.Animation;
 
-import by.segg3r.game.objects.Position;
+import by.segg3r.data.Position;
 
 public class GameAnimation {
 

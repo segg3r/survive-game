@@ -3,6 +3,7 @@ package by.segg3r.game.objects;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
+import by.segg3r.data.Position;
 import by.segg3r.game.objects.iface.Renderable;
 import by.segg3r.game.objects.iface.Updatable;
 import by.segg3r.game.util.GameMath;

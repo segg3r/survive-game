@@ -4,7 +4,7 @@ import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
 
-import by.segg3r.game.objects.Position;
+import by.segg3r.data.Position;
 
 public class GameMathTest {
 

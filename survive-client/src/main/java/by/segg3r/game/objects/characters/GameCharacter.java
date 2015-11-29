@@ -3,8 +3,8 @@ package by.segg3r.game.objects.characters;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
+import by.segg3r.data.Position;
 import by.segg3r.game.objects.GameObject;
-import by.segg3r.game.objects.Position;
 import by.segg3r.game.objects.characters.animations.GameCharacterAnimation;
 
 public class GameCharacter extends GameObject {

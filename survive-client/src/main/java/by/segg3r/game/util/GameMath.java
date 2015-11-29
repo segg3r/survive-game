@@ -1,6 +1,6 @@
 package by.segg3r.game.util;
 
-import by.segg3r.game.objects.Position;
+import by.segg3r.data.Position;
 
 public final class GameMath {
 

@@ -21,6 +21,7 @@ public class GameObjectFactory {
 			double y) throws SlickException {
 		T gameObject = prefab.instantiate(imageHolder);
 		gameObject.setPosition(x, y);
+		gameObject.setDestination(x, y);
 		return gameObject;
 	}
 

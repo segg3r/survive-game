@@ -64,7 +64,7 @@ public class SurviveGame extends BasicGame {
 		new Thread(this.connection).start();
 	}
 
-	public void createPlayerCharacter() throws SlickException {
+	public void createPlayerCharacter(double x, double y) throws SlickException {
 		Map<AnimationPart, String> files = new HashMap<AnimationPart, String>();
 		files.put(AnimationPart.BODY, "001");
 		files.put(AnimationPart.FACE, "001");
@@ -74,8 +74,7 @@ public class SurviveGame extends BasicGame {
 				files);
 		GameCharacterPrefab prefab = new GameCharacterPrefab(animationOptions);
 
-		playerCharacter = currentRoom.addGameObject(prefab, 500, 500);
-		playerCharacter.setDestination(20, 20);
+		playerCharacter = currentRoom.addGameObject(prefab, x, y);
 
 		addInputProcessors();
 	}

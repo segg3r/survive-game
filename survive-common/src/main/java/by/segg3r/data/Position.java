@@ -1,6 +1,10 @@
-package by.segg3r.game.objects;
+package by.segg3r.data;
 
-public class Position {
+import java.io.Serializable;
+
+public class Position implements Serializable {
+
+	private static final long serialVersionUID = 4037309605352808515L;
 
 	private double x;
 	private double y;

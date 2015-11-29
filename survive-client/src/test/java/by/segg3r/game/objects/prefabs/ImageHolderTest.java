@@ -25,8 +25,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import by.segg3r.config.GameResourceConfig;
+import by.segg3r.data.Position;
 import by.segg3r.game.objects.Direction;
-import by.segg3r.game.objects.Position;
 import by.segg3r.game.objects.animations.GameAnimation;
 import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.characters.animations.AnimationSet;
