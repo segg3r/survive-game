@@ -17,10 +17,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import by.segg3r.client.ClientMessageHandler;
+import by.segg3r.data.GameObject;
 import by.segg3r.game.actions.GameObjectMoveInputAction;
 import by.segg3r.game.input.InputHandler;
 import by.segg3r.game.input.processors.MouseInputProcessor;
-import by.segg3r.game.objects.GameObjectFactory;
+import by.segg3r.game.objects.ClientGameObjectFactory;
 import by.segg3r.game.objects.characters.GameCharacter;
 import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.prefabs.GameCharacterPrefab;
@@ -37,7 +38,7 @@ public class SurviveGame extends BasicGame {
 	private static final Logger LOG = LogManager.getLogger(SurviveGame.class);
 
 	@Autowired
-	private GameObjectFactory gameObjectFactory;
+	private ClientGameObjectFactory gameObjectFactory;
 	@Autowired
 	private InputHandler inputHandler;
 	@Value("#{messageQueue}")
@@ -64,7 +65,7 @@ public class SurviveGame extends BasicGame {
 		new Thread(this.connection).start();
 	}
 
-	public void createPlayerCharacter(double x, double y) throws SlickException {
+	public void createPlayerCharacter(GameObject gameObject) throws SlickException {
 		Map<AnimationPart, String> files = new HashMap<AnimationPart, String>();
 		files.put(AnimationPart.BODY, "001");
 		files.put(AnimationPart.FACE, "001");
@@ -74,7 +75,7 @@ public class SurviveGame extends BasicGame {
 				files);
 		GameCharacterPrefab prefab = new GameCharacterPrefab(animationOptions);
 
-		playerCharacter = currentRoom.addGameObject(prefab, x, y);
+		playerCharacter = currentRoom.addGameObject(prefab, gameObject);
 
 		addInputProcessors();
 	}
@@ -118,11 +119,11 @@ public class SurviveGame extends BasicGame {
 		this.currentRoom = room;
 	}
 
-	public GameObjectFactory getGameObjectFactory() {
+	public ClientGameObjectFactory getGameObjectFactory() {
 		return gameObjectFactory;
 	}
 
-	public void setGameObjectFactory(GameObjectFactory gameObjectFactory) {
+	public void setGameObjectFactory(ClientGameObjectFactory gameObjectFactory) {
 		this.gameObjectFactory = gameObjectFactory;
 	}
 

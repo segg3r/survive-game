@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.newdawn.slick.SlickException;
 
+import by.segg3r.data.GameObject;
 import by.segg3r.game.objects.characters.GameCharacter;
 import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.characters.animations.AnimationSet;
@@ -19,13 +20,13 @@ public class GameCharacterPrefab extends
 		super(animationOptions);
 	}
 
-	public GameCharacter instantiate(ImageHolder imageHolder)
+	public GameCharacter instantiate(GameObject gameObject, ImageHolder imageHolder)
 			throws SlickException {
 		GameCharacterPrefabAnimationOptions animationOptions = getAnimationOptions();
 
 		GameCharacterAnimation animation = buildAnimation(imageHolder,
 				animationOptions);
-		GameCharacter gameCharacter = new GameCharacter(animation);
+		GameCharacter gameCharacter = new GameCharacter(gameObject, animation);
 		return gameCharacter;
 	}
 

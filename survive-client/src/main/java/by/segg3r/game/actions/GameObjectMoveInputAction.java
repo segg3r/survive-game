@@ -3,13 +3,13 @@ package by.segg3r.game.actions;
 import org.newdawn.slick.Input;
 
 import by.segg3r.game.input.InputAction;
-import by.segg3r.game.objects.GameObject;
+import by.segg3r.game.objects.ClientGameObject;
 
 public class GameObjectMoveInputAction implements InputAction {
 	
-	private GameObject gameObject;
+	private ClientGameObject gameObject;
 	
-	public GameObjectMoveInputAction(GameObject gameObject) {
+	public GameObjectMoveInputAction(ClientGameObject gameObject) {
 		super();
 		this.gameObject = gameObject;
 	}

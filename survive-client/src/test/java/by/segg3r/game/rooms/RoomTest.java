@@ -20,8 +20,9 @@ import org.newdawn.slick.SlickException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import by.segg3r.game.objects.GameObject;
-import by.segg3r.game.objects.GameObjectFactory;
+import by.segg3r.data.GameObject;
+import by.segg3r.game.objects.ClientGameObject;
+import by.segg3r.game.objects.ClientGameObjectFactory;
 import by.segg3r.game.objects.iface.Layer;
 import by.segg3r.game.objects.iface.Renderable;
 import by.segg3r.game.objects.iface.Updatable;
@@ -30,11 +31,11 @@ import by.segg3r.game.objects.prefabs.Prefab;
 public class RoomTest {
 
 	private Room room;
-	private GameObjectFactory gameObjectFactory;
+	private ClientGameObjectFactory gameObjectFactory;
 
 	@BeforeMethod
 	public void init() {
-		gameObjectFactory = mock(GameObjectFactory.class);
+		gameObjectFactory = mock(ClientGameObjectFactory.class);
 		room = new Room(gameObjectFactory);
 	}
 
@@ -131,7 +132,7 @@ public class RoomTest {
 
 	@Test(description = "should add game object to the room")
 	public void addGameObject() {
-		GameObject gameObject = mock(GameObject.class);
+		ClientGameObject gameObject = mock(ClientGameObject.class);
 		room.addGameObject(gameObject);
 
 		assertTrue(room.getRenderables().contains(gameObject));
@@ -141,17 +142,18 @@ public class RoomTest {
 	@SuppressWarnings("unchecked")
 	@Test(description = "should add game object instantiated from prefab factory")
 	public void addGameObjectFromPrefab() throws SlickException {
-		Prefab<GameObject, ?> prefab = mock(Prefab.class);
-		GameObject gameObject = mock(GameObject.class);
+		Prefab<ClientGameObject, ?> prefab = mock(Prefab.class);
+		ClientGameObject clientGameObject = mock(ClientGameObject.class);
 
 		room = spy(room);
 
-		doNothing().when(room).addGameObject(any(GameObject.class));
-		when(gameObjectFactory.instantiate(eq(prefab), eq(300.), eq(200.)))
-				.thenReturn(gameObject);
+		GameObject gameObject = mock(GameObject.class);
+		doNothing().when(room).addGameObject(any(ClientGameObject.class));
+		when(gameObjectFactory.instantiate(eq(prefab), eq(gameObject)))
+				.thenReturn(clientGameObject);
 
-		room.addGameObject(prefab, 300., 200.);
-		verify(room, times(1)).addGameObject(eq(gameObject));
+		room.addGameObject(prefab, gameObject);
+		verify(room, times(1)).addGameObject(eq(clientGameObject));
 	}
 
 }

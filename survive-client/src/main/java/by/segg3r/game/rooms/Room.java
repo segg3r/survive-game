@@ -11,8 +11,9 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
-import by.segg3r.game.objects.GameObject;
-import by.segg3r.game.objects.GameObjectFactory;
+import by.segg3r.data.GameObject;
+import by.segg3r.game.objects.ClientGameObject;
+import by.segg3r.game.objects.ClientGameObjectFactory;
 import by.segg3r.game.objects.iface.Layer;
 import by.segg3r.game.objects.iface.Renderable;
 import by.segg3r.game.objects.iface.Updatable;
@@ -20,21 +21,21 @@ import by.segg3r.game.objects.prefabs.Prefab;
 
 public class Room {
 
-	private GameObjectFactory gameObjectFactory;
+	private ClientGameObjectFactory gameObjectFactory;
 
 	private Map<Layer, Set<Renderable>> renderables = new HashMap<Layer, Set<Renderable>>();
 	private Set<Updatable> updatables = new HashSet<Updatable>();
 
-	public Room(GameObjectFactory gameObjectFactory) {
+	public Room(ClientGameObjectFactory gameObjectFactory) {
 		super();
 		this.gameObjectFactory = gameObjectFactory;
 	}
 
-	public <T extends GameObject> T addGameObject(Prefab<T, ?> prefab, double x, double y)
+	public <T extends ClientGameObject> T addGameObject(Prefab<T, ?> prefab, GameObject gameObject)
 			throws SlickException {
-		T gameObject = gameObjectFactory.instantiate(prefab, x, y);
-		addGameObject(gameObject);
-		return gameObject;
+		T result = gameObjectFactory.instantiate(prefab, gameObject);
+		addGameObject(result);
+		return result;
 	}
 
 	public void render(GameContainer gc, Graphics g) throws SlickException {
@@ -70,7 +71,7 @@ public class Room {
 		return result;
 	}
 
-	public void addGameObject(GameObject gameObject) {
+	public void addGameObject(ClientGameObject gameObject) {
 		this.addRenderable(Layer.OBJECT, gameObject);
 		this.addUpdatable(gameObject);
 	}

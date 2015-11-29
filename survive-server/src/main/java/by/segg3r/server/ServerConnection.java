@@ -2,7 +2,7 @@ package by.segg3r.server;
 
 import java.net.Socket;
 
-import by.segg3r.data.Player;
+import by.segg3r.data.GameObject;
 import by.segg3r.messaging.Message;
 import by.segg3r.messaging.MessageInputStream;
 import by.segg3r.messaging.MessageOutputStream;
@@ -15,14 +15,14 @@ import by.segg3r.messaging.exception.MessageSendingException;
 public class ServerConnection extends Connection {
 
 	private ConnectionPool connectionPool;
-	private final Player player;
+	private GameObject player;
 
 	public ServerConnection(Socket socket, MessageInputStream in,
 			MessageOutputStream out, MessageProcessor messageProcessor,
-			ConnectionPool connectionPool) {
+			ConnectionPool connectionPool, GameObject player) {
 		super(socket, in, out, messageProcessor);
 		this.connectionPool = connectionPool;
-		this.player = new Player(300, 100);
+		this.player = player;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class ServerConnection extends Connection {
 		connectionPool.removeConnection(this);
 	}
 
-	public Player getPlayer() {
+	public GameObject getPlayer() {
 		return player;
 	}
 

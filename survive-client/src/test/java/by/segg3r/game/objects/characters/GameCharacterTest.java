@@ -10,17 +10,20 @@ import org.newdawn.slick.SlickException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import by.segg3r.data.GameObject;
 import by.segg3r.game.objects.characters.animations.GameCharacterAnimation;
 
 public class GameCharacterTest {
 
 	private GameCharacterAnimation gameCharacterAnimation;
+	private GameObject gameObject;
 	private GameCharacter gameCharacter;
 
 	@BeforeMethod
 	public void init() {
 		gameCharacterAnimation = mock(GameCharacterAnimation.class);
-		gameCharacter = new GameCharacter(gameCharacterAnimation);
+		gameObject = new GameObject(1L);
+		gameCharacter = new GameCharacter(gameObject, gameCharacterAnimation);
 	}
 
 	@Test(description = "should update animation on update")

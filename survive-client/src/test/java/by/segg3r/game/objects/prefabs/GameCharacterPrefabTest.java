@@ -14,6 +14,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import by.segg3r.data.GameObject;
 import by.segg3r.game.objects.characters.GameCharacter;
 import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.objects.characters.animations.AnimationSet;
@@ -61,7 +62,8 @@ public class GameCharacterPrefabTest {
 				.thenReturn(null);
 
 		// act
-		GameCharacter gameCharacter = prefab.instantiate(imageHolder);
+		GameObject gameObject = new GameObject(1L);
+		GameCharacter gameCharacter = prefab.instantiate(gameObject, imageHolder);
 
 		// assert
 		GameCharacterAnimation animation = gameCharacter

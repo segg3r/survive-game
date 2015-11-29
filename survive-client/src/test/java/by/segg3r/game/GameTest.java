@@ -19,6 +19,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import by.segg3r.client.ClientMessageHandler;
+import by.segg3r.data.GameObject;
 import by.segg3r.game.input.InputHandler;
 import by.segg3r.game.objects.characters.GameCharacter;
 import by.segg3r.game.objects.characters.animations.GameCharacterAnimation;
@@ -32,6 +33,7 @@ public class GameTest {
 
 	private InputHandler inputHandler;
 	private GameCharacterAnimation gameCharacterAnimation;
+	private GameObject gameObject;
 	private GameCharacter playerCharacter;
 	private Room room;
 	private Input input;
@@ -46,7 +48,8 @@ public class GameTest {
 		game = new SurviveGame();
 
 		gameCharacterAnimation = mock(GameCharacterAnimation.class);
-		playerCharacter = new GameCharacter(gameCharacterAnimation);
+		gameObject = new GameObject(1L);
+		playerCharacter = new GameCharacter(gameObject, gameCharacterAnimation);
 		game.setPlayerCharacter(playerCharacter);
 
 		room = mock(Room.class);

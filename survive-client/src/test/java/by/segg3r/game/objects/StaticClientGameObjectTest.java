@@ -11,28 +11,32 @@ import org.newdawn.slick.SlickException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class StaticGameObjectTest {
+import by.segg3r.data.GameObject;
 
-	private StaticGameObject staticGameObject;
+public class StaticClientGameObjectTest {
+
+	private GameObject gameObject;
+	private StaticClientGameObject staticClientGameObject;
 	private Animation animation;
 
 	@BeforeMethod
 	public void init() {
 		animation = mock(Animation.class);
-		staticGameObject = new StaticGameObject(animation);
+		gameObject = new GameObject(1L);
+		staticClientGameObject = new StaticClientGameObject(gameObject, animation);
 	}
 
 	@Test(description = "should update current animation")
 	public void shouldUpdateCurrentAnimation() throws SlickException {
-		staticGameObject.update(.345);
+		staticClientGameObject.update(.345);
 		verify(animation, times(1)).update(eq(345L));
 	}
 
 	@Test(description = "should draw current animation")
 	public void shouldRenderCurrentAnimation() throws SlickException {
 		Graphics g = mock(Graphics.class);
-		staticGameObject.setPosition(25.f, 45.f);
-		staticGameObject.render(g);
+		staticClientGameObject.setPosition(25.f, 45.f);
+		staticClientGameObject.render(g);
 		verify(animation, times(1)).draw(eq(25.f), eq(45.f));
 	}
 
