@@ -79,13 +79,26 @@ public class Room {
 		this.gameObjects.put(gameObject.getId(), gameObject);
 	}
 
-	public ClientGameObject findGameObject(long objectId) throws GameObjectNotFoundException {
+	public ClientGameObject findGameObject(long objectId)
+			throws GameObjectNotFoundException {
 		ClientGameObject result = gameObjects.get(objectId);
 		if (result == null) {
 			throw new GameObjectNotFoundException(
 					"Could not find object with id " + objectId);
 		}
 		return result;
+	}
+
+	public void removeGameObject(long objectId) {
+		ClientGameObject object = gameObjects.get(objectId);
+		if (object != null) {
+			updatables.remove(object);
+			for (Set<Renderable> layerRenderables : renderables.values()) {
+				layerRenderables.remove(object);
+			}
+		}
+		
+		gameObjects.remove(objectId);
 	}
 
 	public List<Renderable> getRenderables(Layer layer) {
@@ -99,6 +112,10 @@ public class Room {
 
 	public List<Updatable> getUpdatables() {
 		return new ArrayList<Updatable>(this.updatables);
+	}
+
+	public Map<Long, ClientGameObject> getGameObjects() {
+		return gameObjects;
 	}
 
 }

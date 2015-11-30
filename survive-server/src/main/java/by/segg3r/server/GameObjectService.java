@@ -13,4 +13,6 @@ public interface GameObjectService {
 	
 	List<GameObject> getOtherObjects(long id);
 	
+	void removeObject(long id);
+	
 }

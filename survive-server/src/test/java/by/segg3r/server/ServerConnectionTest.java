@@ -32,6 +32,8 @@ import by.segg3r.messaging.MessageInterceptor;
 import by.segg3r.messaging.MessageOutputStream;
 import by.segg3r.messaging.MessageProcessor;
 import by.segg3r.messaging.connection.ConnectionPool;
+import by.segg3r.messaging.connection.listeners.ListenerType;
+import by.segg3r.messaging.connection.listeners.Listeners;
 import by.segg3r.messaging.exception.MessageHandlingException;
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
 import by.segg3r.messaging.messages.AllButOneResponseMessage;
@@ -47,6 +49,8 @@ public class ServerConnectionTest {
 
 	private MessageInterceptor<ServerConnection> messageInterceptor;
 	private List<MessageInterceptor<ServerConnection>> messageInterceptors;
+	@Mock
+	private Listeners<ServerConnection> listeners;
 	@Mock
 	private InetAddress inetAddress;
 	@Mock
@@ -92,7 +96,7 @@ public class ServerConnectionTest {
 
 	@AfterMethod
 	public void resetMocks() {
-		reset(in, out, socket, inetAddress, messageProcessor, connectionPool);
+		reset(in, out, socket, inetAddress, messageProcessor, connectionPool, listeners);
 	}
 
 	@Test(description = "should send collection of response messages to player")
@@ -172,6 +176,12 @@ public class ServerConnectionTest {
 	public void testConnectionRemovesItselfFromConnectionPool() {
 		serverConnection.stop();
 		verify(connectionPool, times(1)).removeConnection(eq(serverConnection));
+	}
+	
+	@Test(description = "should trigger player disconnected listeners when stopped")
+	public void testConnectionTriggersPlayerDisconnectedListeners() throws Exception {
+		serverConnection.stop();
+		verify(listeners, times(1)).trigger(eq(ListenerType.PLAYER_DISCONNECTED), eq(serverConnection));
 	}
 
 }

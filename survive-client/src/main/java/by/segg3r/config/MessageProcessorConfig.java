@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import by.segg3r.client.handlers.ServerOtherPlayersCreationMessageHandler;
 import by.segg3r.client.handlers.ServerPlayerCreationMessageHandler;
+import by.segg3r.client.handlers.ServerPlayerDisconnectedMessageHandler;
 import by.segg3r.client.handlers.ServerPlayerMovementMessageHandler;
 import by.segg3r.messaging.MessageProcessor;
 
@@ -17,10 +18,12 @@ public class MessageProcessorConfig {
 	public MessageProcessor messageProcessor(
 			ServerPlayerCreationMessageHandler playerCreationMessageHandler,
 			ServerPlayerMovementMessageHandler serverPlayerMovementMessageHandler,
-			ServerOtherPlayersCreationMessageHandler serverOtherPlayersCreationMessageHandler) {
+			ServerOtherPlayersCreationMessageHandler serverOtherPlayersCreationMessageHandler,
+			ServerPlayerDisconnectedMessageHandler serverPlayerDisconnectedMessageHandler) {
 		return MessageProcessor.withHandlers(playerCreationMessageHandler,
 				serverPlayerMovementMessageHandler,
-				serverOtherPlayersCreationMessageHandler);
+				serverOtherPlayersCreationMessageHandler,
+				serverPlayerDisconnectedMessageHandler);
 	}
 
 }

@@ -42,6 +42,7 @@ public class GameObjectServiceImpl implements GameObjectService {
 	public void changeObjectPosition(long id, Position position) {
 		GameObject gameObject = gameObjects.get(id);
 		gameObject.setPosition(position.getX(), position.getY());
+		gameObject.setDestination(position.getX(), position.getY());
 	}
 
 	@Override
@@ -49,6 +50,11 @@ public class GameObjectServiceImpl implements GameObjectService {
 		return new ArrayList<GameObject>(gameObjects.values().stream()
 				.filter(gameObject -> id != gameObject.getId())
 				.collect(Collectors.toList()));
+	}
+
+	@Override
+	public void removeObject(long id) {
+		gameObjects.remove(id);
 	}
 
 }

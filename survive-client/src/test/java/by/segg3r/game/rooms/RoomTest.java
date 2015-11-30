@@ -2,7 +2,9 @@ package by.segg3r.game.rooms;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -132,24 +134,21 @@ public class RoomTest {
 		}
 	}
 
-	@Test(description = "should add game object to the room")
-	public void addGameObject() {
-		ClientGameObject gameObject = mock(ClientGameObject.class);
-		room.addGameObject(gameObject);
-
-		assertTrue(room.getRenderables().contains(gameObject));
-		assertTrue(room.getUpdatables().contains(gameObject));
-	}
-
-	@Test(description = "should find object by id after adding to the room")
-	public void testFindObject() throws GameObjectNotFoundException {
+	@Test(description = "should add game object to the room and remove it")
+	public void addGameObjectAndRemoveObject() throws GameObjectNotFoundException {
 		long objectId = 123L;
 		GameObject gameObject = new GameObject(objectId);
 		ClientGameObject clientGameObject = new ClientGameObject(gameObject);
 
 		room.addGameObject(clientGameObject);
-
 		assertNotNull(room.findGameObject(objectId));
+		assertTrue(room.getRenderables().contains(clientGameObject));
+		assertTrue(room.getUpdatables().contains(clientGameObject));
+
+		room.removeGameObject(objectId);
+		assertNull(room.getGameObjects().get(objectId));
+		assertFalse(room.getRenderables().contains(clientGameObject));
+		assertFalse(room.getUpdatables().contains(clientGameObject));
 	}
 
 	@Test(description = "finding object should throw exception if no such object", expectedExceptions = GameObjectNotFoundException.class)

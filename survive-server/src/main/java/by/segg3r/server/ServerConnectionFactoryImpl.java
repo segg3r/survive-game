@@ -15,6 +15,7 @@ import by.segg3r.messaging.MessageInterceptor;
 import by.segg3r.messaging.MessageOutputStream;
 import by.segg3r.messaging.MessageProcessor;
 import by.segg3r.messaging.connection.ConnectionPool;
+import by.segg3r.messaging.connection.listeners.Listeners;
 import by.segg3r.messaging.exception.ConnectionException;
 
 @Component
@@ -28,6 +29,8 @@ public class ServerConnectionFactoryImpl implements ServerConnectionFactory {
 	private GameObjectService gameObjectService;
 	@Value("#{messageInterceptors}")
 	private List<MessageInterceptor<ServerConnection>> messageInterceptors;
+	@Value("#{listeners}")
+	private Listeners<ServerConnection> listeners;
 
 	public ServerSocket createServerSocket(int port) throws ConnectionException {
 		try {
@@ -49,7 +52,7 @@ public class ServerConnectionFactoryImpl implements ServerConnectionFactory {
 			GameObject player = gameObjectService.getNewGameObject();
 			ServerConnection result = new ServerConnection(clientSocket, in,
 					out, messageProcessor, connectionPool, messageInterceptors,
-					player);
+					player, listeners);
 			new Thread(result).start();
 			return result;
 		} catch (Exception e) {
