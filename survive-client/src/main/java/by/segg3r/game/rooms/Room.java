@@ -12,6 +12,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 import by.segg3r.data.GameObject;
+import by.segg3r.game.CommonConstants.Time;
 import by.segg3r.game.exception.GameObjectNotFoundException;
 import by.segg3r.game.objects.ClientGameObject;
 import by.segg3r.game.objects.ClientGameObjectFactory;
@@ -48,7 +49,7 @@ public class Room {
 
 	public void update(GameContainer gc, int delta) throws SlickException {
 		for (Updatable updatable : this.getUpdatables()) {
-			updatable.update((double) delta / 1000.);
+			updatable.update((double) delta / Time.ONE_SECOND);
 		}
 	}
 

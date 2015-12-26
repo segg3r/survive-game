@@ -16,6 +16,10 @@ import by.segg3r.exception.AuthenticationException;
 @Component
 public class PlayerServiceImpl implements PlayerService {
 
+	private static final String ADMIN = "admin";
+	private static final int BORDER = 300;
+	
+	
 	private static long idCounter = 1;
 
 	private static synchronized long getNextId() {
@@ -26,15 +30,15 @@ public class PlayerServiceImpl implements PlayerService {
 
 	@Override
 	public GameObject authenticate(String login, String password) throws AuthenticationException {
-		if (!("admin".equals(login) && "admin".equals(password))) {
+		if (!(ADMIN.equals(login) && ADMIN.equals(password))) {
 			throw new AuthenticationException("Wrong login/password combination");
 		}
 		
 		ThreadLocalRandom random = ThreadLocalRandom.current();
 
 		GameObject gameObject = new GameObject(getNextId());
-		double x = random.nextDouble() * 300;
-		double y = random.nextDouble() * 300;
+		double x = random.nextDouble() * BORDER;
+		double y = random.nextDouble() * BORDER;
 		gameObject.setPosition(x, y);
 		gameObject.setDestination(x, y);
 

@@ -16,6 +16,8 @@ import by.segg3r.messaging.exception.MessageHandlingException;
 public class ServerAuthenticationRequestMessageHandler extends
 		ClientMessageHandler<ServerRequestAuthenticationMessage> {
 
+	private static final String ADMIN = "admin";
+
 	public ServerAuthenticationRequestMessageHandler() {
 		super(ServerRequestAuthenticationMessage.class);
 	}
@@ -24,7 +26,7 @@ public class ServerAuthenticationRequestMessageHandler extends
 	public Collection<Message> handleClientMessage(SurviveGame game)
 			throws MessageHandlingException {
 		ClientAuthenticationMessage message = new ClientAuthenticationMessage(
-				"admin", "admin");
+				ADMIN, ADMIN);
 		return Arrays.asList(message);
 	}
 

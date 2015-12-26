@@ -24,7 +24,6 @@ import org.newdawn.slick.SpriteSheet;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import by.segg3r.config.GameResourceConfig;
 import by.segg3r.data.Position;
 import by.segg3r.game.objects.Direction;
 import by.segg3r.game.objects.animations.GameAnimation;
@@ -41,9 +40,6 @@ public class ImageHolderTest {
 	@BeforeMethod
 	public void init() {
 		imageHolder = new ImageHolder();
-
-		GameResourceConfig gameResourceConfig = new GameResourceConfig();
-		imageHolder.setDirectionImageRows(gameResourceConfig.getDirectionImageRows());
 	}
 
 	@Test(description = "should return cached sprite sheet if exists")

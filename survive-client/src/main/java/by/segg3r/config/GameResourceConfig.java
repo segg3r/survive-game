@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import by.segg3r.game.objects.Direction;
 import by.segg3r.game.objects.characters.animations.AnimationPart;
 import by.segg3r.game.util.pathresolver.PathResolver;
 import by.segg3r.game.util.pathresolver.PatternPathResolver;
@@ -33,15 +32,4 @@ public class GameResourceConfig {
 		return result;
 	}
 
-	@Bean(name = "directionImageRows")
-	public Map<Direction, Integer> getDirectionImageRows() {
-		Map<Direction, Integer> result = new HashMap<Direction, Integer>();
-
-		result.put(Direction.TOP, 0);
-		result.put(Direction.RIGHT, 1);
-		result.put(Direction.DOWN, 2);
-		result.put(Direction.LEFT, 3);
-
-		return result;
-	}
 }

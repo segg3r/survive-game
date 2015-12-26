@@ -28,8 +28,6 @@ public class ImageHolder {
 
 	@Value("#{animationPartPathResolvers}")
 	private Map<AnimationPart, PathResolver> animationPartPathResolvers;
-	@Value("#{directionImageRows}")
-	private Map<Direction, Integer> directionImageRows;
 
 	private Map<String, SpriteSheet> characterSpriteSheetCache = new HashMap<String, SpriteSheet>();
 
@@ -53,7 +51,7 @@ public class ImageHolder {
 				animations.put(
 						direction,
 						buildGameCharacterAnimation(spriteSheet,
-								directionImageRows.get(direction),
+								direction.getSpriteRow(),
 								animationOptions));
 			}
 
@@ -111,14 +109,6 @@ public class ImageHolder {
 	public void setAnimationPartPathResolvers(
 			Map<AnimationPart, PathResolver> animationPartPathResolvers) {
 		this.animationPartPathResolvers = animationPartPathResolvers;
-	}
-
-	public Map<Direction, Integer> getDirectionImageRows() {
-		return directionImageRows;
-	}
-
-	public void setDirectionImageRows(Map<Direction, Integer> directionImageRows) {
-		this.directionImageRows = directionImageRows;
 	}
 
 }

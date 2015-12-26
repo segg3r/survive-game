@@ -10,6 +10,7 @@ import org.newdawn.slick.SlickException;
 
 import by.segg3r.data.GameObject;
 import by.segg3r.data.Position;
+import by.segg3r.game.CommonConstants.Time;
 import by.segg3r.game.objects.ClientGameObject;
 import by.segg3r.game.objects.characters.animations.GameCharacterAnimation;
 
@@ -30,7 +31,7 @@ public class GameCharacter extends ClientGameObject {
 	@Override
 	public void update(double delta) throws SlickException {
 		super.update(delta);
-		gameCharacterAnimation.update(this, (long) (delta * 1000));
+		gameCharacterAnimation.update(this, (long) (delta * Time.ONE_SECOND));
 	}
 
 	@Override

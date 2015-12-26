@@ -34,6 +34,8 @@ import by.segg3r.messaging.exception.MessageSendingException;
 @Component
 public class SurviveGame extends BasicGame {
 
+	private static final String BASIC_SET_ID = "001";
+
 	private static final Logger LOG = LogManager.getLogger(SurviveGame.class);
 
 	@Autowired
@@ -63,12 +65,13 @@ public class SurviveGame extends BasicGame {
 		new Thread(this.connection).start();
 	}
 
-	public void createPlayerCharacter(GameObject gameObject) throws SlickException {
+	public void createPlayerCharacter(GameObject gameObject)
+			throws SlickException {
 		Map<AnimationPart, String> files = new HashMap<AnimationPart, String>();
-		files.put(AnimationPart.BODY, "001");
-		files.put(AnimationPart.FACE, "001");
-		files.put(AnimationPart.HAIRS, "001");
-		files.put(AnimationPart.ARMOR, "001");
+		files.put(AnimationPart.BODY, BASIC_SET_ID);
+		files.put(AnimationPart.FACE, BASIC_SET_ID);
+		files.put(AnimationPart.HAIRS, BASIC_SET_ID);
+		files.put(AnimationPart.ARMOR, BASIC_SET_ID);
 		GameCharacterPrefabAnimationOptions animationOptions = new GameCharacterPrefabAnimationOptions(
 				files);
 		GameCharacterPrefab prefab = new GameCharacterPrefab(animationOptions);
@@ -80,8 +83,7 @@ public class SurviveGame extends BasicGame {
 
 	public void addInputProcessors() {
 		inputHandler.addInputProcessor(new MouseInputProcessor(
-				Input.MOUSE_LEFT_BUTTON, new MovementAction(
-						this.connection)));
+				Input.MOUSE_LEFT_BUTTON, new MovementAction(this.connection)));
 	}
 
 	@Override
