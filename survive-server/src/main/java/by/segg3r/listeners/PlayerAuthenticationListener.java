@@ -9,23 +9,23 @@ import by.segg3r.messages.server.ServerOtherPlayersCreationMessage;
 import by.segg3r.messages.server.ServerPlayerCreationMessage;
 import by.segg3r.messaging.Message;
 import by.segg3r.messaging.connection.ConnectionPool;
-import by.segg3r.server.GameObjectService;
+import by.segg3r.server.PlayerService;
 import by.segg3r.server.ServerConnection;
 
 @Component
-public class PlayerCreationListener extends ServerConnectionListener {
+public class PlayerAuthenticationListener extends ServerConnectionListener {
 
 	@Override
 	public void trigger(ServerConnection connection) throws Exception {
 		ConnectionPool connectionPool = getConnectionPool();
-		GameObjectService gameObjectService = getGameObjectService();
+		PlayerService gameObjectService = getGameObjectService();
 		GameObject player = connection.getPlayer();
 
 		Message playerCreationMessage = new ServerPlayerCreationMessage(player);
 		connectionPool.sendAll(playerCreationMessage);
 
 		List<GameObject> otherObjects = gameObjectService
-				.getOtherObjects(player.getId());
+				.getOtherPlayers(player.getId());
 		ServerOtherPlayersCreationMessage otherPlayersCreationMessage = new ServerOtherPlayersCreationMessage(
 				otherObjects);
 		connection.sendMessage(otherPlayersCreationMessage);

@@ -3,9 +3,8 @@ package by.segg3r;
 import org.apache.log4j.BasicConfigurator;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import by.segg3r.config.InterceptorsConfig;
+import by.segg3r.config.HandlersConfig;
 import by.segg3r.config.ListenersConfig;
-import by.segg3r.config.MessageProcessorConfig;
 import by.segg3r.config.ServerConfig;
 
 public final class Runner {
@@ -17,8 +16,7 @@ public final class Runner {
 		BasicConfigurator.configure();
 
 		try (AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-				ServerConfig.class, MessageProcessorConfig.class,
-				ListenersConfig.class, InterceptorsConfig.class)) {
+				ServerConfig.class, HandlersConfig.class, ListenersConfig.class)) {
 			Server server = ctx.getBean(Server.class);
 			Thread serverThread = new Thread(server);
 			serverThread.start();

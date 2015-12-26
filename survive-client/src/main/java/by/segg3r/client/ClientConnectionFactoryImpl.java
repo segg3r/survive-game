@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component;
 import by.segg3r.messaging.MessageInputStream;
 import by.segg3r.messaging.MessageOutputStream;
 import by.segg3r.messaging.MessageProcessor;
-import by.segg3r.messaging.connection.Connection;
+import by.segg3r.messaging.connection.SimpleConnection;
 import by.segg3r.messaging.exception.ConnectionException;
 
 @Component
 public class ClientConnectionFactoryImpl implements ClientConnectionFactory {
 
 	@Autowired
-	private MessageProcessor messageProcessor;
+	private MessageProcessor<SimpleConnection> messageProcessor;
 
 	@Override
 	public Socket createSocket(String host, int port)
@@ -29,7 +29,7 @@ public class ClientConnectionFactoryImpl implements ClientConnectionFactory {
 	}
 
 	@Override
-	public Connection createConnection(Socket socket)
+	public SimpleConnection createConnection(Socket socket)
 			throws ConnectionException {
 		try {
 			MessageOutputStream out = new MessageOutputStream(
@@ -37,7 +37,7 @@ public class ClientConnectionFactoryImpl implements ClientConnectionFactory {
 			MessageInputStream in = new MessageInputStream(
 					socket.getInputStream());
 
-			Connection connection = new Connection(socket, in, out,
+			SimpleConnection connection = new SimpleConnection(socket, in, out,
 					messageProcessor);
 			return connection;
 		} catch (Exception e) {

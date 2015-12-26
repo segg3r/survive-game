@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import by.segg3r.messaging.exception.MessageHandlingException;
 
-public abstract class MessageHandler<MessageType extends Message> {
+public abstract class MessageHandler<MessageSourceType, MessageType extends Message> {
 
 	private final Class<MessageType> messageClass;
 
@@ -12,7 +12,8 @@ public abstract class MessageHandler<MessageType extends Message> {
 		this.messageClass = messageClass;
 	}
 
-	public abstract Collection<Message> handle(MessageType message) throws MessageHandlingException;
+	public abstract Collection<Message> handle(MessageSourceType messageSource,
+			MessageType message) throws MessageHandlingException;
 
 	public Class<MessageType> getMessageClass() {
 		return messageClass;
@@ -38,7 +39,7 @@ public abstract class MessageHandler<MessageType extends Message> {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		MessageHandler<?> other = (MessageHandler<?>) obj;
+		MessageHandler<?, ?> other = (MessageHandler<?, ?>) obj;
 		if (messageClass == null) {
 			if (other.messageClass != null) {
 				return false;

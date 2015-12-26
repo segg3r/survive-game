@@ -1,7 +1,7 @@
 package by.segg3r.server;
 
 import java.net.Socket;
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import by.segg3r.data.GameObject;
 import by.segg3r.messaging.Message;
 import by.segg3r.messaging.MessageInputStream;
-import by.segg3r.messaging.MessageInterceptor;
 import by.segg3r.messaging.MessageOutputStream;
 import by.segg3r.messaging.MessageProcessor;
 import by.segg3r.messaging.MessageTarget;
@@ -17,28 +16,35 @@ import by.segg3r.messaging.connection.Connection;
 import by.segg3r.messaging.connection.ConnectionPool;
 import by.segg3r.messaging.connection.listeners.ListenerType;
 import by.segg3r.messaging.connection.listeners.Listeners;
+import by.segg3r.messaging.exception.MessageHandlingException;
 import by.segg3r.messaging.exception.MessageSendingException;
+import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
 
 public class ServerConnection extends Connection {
 
-	private static final Logger LOG = LogManager.getLogger(ServerConnection.class);
-	
-	private List<MessageInterceptor<ServerConnection>> messageInterceptors;
+	private static final Logger LOG = LogManager
+			.getLogger(ServerConnection.class);
+
 	private ConnectionPool connectionPool;
-	private GameObject player;
 	private Listeners<ServerConnection> listeners;
-	
+	private MessageProcessor<ServerConnection> messageProcessor;
+
+	private GameObject player = null;
+
 	public ServerConnection(Socket socket, MessageInputStream in,
-			MessageOutputStream out, MessageProcessor messageProcessor,
-			ConnectionPool connectionPool,
-			List<MessageInterceptor<ServerConnection>> messageInterceptors,
-			GameObject player,
-			Listeners<ServerConnection> listeners) {
-		super(socket, in, out, messageProcessor);
+			MessageOutputStream out,
+			MessageProcessor<ServerConnection> messageProcessor,
+			ConnectionPool connectionPool, Listeners<ServerConnection> listeners) {
+		super(socket, in, out);
+		this.messageProcessor = messageProcessor;
 		this.connectionPool = connectionPool;
-		this.messageInterceptors = messageInterceptors;
-		this.player = player;
 		this.listeners = listeners;
+	}
+
+	@Override
+	protected Collection<Message> processMessage(Message message)
+			throws UnrecognizedMessageTypeException, MessageHandlingException {
+		return messageProcessor.process(this, message);
 	}
 
 	@Override
@@ -55,22 +61,15 @@ public class ServerConnection extends Connection {
 	}
 
 	@Override
-	protected void preprocessMessage(Message message) {
-		for (MessageInterceptor<ServerConnection> messageInterceptor : messageInterceptors) {
-			messageInterceptor.intercept(message, this);
-		}
-	}
-
-	@Override
 	public void stop() {
 		super.stop();
-		
+
 		try {
 			listeners.trigger(ListenerType.PLAYER_DISCONNECTED, this);
 		} catch (Exception e) {
 			LOG.error("Error trigger player disconnected triggers", e);
 		}
-		
+
 		connectionPool.removeConnection(this);
 	}
 
@@ -78,13 +77,8 @@ public class ServerConnection extends Connection {
 		return player;
 	}
 
-	public List<MessageInterceptor<ServerConnection>> getMessageInterceptors() {
-		return messageInterceptors;
-	}
-
-	public void setMessageInterceptors(
-			List<MessageInterceptor<ServerConnection>> messageInterceptors) {
-		this.messageInterceptors = messageInterceptors;
+	public void setPlayer(GameObject player) {
+		this.player = player;
 	}
 
 }

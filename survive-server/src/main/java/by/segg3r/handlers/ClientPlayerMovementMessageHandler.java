@@ -1,4 +1,4 @@
-package by.segg3r.server.handlers;
+package by.segg3r.handlers;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,7 +10,8 @@ import by.segg3r.messages.client.ClientPlayerMovementMessage;
 import by.segg3r.messages.server.ServerPlayerMovementMessage;
 import by.segg3r.messaging.Message;
 import by.segg3r.messaging.exception.MessageHandlingException;
-import by.segg3r.server.GameObjectService;
+import by.segg3r.server.PlayerService;
+import by.segg3r.server.ServerConnection;
 import by.segg3r.server.ServerMessageHandler;
 
 @Component
@@ -22,13 +23,13 @@ public class ClientPlayerMovementMessageHandler extends
 	}
 
 	@Override
-	public Collection<Message> handle(ClientPlayerMovementMessage message)
+	public Collection<Message> handle(ServerConnection serverConnection, ClientPlayerMovementMessage message)
 			throws MessageHandlingException {
-		long clientId = message.getClientId();
+		long clientId = serverConnection.getPlayer().getId();
 		Position destination = message.getDestination();
 
-		GameObjectService gameObjectService = getGameObjectService();
-		gameObjectService.changeObjectPosition(message.getClientId(),
+		PlayerService playerService = getPlayerService();
+		playerService.changePosition(clientId,
 				destination);
 
 		ServerPlayerMovementMessage serverPlayerMovementMessage = new ServerPlayerMovementMessage(

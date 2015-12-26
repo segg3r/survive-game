@@ -6,7 +6,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import by.segg3r.config.ClientConfig;
 import by.segg3r.config.GameResourceConfig;
-import by.segg3r.config.MessageProcessorConfig;
+import by.segg3r.config.HandlersConfig;
 import by.segg3r.game.SurviveGameContainer;
 import by.segg3r.messaging.connection.Connection;
 
@@ -19,7 +19,7 @@ public final class Runner {
 		BasicConfigurator.configure();
 
 		try (AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-				MessageProcessorConfig.class, ClientConfig.class,
+				HandlersConfig.class, ClientConfig.class,
 				GameResourceConfig.class)) {
 			SurviveGameContainer gc = ctx
 					.getBean(SurviveGameContainer.class);

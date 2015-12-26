@@ -1,8 +1,11 @@
 package by.segg3r.messages.client;
 
-import by.segg3r.data.Position;
+import java.io.Serializable;
 
-public class ClientPlayerMovementMessage extends ClientMessage {
+import by.segg3r.data.Position;
+import by.segg3r.messaging.Message;
+
+public class ClientPlayerMovementMessage extends Message implements Serializable {
 
 	private static final long serialVersionUID = -2241753053962642398L;
 

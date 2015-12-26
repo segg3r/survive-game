@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import by.segg3r.messaging.connection.ConnectionListener;
 import by.segg3r.messaging.connection.ConnectionPool;
-import by.segg3r.server.GameObjectService;
+import by.segg3r.server.PlayerService;
 import by.segg3r.server.ServerConnection;
 
 public abstract class ServerConnectionListener implements
@@ -13,7 +13,7 @@ public abstract class ServerConnectionListener implements
 	@Autowired
 	private ConnectionPool connectionPool;
 	@Autowired
-	private GameObjectService gameObjectService;
+	private PlayerService gameObjectService;
 
 	public ServerConnectionListener() {
 	}
@@ -22,7 +22,7 @@ public abstract class ServerConnectionListener implements
 		return connectionPool;
 	}
 
-	public GameObjectService getGameObjectService() {
+	public PlayerService getGameObjectService() {
 		return gameObjectService;
 	}
 

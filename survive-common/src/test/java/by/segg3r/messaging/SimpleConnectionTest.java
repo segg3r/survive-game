@@ -29,12 +29,13 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import by.segg3r.messaging.connection.Connection;
+import by.segg3r.messaging.connection.SimpleConnection;
 import by.segg3r.messaging.exception.MessageHandlingException;
 import by.segg3r.messaging.exception.MessageReceievingException;
 import by.segg3r.messaging.exception.UnrecognizedMessageTypeException;
 import by.segg3r.messaging.messages.SinglePlayerResponseMessage;
 
-public class ConnectionTest {
+public class SimpleConnectionTest {
 
 	private static final class StopMessage extends Message {
 	};
@@ -50,9 +51,9 @@ public class ConnectionTest {
 	@Mock
 	private MessageOutputStream out;
 	@Mock
-	private MessageProcessor messageProcessor;
+	private MessageProcessor<Connection> messageProcessor;
 	@InjectMocks
-	private Connection connection;
+	private SimpleConnection connection;
 
 	@BeforeClass
 	public void initMocks() {
@@ -63,7 +64,7 @@ public class ConnectionTest {
 	public void setCommonMocks() throws UnrecognizedMessageTypeException, MessageHandlingException {
 		connection.reset();
 
-		when(messageProcessor.process(eq(STOP_MESSAGE))).then(
+		when(messageProcessor.process(eq(connection), eq(STOP_MESSAGE))).then(
 				new Answer<Collection<Message>>() {
 					@Override
 					public Collection<Message> answer(
@@ -84,13 +85,13 @@ public class ConnectionTest {
 	public void testProcessingWhileNotStopped() throws Exception {
 		Message simpleMessage = new Message() {
 		};
-		when(messageProcessor.process(eq(simpleMessage))).thenReturn(
+		when(messageProcessor.process(eq(connection), eq(simpleMessage))).thenReturn(
 				Collections.emptyList());
 		when(in.readMessage()).thenReturn(simpleMessage, simpleMessage,
 				STOP_MESSAGE);
 
 		connection.run();
-		verify(messageProcessor, times(2)).process(eq(simpleMessage));
+		verify(messageProcessor, times(2)).process(eq(connection), eq(simpleMessage));
 	}
 
 	@Test(description = "should send collection of response messages to player")
@@ -100,7 +101,7 @@ public class ConnectionTest {
 		Message responseMessage = new SinglePlayerResponseMessage() {
 		};
 		// 2 response messages in collection should be sent 2 times
-		when(messageProcessor.process(eq(simpleMessage))).thenReturn(
+		when(messageProcessor.process(eq(connection), eq(simpleMessage))).thenReturn(
 				Arrays.asList(responseMessage, responseMessage));
 		when(in.readMessage()).thenReturn(simpleMessage, STOP_MESSAGE);
 
@@ -112,7 +113,7 @@ public class ConnectionTest {
 	public void testNotSendResponse() throws Exception {
 		Message simpleMessage = new Message() {
 		};
-		when(messageProcessor.process(eq(simpleMessage))).thenReturn(
+		when(messageProcessor.process(eq(connection), eq(simpleMessage))).thenReturn(
 				Collections.emptyList());
 		when(in.readMessage()).thenReturn(simpleMessage, STOP_MESSAGE);
 

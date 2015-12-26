@@ -2,7 +2,6 @@ package by.segg3r.server;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -14,7 +13,6 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -28,7 +26,6 @@ import org.testng.annotations.Test;
 
 import by.segg3r.messaging.Message;
 import by.segg3r.messaging.MessageInputStream;
-import by.segg3r.messaging.MessageInterceptor;
 import by.segg3r.messaging.MessageOutputStream;
 import by.segg3r.messaging.MessageProcessor;
 import by.segg3r.messaging.connection.ConnectionPool;
@@ -47,8 +44,6 @@ public class ServerConnectionTest {
 
 	private static final StopMessage STOP_MESSAGE = new StopMessage();
 
-	private MessageInterceptor<ServerConnection> messageInterceptor;
-	private List<MessageInterceptor<ServerConnection>> messageInterceptors;
 	@Mock
 	private Listeners<ServerConnection> listeners;
 	@Mock
@@ -60,7 +55,7 @@ public class ServerConnectionTest {
 	@Mock
 	private MessageOutputStream out;
 	@Mock
-	private MessageProcessor messageProcessor;
+	private MessageProcessor<ServerConnection> messageProcessor;
 	@Mock
 	private ConnectionPool connectionPool;
 	@InjectMocks
@@ -71,13 +66,12 @@ public class ServerConnectionTest {
 		MockitoAnnotations.initMocks(this);
 	}
 
-	@SuppressWarnings("unchecked")
 	@BeforeMethod
 	public void setCommonMocks() throws UnrecognizedMessageTypeException,
 			MessageHandlingException {
 		serverConnection.reset();
 
-		when(messageProcessor.process(eq(STOP_MESSAGE))).then(
+		when(messageProcessor.process(eq(serverConnection), eq(STOP_MESSAGE))).then(
 				new Answer<Collection<Message>>() {
 					@Override
 					public Collection<Message> answer(
@@ -88,10 +82,6 @@ public class ServerConnectionTest {
 				});
 
 		when(socket.getInetAddress()).thenReturn(inetAddress);
-		
-		messageInterceptor = mock(MessageInterceptor.class);
-		messageInterceptors = Arrays.asList(messageInterceptor, messageInterceptor);
-		serverConnection.setMessageInterceptors(messageInterceptors);
 	}
 
 	@AfterMethod
@@ -106,7 +96,7 @@ public class ServerConnectionTest {
 		Message responseMessage = new SinglePlayerResponseMessage() {
 		};
 		// 2 response messages in collection should be sent 2 times
-		when(messageProcessor.process(eq(simpleMessage))).thenReturn(
+		when(messageProcessor.process(eq(serverConnection), eq(simpleMessage))).thenReturn(
 				Arrays.asList(responseMessage, responseMessage));
 		when(in.readMessage()).thenReturn(simpleMessage, STOP_MESSAGE);
 
@@ -122,7 +112,7 @@ public class ServerConnectionTest {
 		Message responseMessage = new AllPlayersResponseMessage() {
 		};
 		// 2 response messages in collection should be sent 2 times
-		when(messageProcessor.process(eq(simpleMessage))).thenReturn(
+		when(messageProcessor.process(eq(serverConnection), eq(simpleMessage))).thenReturn(
 				Arrays.asList(responseMessage, responseMessage));
 		when(in.readMessage()).thenReturn(simpleMessage, STOP_MESSAGE);
 
@@ -138,7 +128,7 @@ public class ServerConnectionTest {
 		Message responseMessage = new AllButOneResponseMessage() {
 		};
 		// 2 response messages in collection should be sent 2 times
-		when(messageProcessor.process(eq(simpleMessage))).thenReturn(
+		when(messageProcessor.process(eq(serverConnection), eq(simpleMessage))).thenReturn(
 				Arrays.asList(responseMessage, responseMessage));
 		when(in.readMessage()).thenReturn(simpleMessage, STOP_MESSAGE);
 
@@ -151,7 +141,7 @@ public class ServerConnectionTest {
 	public void testNotSendResponse() throws Exception {
 		Message simpleMessage = new Message() {
 		};
-		when(messageProcessor.process(eq(simpleMessage))).thenReturn(
+		when(messageProcessor.process(eq(serverConnection), eq(simpleMessage))).thenReturn(
 				Collections.emptyList());
 		when(in.readMessage()).thenReturn(simpleMessage, STOP_MESSAGE);
 
@@ -159,19 +149,6 @@ public class ServerConnectionTest {
 		verify(out, never()).writeMessage(any());
 	}
 	
-	@Test(description = "should trigger all message interceptors before processing message")
-	public void testInterceptorsTriggered() throws Exception {
-		Message simpleMessage = new Message() {
-		};
-		when(messageProcessor.process(eq(simpleMessage))).thenReturn(
-				Collections.emptyList());
-		when(in.readMessage()).thenReturn(simpleMessage, STOP_MESSAGE);
-
-		serverConnection.run();
-		
-		verify(messageInterceptor, times(2)).intercept(eq(simpleMessage), eq(serverConnection));
-	}
-
 	@Test(description = "connection should remove itself from connection pool when stopped")
 	public void testConnectionRemovesItselfFromConnectionPool() {
 		serverConnection.stop();
