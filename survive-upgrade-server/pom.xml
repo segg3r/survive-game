@@ -6,7 +6,7 @@
 		<artifactId>survive-root</artifactId>
 		<version>0.0.1-dev</version>
 	</parent>
-	<artifactId>survive-client</artifactId>
+	<artifactId>survive-upgrade-server</artifactId>
 
 	<properties>
 		<parent.basedir>${project.basedir}/..</parent.basedir>
@@ -16,31 +16,26 @@
 		<deploy.fullPath>${deploy.path}/${project.artifactId}-${project.version}</deploy.fullPath>
 		<deploy.runPath>${deploy.fullPath}/run.bat</deploy.runPath>
 		<deploy.debugPath>${deploy.fullPath}/debug.bat</deploy.debugPath>
-		<deploy.debugPort>5006</deploy.debugPort>
+		<deploy.debugPort>5007</deploy.debugPort>
 
 		<release.finalName>${project.artifactId}-${project.version}.jar</release.finalName>
 
 		<release.zip.finalPath>${parent.target}</release.zip.finalPath>
 		<release.zip.finalName>${project.artifactId}-${project.version}.zip</release.zip.finalName>
-		<release.zip.postfix>release</release.zip.postfix>
 		<release.zip.targetName>${project.artifactId}-${project.version}-${release.zip.postfix}.zip</release.zip.targetName>
 		<release.zip.targetPath>${project.build.directory}</release.zip.targetPath>
 
 		<release.resources.path>resources</release.resources.path>
-		<release.resources.client>client.properties</release.resources.client>
 		<release.lib.path>lib</release.lib.path>
-		<release.natives.path>natives</release.natives.path>
+		<release.zip.postfix>release</release.zip.postfix>
 
 		<source.src.path>src</source.src.path>
-		<source.main.resources>${source.scr.path}/main/resources</source.main.resources>
-		<source.natives.path>${project.build.directory}/natives</source.natives.path>
 		<source.resources.path>${source.src.path}/main/resources</source.resources.path>
 		<source.scripts.path>${source.src.path}/main/scripts</source.scripts.path>
 		<source.assembly.path>${source.src.path}/META-INF/assembly.xml</source.assembly.path>
 
 		<execution.class.main>by.segg3r.Runner</execution.class.main>
 	</properties>
-
 
 	<profiles>
 		<profile>
@@ -66,24 +61,6 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>com.googlecode.mavennatives</groupId>
-				<artifactId>maven-nativedependencies-plugin</artifactId>
-				<version>${maven.nativedependencies.plugin.version}</version>
-				<executions>
-					<execution>
-						<id>unpack-natives</id>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<phase>generate-resources</phase>
-					<nativesTargetDir>${library.natives.path}</nativesTargetDir>
-					<separateDirs>false</separateDirs>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>${maven.jar.plugin.version}</version>
@@ -101,6 +78,7 @@
 					</archive>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>${maven.assembly.plugin.version}</version>
@@ -139,7 +117,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>run-client</id>
+						<id>run-server</id>
 						<phase>deploy</phase>
 						<goals>
 							<goal>run</goal>
@@ -154,7 +132,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>debug-client</id>
+						<id>debug-server</id>
 						<phase>deploy</phase>
 						<goals>
 							<goal>run</goal>
@@ -175,12 +153,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.slick2d</groupId>
-			<artifactId>slick2d-core</artifactId>
-			<version>${slick.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
@@ -193,15 +165,15 @@
 		</dependency>
 
 		<dependency>
-			<groupId>by.segg3r</groupId>
-			<artifactId>survive-common</artifactId>
-			<version>${survive.version}</version>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>by.segg3r</groupId>
-			<artifactId>survive-messages</artifactId>
-			<version>${survive.version}</version>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>${jetty.version}</version>
 		</dependency>
 
 		<dependency>

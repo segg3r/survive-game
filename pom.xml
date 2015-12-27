@@ -11,6 +11,7 @@
 		<module.messages>survive-messages</module.messages>
 		<module.client>survive-client</module.client>
 		<module.server>survive-server</module.server>
+		<module.upgrade-server>survive-upgrade-server</module.upgrade-server>
 		<deploy.path>${project.basedir}/deploy</deploy.path>
 
 		<survive.version>0.0.1-dev</survive.version>
@@ -27,6 +28,7 @@
 		<maven.findbugs.plugin.version>3.0.1</maven.findbugs.plugin.version>
 		<maven.cobertura.plugin.version>2.7</maven.cobertura.plugin.version>
 		<maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
+		<jetty.version>9.3.6.v20151106</jetty.version>
 	</properties>
 
 	<modules>
@@ -34,6 +36,7 @@
 		<module>${module.messages}</module>
 		<module>${module.server}</module>
 		<module>${module.client}</module>
+		<module>${module.upgrade-server}</module>
 	</modules>
 
 	<build>
