@@ -24,7 +24,7 @@ public class ServerConfig {
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertyConfig() {
 		PropertySourcesPlaceholderConfigurer source = new PropertySourcesPlaceholderConfigurer();
-		source.setLocation(new FileSystemResource("resources/server.properties"));
+		source.setLocation(new FileSystemResource(RESOURCES_FOLDER + "/server.properties"));
 		source.setIgnoreResourceNotFound(true);
 
 		return source;
