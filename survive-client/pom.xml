@@ -41,6 +41,28 @@
 		<execution.class.main>by.segg3r.Runner</execution.class.main>
 	</properties>
 
+
+	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<debug>false</debug>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>debug</id>
+			<activation>
+				<property>
+					<name>debug</name>
+				</property>
+			</activation>
+		</profile>
+	</profiles>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -116,80 +138,40 @@
 							</target>
 						</configuration>
 					</execution>
+					<execution>
+						<id>run-client</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target name="execute-run" unless="${debug}">
+								<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
+									dest="${deploy.path}" />
+								<exec executable="${deploy.runPath}" dir="${deploy.fullPath}"
+									spawn="false" />
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>debug-client</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target name="execute-debug" if="${debug}">
+								<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
+									dest="${deploy.path}" />
+								<exec executable="${deploy.debugPath}" dir="${deploy.fullPath}"
+									spawn="false" />
+							</target>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>default</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<version>${maven.antrun.plugin.version}</version>
-						<executions>
-							<execution>
-								<id>run-client</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target>
-										<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
-											dest="${deploy.path}" />
-										<exec executable="${deploy.runPath}" dir="${deploy.fullPath}"
-											spawn="false" />
-									</target>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>debug</id>
-			<activation>
-				<property>
-					<name>debug</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<version>${maven.antrun.plugin.version}</version>
-						<executions>
-							<execution>
-								<id>debug-client</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target>
-										<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
-											dest="${deploy.path}" />
-										<exec executable="${deploy.debugPath}" dir="${deploy.fullPath}"
-											spawn="false" />
-									</target>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 	<dependencies>
 		<dependency>
@@ -215,7 +197,7 @@
 			<artifactId>survive-common</artifactId>
 			<version>${survive.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>by.segg3r</groupId>
 			<artifactId>survive-messages</artifactId>
