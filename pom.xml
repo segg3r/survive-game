@@ -14,21 +14,25 @@
 		<module.upgrade-server>survive-upgrade-server</module.upgrade-server>
 		<deploy.path>${project.basedir}/deploy</deploy.path>
 
-		<survive.version>0.0.1-dev</survive.version>
-		<spring.version>4.2.0.RELEASE</spring.version>
-		<testng.version>6.9.6</testng.version>
+		<!-- Keep them alphabetized -->
+		<cglib.version>3.2.0</cglib.version>
+		<cxf.version>3.1.4</cxf.version>
+		<jackson.version>2.6.4</jackson.version>
+		<jetty.version>9.3.6.v20151106</jetty.version>
 		<log4j.version>1.2.17</log4j.version>
-		<mockito.version>1.10.19</mockito.version>
-		<maven.nativedependencies.plugin.version>0.0.7</maven.nativedependencies.plugin.version>
-		<maven.jar.plugin.version>2.3.2</maven.jar.plugin.version>
-		<maven.assembly.plugin.version>2.2.1</maven.assembly.plugin.version>
 		<maven.antrun.plugin.version>1.7</maven.antrun.plugin.version>
-		<slick.version>1.0.1</slick.version>
+		<maven.assembly.plugin.version>2.2.1</maven.assembly.plugin.version>
+		<maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
+		<maven.cobertura.plugin.version>2.7</maven.cobertura.plugin.version>
 		<maven.compiler.plugin.version>3.2</maven.compiler.plugin.version>
 		<maven.findbugs.plugin.version>3.0.1</maven.findbugs.plugin.version>
-		<maven.cobertura.plugin.version>2.7</maven.cobertura.plugin.version>
-		<maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
-		<jetty.version>9.3.6.v20151106</jetty.version>
+		<maven.jar.plugin.version>2.3.2</maven.jar.plugin.version>
+		<maven.nativedependencies.plugin.version>0.0.7</maven.nativedependencies.plugin.version>
+		<mockito.version>1.10.19</mockito.version>
+		<slick.version>1.0.1</slick.version>
+		<spring.version>4.2.0.RELEASE</spring.version>
+		<survive.version>0.0.1-dev</survive.version>
+		<testng.version>6.9.6</testng.version>
 	</properties>
 
 	<modules>
