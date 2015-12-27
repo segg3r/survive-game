@@ -30,5 +30,11 @@ public class UpgradeServiceImpl implements UpgradeService {
 		List<FileInfo> fileInfos = upgradeDAO.getFileInfos(newerVersion);
 		return UpgradeInfo.withFileInfos(version, newerVersion, fileInfos);
 	}
+
+	@Override
+	public byte[] getFileContent(String version, String path)
+			throws UpgradeException {
+		return upgradeDAO.getFileContent(version, path);
+	}
 	
 }

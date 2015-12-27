@@ -10,5 +10,7 @@ public interface UpgradeDAO {
 	List<FileInfo> getFileInfos(String version) throws UpgradeException;
 
 	List<String> getAvailableVersions() throws UpgradeException;
+
+	byte[] getFileContent(String version, String path) throws UpgradeException;
 	
 }

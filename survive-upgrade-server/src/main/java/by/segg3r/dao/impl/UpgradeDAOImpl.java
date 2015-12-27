@@ -1,6 +1,8 @@
 package by.segg3r.dao.impl;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +36,47 @@ public class UpgradeDAOImpl implements UpgradeDAO {
 		List<FileInfo> result = populateFileInfos(versionDirectory,
 				versionDirectoryPath, EMPTY_PATH);
 		return result;
+	}
+
+	@Override
+	public List<String> getAvailableVersions() throws UpgradeException {
+		File upgradeDirectory = getDirectory(UPGRADE_DIRECTORY_PATH);
+		String[] subDirectoriesNames = upgradeDirectory.list();
+		if (subDirectoriesNames == null) {
+			throw new UpgradeException(
+					"Error getting list of available versions");
+		}
+
+		return Arrays.asList(subDirectoriesNames);
+	}
+
+	@Override
+	public byte[] getFileContent(String version, String path)
+			throws UpgradeException {
+		try {
+			String filePath = UPGRADE_DIRECTORY_PATH + PATH_SPLITTER + version
+					+ PATH_SPLITTER + path;
+			File file = new File(filePath);
+
+			if (!file.isFile()) {
+				throw new UpgradeException("Can not get file " + version
+						+ PATH_SPLITTER + path);
+			}
+
+			byte[] result = Files.readAllBytes(file.toPath());
+			return result;
+		} catch (IOException e) {
+			throw new UpgradeException("Error reading file " + version
+					+ PATH_SPLITTER + path, e);
+		}
+	}
+
+	private File getDirectory(String directoryPath) throws UpgradeException {
+		File directory = new File(directoryPath);
+		if (!directory.isDirectory()) {
+			throw new UpgradeException(directory + " is not a directory");
+		}
+		return directory;
 	}
 
 	/**
@@ -72,26 +115,6 @@ public class UpgradeDAOImpl implements UpgradeDAO {
 		}
 
 		return result;
-	}
-
-	@Override
-	public List<String> getAvailableVersions() throws UpgradeException {
-		File upgradeDirectory = getDirectory(UPGRADE_DIRECTORY_PATH);
-		String[] subDirectoriesNames = upgradeDirectory.list();
-		if (subDirectoriesNames == null) {
-			throw new UpgradeException(
-					"Error getting list of available versions");
-		}
-
-		return Arrays.asList(subDirectoriesNames);
-	}
-
-	private File getDirectory(String directoryPath) throws UpgradeException {
-		File directory = new File(directoryPath);
-		if (!directory.isDirectory()) {
-			throw new UpgradeException(directory + " is not a directory");
-		}
-		return directory;
 	}
 
 }

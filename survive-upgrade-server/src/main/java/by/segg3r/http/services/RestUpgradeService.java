@@ -13,14 +13,13 @@ import by.segg3r.http.entities.JSONError;
 import by.segg3r.http.entities.UpgradeInfo;
 import by.segg3r.services.UpgradeService;
 
-@Path("/upgrade")
 public class RestUpgradeService {
 
 	@Autowired
 	private UpgradeService upgradeService;
 
 	@GET
-	@Path("/{version}")
+	@Path("/upgrade/{version}")
 	@Produces({ "application/json" })
 	public Response getUpgradeInfo(@PathParam("version") String version) {
 		try {
@@ -28,6 +27,19 @@ public class RestUpgradeService {
 			return Response.ok().entity(result).build();
 		} catch (UpgradeException e) {
 			return Response.serverError().entity(JSONError.of(e.getMessage()))
+					.build();
+		}
+	}
+
+	@GET
+	@Path("/file/{version}/{path}")
+	public Response getFileContent(@PathParam("version") String version,
+			@PathParam("path") String path) {
+		try {
+			byte[] fileContent = upgradeService.getFileContent(version, path);
+			return Response.ok(fileContent).build();
+		} catch (UpgradeException e) {
+			return Response.serverError().type("application/json").entity(JSONError.of(e.getMessage()))
 					.build();
 		}
 	}
