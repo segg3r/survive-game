@@ -43,7 +43,7 @@ public class ServerConfig {
 		final ServletHolder servletHolder = new ServletHolder(new CXFServlet());
 		final ServletContextHandler context = new ServletContextHandler();
 		context.setContextPath("/");
-		context.addServlet(servletHolder, "/rest/*");
+		context.addServlet(servletHolder, "/*");
 		context.addEventListener(new ContextLoaderListener());
 
 		context.setInitParameter("contextClass",

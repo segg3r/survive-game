@@ -8,15 +8,17 @@ import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 import by.segg3r.http.UpgradeServerJaxRsApplication;
-import by.segg3r.http.services.UpgradeRestService;
+import by.segg3r.http.services.RestUpgradeService;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 @Configuration
+@ComponentScan(basePackages = "by.segg3r")
 public class HttpApplicationConfig {
 
 	@Bean(destroyMethod = "shutdown")
@@ -35,8 +37,8 @@ public class HttpApplicationConfig {
 	}
 
 	@Bean
-	public UpgradeRestService upgradeRestService() {
-		return new UpgradeRestService();
+	public RestUpgradeService upgradeRestService() {
+		return new RestUpgradeService();
 	}
 
 	@Bean
