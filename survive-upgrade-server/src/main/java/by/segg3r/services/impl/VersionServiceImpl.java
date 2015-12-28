@@ -18,8 +18,8 @@ public class VersionServiceImpl implements VersionService {
 	private UpgradeDAO upgradeDAO;
 	
 	@Override
-	public String getNewerVersion(String version) throws UpgradeException {
-		List<String> availableVersions = upgradeDAO.getAvailableVersions();
+	public String getNewerVersion(String version, String path) throws UpgradeException {
+		List<String> availableVersions = upgradeDAO.getAvailableVersions(path);
 		if (availableVersions.isEmpty()) {
 			return version;
 		}

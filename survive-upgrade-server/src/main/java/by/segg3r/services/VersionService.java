@@ -4,6 +4,6 @@ import by.segg3r.exceptions.UpgradeException;
 
 public interface VersionService {
 
-	String getNewerVersion(String version) throws UpgradeException;
+	String getNewerVersion(String version, String path) throws UpgradeException;
 	
 }

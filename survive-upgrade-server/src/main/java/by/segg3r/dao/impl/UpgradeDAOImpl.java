@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,9 +27,9 @@ public class UpgradeDAOImpl implements UpgradeDAO {
 			+ PATH_SPLITTER + UPGRADES_DIRECTORY;
 
 	@Override
-	public List<FileInfo> getFileInfos(String version) throws UpgradeException {
+	public List<FileInfo> getFileInfos(String version, String path) throws UpgradeException {
 		String versionDirectoryPath = UPGRADE_DIRECTORY_PATH + PATH_SPLITTER
-				+ version;
+				+ version + PATH_SPLITTER + path;
 		File versionDirectory = getDirectory(versionDirectoryPath);
 
 		List<FileInfo> result = populateFileInfos(versionDirectory,
@@ -39,15 +38,25 @@ public class UpgradeDAOImpl implements UpgradeDAO {
 	}
 
 	@Override
-	public List<String> getAvailableVersions() throws UpgradeException {
+	public List<String> getAvailableVersions(String path)
+			throws UpgradeException {
 		File upgradeDirectory = getDirectory(UPGRADE_DIRECTORY_PATH);
-		String[] subDirectoriesNames = upgradeDirectory.list();
-		if (subDirectoriesNames == null) {
+		String[] versionDirectories = upgradeDirectory.list();
+		if (versionDirectories == null) {
 			throw new UpgradeException(
 					"Error getting list of available versions");
 		}
 
-		return Arrays.asList(subDirectoriesNames);
+		List<String> result = new ArrayList<String>();
+		for (String versionDirectory : versionDirectories) {
+			String requiredDirectoryPath = UPGRADE_DIRECTORY_PATH
+					+ PATH_SPLITTER + versionDirectory + PATH_SPLITTER + path;
+			File file = new File(requiredDirectoryPath);
+			if (file.isDirectory()) {
+				result.add(versionDirectory);
+			}
+		}
+		return result;
 	}
 
 	@Override

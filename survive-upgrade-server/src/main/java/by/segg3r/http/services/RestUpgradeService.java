@@ -19,11 +19,11 @@ public class RestUpgradeService {
 	private UpgradeService upgradeService;
 
 	@GET
-	@Path("/upgrade/{version}")
+	@Path("/upgrade/{version}/{path:.+}")
 	@Produces({ "application/json" })
-	public Response getUpgradeInfo(@PathParam("version") String version) {
+	public Response getUpgradeInfo(@PathParam("version") String version, @PathParam("path") String path) {
 		try {
-			UpgradeInfo result = upgradeService.getUpgradeInfo(version);
+			UpgradeInfo result = upgradeService.getUpgradeInfo(version, path);
 			return Response.ok().entity(result).build();
 		} catch (UpgradeException e) {
 			return Response.serverError().entity(JSONError.of(e.getMessage()))
@@ -32,7 +32,7 @@ public class RestUpgradeService {
 	}
 
 	@GET
-	@Path("/file/{version}/{path}")
+	@Path("/file/{version}/{path:.+}")
 	public Response getFileContent(@PathParam("version") String version,
 			@PathParam("path") String path) {
 		try {

@@ -36,12 +36,13 @@ public class RestUpgradeServiceTest {
 	@Test(description = "should correctly get upgrade info")
 	public void testGetUpgradeInfo() throws UpgradeException {
 		String version = "0.0.1";
+		String path = "client";
 		UpgradeInfo upgradeInfo = mock(UpgradeInfo.class);
 
-		when(upgradeService.getUpgradeInfo(eq(version)))
+		when(upgradeService.getUpgradeInfo(eq(version), eq(path)))
 				.thenReturn(upgradeInfo);
 
-		Response result = restUpgradeService.getUpgradeInfo(version);
+		Response result = restUpgradeService.getUpgradeInfo(version, path);
 		UpgradeInfo actualUgradeInfo = (UpgradeInfo) result.getEntity();
 		assertEquals(actualUgradeInfo, upgradeInfo);
 	}

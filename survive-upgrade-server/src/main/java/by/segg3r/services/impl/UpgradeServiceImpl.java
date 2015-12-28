@@ -21,14 +21,14 @@ public class UpgradeServiceImpl implements UpgradeService {
 	private VersionService versionService;
 	
 	@Override
-	public UpgradeInfo getUpgradeInfo(String version) throws UpgradeException {
-		String newerVersion = versionService.getNewerVersion(version);
+	public UpgradeInfo getUpgradeInfo(String version, String path) throws UpgradeException {
+		String newerVersion = versionService.getNewerVersion(version, path);
 		if (newerVersion.equals(version)) {
-			return UpgradeInfo.noUpgradeRequired(version);
+			return UpgradeInfo.noUpgradeRequired(path, version);
 		}
 			
-		List<FileInfo> fileInfos = upgradeDAO.getFileInfos(newerVersion);
-		return UpgradeInfo.withFileInfos(version, newerVersion, fileInfos);
+		List<FileInfo> fileInfos = upgradeDAO.getFileInfos(newerVersion, path);
+		return UpgradeInfo.withFileInfos(path, version, newerVersion, fileInfos);
 	}
 
 	@Override
