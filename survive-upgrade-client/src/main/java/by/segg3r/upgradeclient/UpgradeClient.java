@@ -5,7 +5,7 @@ import by.segg3r.http.entities.UpgradeInfo;
 
 public interface UpgradeClient {
 
-	boolean executeUpgrade(String rootPath) throws UpgradeException;
+	UpgradeResult executeUpgrade(String rootPath) throws UpgradeException;
 
 	void upgradeUpgradeClient(String rootPath, UpgradeInfo upgradeInfo) throws UpgradeException;
 

@@ -14,6 +14,7 @@ import by.segg3r.http.entities.UpgradeInfo;
 import by.segg3r.upgradeclient.FileSystemService;
 import by.segg3r.upgradeclient.PropertiesService;
 import by.segg3r.upgradeclient.UpgradeClient;
+import by.segg3r.upgradeclient.UpgradeResult;
 import by.segg3r.upgradeclient.UpgradeServerAPI;
 
 @Component
@@ -27,7 +28,7 @@ public class UpgradeClientImpl implements UpgradeClient {
 	private FileSystemService fileSystemService;
 
 	@Override
-	public boolean executeUpgrade(String rootPath) throws UpgradeException {
+	public UpgradeResult executeUpgrade(String rootPath) throws UpgradeException {
 		try {
 			String upgradeClientVersion = propertiesService
 					.getUpgradeClientVersion(rootPath);
@@ -35,7 +36,7 @@ public class UpgradeClientImpl implements UpgradeClient {
 					.getUpgradeClientUpgradeInfo(upgradeClientVersion);
 			if (upgradeClientUpgradeInfo.isUpgradeRequired()) {
 				upgradeUpgradeClient(rootPath, upgradeClientUpgradeInfo);
-				return false;
+				return UpgradeResult.UPGRADER_UPGRADED;
 			}
 
 			String clientVersion = propertiesService.getClientVersion(rootPath);
@@ -43,9 +44,10 @@ public class UpgradeClientImpl implements UpgradeClient {
 					.getClientUpgradeInfo(clientVersion);
 			if (clientUpgradeInfo.isUpgradeRequired()) {
 				upgradeClient(rootPath, clientUpgradeInfo);
+				return UpgradeResult.CLIENT_UPGRADED;
 			}
 
-			return true;
+			return UpgradeResult.NO_UPGRADE;
 		} catch (IOException | APIException e) {
 			throw new UpgradeException(
 					"Error performing call to upgrade server", e);
@@ -98,5 +100,6 @@ public class UpgradeClientImpl implements UpgradeClient {
 		}
 		fileSystemService.copyFromTemporaryFolderTo(upgradeInfo.getPath(),
 				upgradeClientPath);
+		fileSystemService.removeTemporaryFolder();
 	}
 }

@@ -10,8 +10,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -33,6 +32,7 @@ import by.segg3r.http.entities.FileInfo;
 import by.segg3r.http.entities.UpgradeInfo;
 import by.segg3r.upgradeclient.FileSystemService;
 import by.segg3r.upgradeclient.PropertiesService;
+import by.segg3r.upgradeclient.UpgradeResult;
 import by.segg3r.upgradeclient.UpgradeServerAPI;
 
 public class UpgradeClientTest {
@@ -58,7 +58,7 @@ public class UpgradeClientTest {
 		reset(propertiesService, upgradeServerAPI, fileSystemService, client);
 	}
 
-	@Test(description = "executeUpgrade should return 'false' if upgrade-client upgrade was performed")
+	@Test(description = "executeUpgrade should return 'UPGRADER_UPGRADED' if upgrade-client upgrade was performed")
 	public void testExecuteUpgradeUpgradeClientUpgradePerformed()
 			throws UpgradeException, APIException, IOException {
 		String upgradeClientVersion = "0.0.1";
@@ -78,13 +78,13 @@ public class UpgradeClientTest {
 		doNothing().when(client).upgradeUpgradeClient(eq(rootPath),
 				eq(upgradeInfo));
 
-		boolean upgradeResult = client.executeUpgrade(rootPath);
-		assertFalse(upgradeResult);
+		UpgradeResult upgradeResult = client.executeUpgrade(rootPath);
+		assertEquals(upgradeResult, UpgradeResult.UPGRADER_UPGRADED);
 		verify(client, times(1)).upgradeUpgradeClient(eq(rootPath),
 				eq(upgradeInfo));
 	}
 
-	@Test(description = "executeUpgrade should execute client upgrade and return 'true'"
+	@Test(description = "executeUpgrade should execute client upgrade and return 'CLIENT_UPGRADED'"
 			+ "if upgread-client upgrade is not needed and client upgrade is needed")
 	public void testExecuteUpgradeClientUpgradePerformed()
 			throws UpgradeException, APIException, IOException {
@@ -116,8 +116,8 @@ public class UpgradeClientTest {
 		doNothing().when(client).upgradeUpgradeClient(eq(rootPath),
 				eq(upgradeClientUpgradeInfo));
 
-		boolean upgradeResult = client.executeUpgrade(rootPath);
-		assertTrue(upgradeResult);
+		UpgradeResult upgradeResult = client.executeUpgrade(rootPath);
+		assertEquals(upgradeResult, UpgradeResult.CLIENT_UPGRADED);
 		verify(client, never()).upgradeUpgradeClient(eq(rootPath),
 				any(UpgradeInfo.class));
 		verify(client, times(1)).upgradeClient(eq(rootPath),
@@ -154,8 +154,8 @@ public class UpgradeClientTest {
 		doNothing().when(client).upgradeUpgradeClient(eq(rootPath),
 				eq(upgradeClientUpgradeInfo));
 
-		boolean upgradeResult = client.executeUpgrade(rootPath);
-		assertTrue(upgradeResult);
+		UpgradeResult upgradeResult = client.executeUpgrade(rootPath);
+		assertEquals(upgradeResult, UpgradeResult.NO_UPGRADE);
 		verify(client, never()).upgradeUpgradeClient(eq(rootPath),
 				any(UpgradeInfo.class));
 		verify(client, never()).upgradeClient(eq(rootPath),
@@ -187,17 +187,24 @@ public class UpgradeClientTest {
 
 		InOrder order = inOrder(fileSystemService, upgradeServerAPI,
 				propertiesService);
-		
+
 		client.upgradeUpgradeClient(rootPath, upgradeInfo);
-	
+
 		order.verify(fileSystemService).removeTemporaryFolder();
 		order.verify(fileSystemService).createTemporaryFolder();
-		order.verify(fileSystemService).writeTemporaryFile(eq(path + FileSystem.FILE_SPLITTER + imageInfo.getPath()), eq(image));
-		order.verify(fileSystemService).writeTemporaryFile(eq(path + FileSystem.FILE_SPLITTER + jarInfo.getPath()), eq(jar));
-		order.verify(fileSystemService).copyFromTemporaryFolderTo(eq(path), eq(rootPath + FileSystem.FILE_SPLITTER + path));
-		order.verify(propertiesService).updateUpgradeClientVersion(eq(rootPath), eq(upgradeVersion));
+		order.verify(fileSystemService).writeTemporaryFile(
+				eq(path + FileSystem.FILE_SPLITTER + imageInfo.getPath()),
+				eq(image));
+		order.verify(fileSystemService).writeTemporaryFile(
+				eq(path + FileSystem.FILE_SPLITTER + jarInfo.getPath()),
+				eq(jar));
+		order.verify(fileSystemService).copyFromTemporaryFolderTo(eq(path),
+				eq(rootPath + FileSystem.FILE_SPLITTER + path));
+		order.verify(fileSystemService).removeTemporaryFolder();
+		order.verify(propertiesService).updateUpgradeClientVersion(
+				eq(rootPath), eq(upgradeVersion));
 	}
-	
+
 	@Test(description = "should upgrade client")
 	public void testUpgradeClient() throws Exception {
 		String rootPath = "D:/survive-game";
@@ -223,15 +230,22 @@ public class UpgradeClientTest {
 
 		InOrder order = inOrder(fileSystemService, upgradeServerAPI,
 				propertiesService);
-		
+
 		client.upgradeClient(rootPath, upgradeInfo);
-	
+
 		order.verify(fileSystemService).removeTemporaryFolder();
 		order.verify(fileSystemService).createTemporaryFolder();
-		order.verify(fileSystemService).writeTemporaryFile(eq(path + FileSystem.FILE_SPLITTER + imageInfo.getPath()), eq(image));
-		order.verify(fileSystemService).writeTemporaryFile(eq(path + FileSystem.FILE_SPLITTER + jarInfo.getPath()), eq(jar));
-		order.verify(fileSystemService).copyFromTemporaryFolderTo(eq(path), eq(rootPath + FileSystem.FILE_SPLITTER + path));
-		order.verify(propertiesService).updateClientVersion(eq(rootPath), eq(upgradeVersion));
+		order.verify(fileSystemService).writeTemporaryFile(
+				eq(path + FileSystem.FILE_SPLITTER + imageInfo.getPath()),
+				eq(image));
+		order.verify(fileSystemService).writeTemporaryFile(
+				eq(path + FileSystem.FILE_SPLITTER + jarInfo.getPath()),
+				eq(jar));
+		order.verify(fileSystemService).copyFromTemporaryFolderTo(eq(path),
+				eq(rootPath + FileSystem.FILE_SPLITTER + path));
+		order.verify(fileSystemService).removeTemporaryFolder();
+		order.verify(propertiesService).updateClientVersion(eq(rootPath),
+				eq(upgradeVersion));
 	}
 
 }

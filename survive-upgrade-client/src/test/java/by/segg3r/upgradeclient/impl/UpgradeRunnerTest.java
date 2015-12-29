@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
 
 import by.segg3r.exceptions.UpgradeException;
 import by.segg3r.upgradeclient.UpgradeClient;
+import by.segg3r.upgradeclient.UpgradeResult;
 
 public class UpgradeRunnerTest {
 
@@ -32,22 +33,31 @@ public class UpgradeRunnerTest {
 		reset(upgradeClient);
 	}
 
-	@Test(description = "should return code '0' if client is upgraded")
-	public void testRunUpgradeSuccessful() throws UpgradeException {
+	@Test(description = "should return code '0' if no upgrade needed")
+	public void testRunUpgradeNotNeeded() throws UpgradeException {
 		String rootPath = "D:/survive-game";
 
-		when(upgradeClient.executeUpgrade(eq(rootPath))).thenReturn(true);
+		when(upgradeClient.executeUpgrade(eq(rootPath))).thenReturn(UpgradeResult.NO_UPGRADE);
 
 		assertEquals(upgradeRunner.runUpgrade(rootPath), 0);
 	}
 
 	@Test(description = "should return code '2' if upgrader is upgraded")
-	public void testRunUpgradeNotNeeded() throws UpgradeException {
+	public void testRunUpgradeUpgraderUpgraded() throws UpgradeException {
 		String rootPath = "D:/survive-game";
 
-		when(upgradeClient.executeUpgrade(eq(rootPath))).thenReturn(false);
+		when(upgradeClient.executeUpgrade(eq(rootPath))).thenReturn(UpgradeResult.UPGRADER_UPGRADED);
 
 		assertEquals(upgradeRunner.runUpgrade(rootPath), 2);
+	}
+	
+	@Test(description = "should return code '1' if client is upgraded")
+	public void testRunUpgradeClientUpgraded() throws UpgradeException {
+		String rootPath = "D:/survive-game";
+
+		when(upgradeClient.executeUpgrade(eq(rootPath))).thenReturn(UpgradeResult.CLIENT_UPGRADED);
+
+		assertEquals(upgradeRunner.runUpgrade(rootPath), 3);
 	}
 
 	@Test(description = "should return code '1' if failed the upgrade")

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import by.segg3r.upgradeclient.UpgradeClient;
+import by.segg3r.upgradeclient.UpgradeResult;
 import by.segg3r.upgradeclient.UpgradeRunner;
 
 @Component
@@ -15,8 +16,8 @@ public class UpgradeRunnerImpl implements UpgradeRunner {
 	@Override
 	public int runUpgrade(String rootPath) {
 		try {
-			boolean clientUpgradePerformed = upgradeClient.executeUpgrade(rootPath);
-			return clientUpgradePerformed ? 0 : 2;
+			UpgradeResult upgradeResult = upgradeClient.executeUpgrade(rootPath);
+			return upgradeResult.getResultCode();
 		} catch (Exception e) {
 			return 1;
 		}
