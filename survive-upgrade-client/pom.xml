@@ -18,6 +18,7 @@
 		<deploy.debugPath>${deploy.path}/${project.artifactId}-${project.version}/launcher-debug.bat</deploy.debugPath>
 		<deploy.upgrade-client.runPath>run.bat</deploy.upgrade-client.runPath>
 		<deploy.upgrade-client.debugPath>debug.bat</deploy.upgrade-client.debugPath>
+		<deploy.client.runPath>run.bat</deploy.client.runPath>
 		<deploy.debugPort>5008</deploy.debugPort>
 
 		<release.finalName>${project.artifactId}-${project.version}.jar</release.finalName>
@@ -27,6 +28,7 @@
 		<release.zip.targetName>${project.artifactId}-${project.version}-${release.zip.postfix}.zip</release.zip.targetName>
 		<release.zip.targetPath>${project.build.directory}</release.zip.targetPath>
 
+		<release.client.path>client</release.client.path>
 		<release.upgrade-client.path>upgrade-client</release.upgrade-client.path>
 		<release.upgrade-client-temp.path>upgrade-client-temp</release.upgrade-client-temp.path>
 		<release.resources.path>${release.upgrade-client.path}/resources</release.resources.path>

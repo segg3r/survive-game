@@ -2,7 +2,7 @@ package by.segg3r.upgradeclient;
 
 public enum UpgradeResult {
 
-	UPGRADER_UPGRADED(2), CLIENT_UPGRADED(3), NO_UPGRADE(0);
+	UPGRADER_UPGRADED(1), CLIENT_UPGRADED(2), NO_UPGRADE(0), UPGRADE_FAILED(3);
 	
 	private int resultCode;
 	

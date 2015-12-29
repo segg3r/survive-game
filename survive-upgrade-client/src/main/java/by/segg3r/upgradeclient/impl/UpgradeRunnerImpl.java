@@ -19,7 +19,7 @@ public class UpgradeRunnerImpl implements UpgradeRunner {
 			UpgradeResult upgradeResult = upgradeClient.executeUpgrade(rootPath);
 			return upgradeResult.getResultCode();
 		} catch (Exception e) {
-			return 1;
+			return UpgradeResult.UPGRADE_FAILED.getResultCode();
 		}
 	}
 

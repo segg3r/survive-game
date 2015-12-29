@@ -48,7 +48,7 @@ public class UpgradeRunnerTest {
 
 		when(upgradeClient.executeUpgrade(eq(rootPath))).thenReturn(UpgradeResult.UPGRADER_UPGRADED);
 
-		assertEquals(upgradeRunner.runUpgrade(rootPath), 2);
+		assertEquals(upgradeRunner.runUpgrade(rootPath), 1);
 	}
 	
 	@Test(description = "should return code '1' if client is upgraded")
@@ -57,7 +57,7 @@ public class UpgradeRunnerTest {
 
 		when(upgradeClient.executeUpgrade(eq(rootPath))).thenReturn(UpgradeResult.CLIENT_UPGRADED);
 
-		assertEquals(upgradeRunner.runUpgrade(rootPath), 3);
+		assertEquals(upgradeRunner.runUpgrade(rootPath), 2);
 	}
 
 	@Test(description = "should return code '1' if failed the upgrade")
@@ -67,7 +67,7 @@ public class UpgradeRunnerTest {
 		when(upgradeClient.executeUpgrade(eq(rootPath))).thenThrow(
 				new UpgradeException("Upgrade is failed"));
 
-		assertEquals(upgradeRunner.runUpgrade(rootPath), 1);
+		assertEquals(upgradeRunner.runUpgrade(rootPath), 3);
 	}
 
 }
