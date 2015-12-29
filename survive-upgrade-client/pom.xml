@@ -6,17 +6,19 @@
 		<artifactId>survive-root</artifactId>
 		<version>0.0.1-dev</version>
 	</parent>
-	<artifactId>survive-upgrade-server</artifactId>
+	<artifactId>survive-upgrade-client</artifactId>
 
 	<properties>
 		<parent.basedir>${project.basedir}/..</parent.basedir>
 		<parent.target>${parent.basedir}/target</parent.target>
 
 		<deploy.path>${parent.basedir}/deploy</deploy.path>
-		<deploy.fullPath>${deploy.path}/${project.artifactId}-${project.version}</deploy.fullPath>
-		<deploy.runPath>${deploy.fullPath}/run.bat</deploy.runPath>
-		<deploy.debugPath>${deploy.fullPath}/debug.bat</deploy.debugPath>
-		<deploy.debugPort>5007</deploy.debugPort>
+		<deploy.fullPath>${deploy.path}/${project.artifactId}-${project.version}/${release.upgrade-client.path}</deploy.fullPath>
+		<deploy.runPath>${deploy.path}/${project.artifactId}-${project.version}/launcher-run.bat</deploy.runPath>
+		<deploy.debugPath>${deploy.path}/${project.artifactId}-${project.version}/launcher-debug.bat</deploy.debugPath>
+		<deploy.upgrade-client.runPath>run.bat</deploy.upgrade-client.runPath>
+		<deploy.upgrade-client.debugPath>debug.bat</deploy.upgrade-client.debugPath>
+		<deploy.debugPort>5008</deploy.debugPort>
 
 		<release.finalName>${project.artifactId}-${project.version}.jar</release.finalName>
 
@@ -25,13 +27,18 @@
 		<release.zip.targetName>${project.artifactId}-${project.version}-${release.zip.postfix}.zip</release.zip.targetName>
 		<release.zip.targetPath>${project.build.directory}</release.zip.targetPath>
 
-		<release.resources.path>resources</release.resources.path>
-		<release.lib.path>lib</release.lib.path>
+		<release.upgrade-client.path>upgrade-client</release.upgrade-client.path>
+		<release.upgrade-client-temp.path>upgrade-client-temp</release.upgrade-client-temp.path>
+		<release.resources.path>${release.upgrade-client.path}/resources</release.resources.path>
+		<release.resources.path.local>resources</release.resources.path.local>
+		<release.lib.path>${release.upgrade-client.path}/lib</release.lib.path>
+		<release.lib.path.local>lib</release.lib.path.local>
 		<release.zip.postfix>release</release.zip.postfix>
 
 		<source.src.path>src</source.src.path>
 		<source.resources.path>${source.src.path}/main/resources</source.resources.path>
 		<source.scripts.path>${source.src.path}/main/scripts</source.scripts.path>
+		<source.launcher-scripts.path>${source.src.path}/main/launcher-scripts</source.launcher-scripts.path>
 		<source.assembly.path>${source.src.path}/META-INF/assembly.xml</source.assembly.path>
 
 		<execution.class.main>by.segg3r.Runner</execution.class.main>
@@ -73,7 +80,7 @@
 						<manifest>
 							<mainClass>${execution.class.main}</mainClass>
 							<addClasspath>true</addClasspath>
-							<classpathPrefix>${release.lib.path}</classpathPrefix>
+							<classpathPrefix>${release.lib.path.local}</classpathPrefix>
 						</manifest>
 					</archive>
 				</configuration>
@@ -126,7 +133,7 @@
 							<target name="execute-run" unless="${debug}">
 								<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
 									dest="${deploy.path}" />
-								<exec executable="${deploy.runPath}" dir="${deploy.fullPath}"
+								<exec executable="${deploy.runPath}" dir="${deploy.path}/${project.artifactId}-${project.version}"
 									spawn="false" />
 							</target>
 						</configuration>
@@ -141,7 +148,7 @@
 							<target name="execute-debug" if="${debug}">
 								<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
 									dest="${deploy.path}" />
-								<exec executable="${deploy.debugPath}" dir="${deploy.fullPath}"
+								<exec executable="${deploy.debugPath}" dir="${deploy.path}/${project.artifactId}-${project.version}"
 									spawn="false" />
 							</target>
 						</configuration>
@@ -159,18 +166,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib-nodep</artifactId>
-			<version>${cglib.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
@@ -183,39 +178,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>${log4j.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-webapp</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.jaxrs</groupId>
-			<artifactId>jackson-jaxrs-json-provider</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
 		</dependency>
 
 		<dependency>
@@ -231,5 +196,24 @@
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${apache.commons.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${apache.httpcomponents.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson.version}</version>
+		</dependency>
+
 	</dependencies>
 </project>

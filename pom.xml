@@ -11,12 +11,17 @@
 		<module.messages>survive-messages</module.messages>
 		<module.client>survive-client</module.client>
 		<module.server>survive-server</module.server>
+		<module.upgrade-common>survive-upgrade-common</module.upgrade-common>
 		<module.upgrade-server>survive-upgrade-server</module.upgrade-server>
+		<module.upgrade-client>survive-upgrade-client</module.upgrade-client>
 		<deploy.path>${project.basedir}/deploy</deploy.path>
 
 		<!-- Keep them alphabetized -->
+		<apache.commons.version>2.4</apache.commons.version>
+		<apache.httpcomponents.version>4.5.1</apache.httpcomponents.version>
 		<cglib.version>3.2.0</cglib.version>
 		<cxf.version>3.1.4</cxf.version>
+		<gson.version>2.5</gson.version>
 		<jackson.version>2.6.4</jackson.version>
 		<jetty.version>9.3.6.v20151106</jetty.version>
 		<log4j.version>1.2.17</log4j.version>
@@ -40,7 +45,9 @@
 		<module>${module.messages}</module>
 		<module>${module.server}</module>
 		<module>${module.client}</module>
+		<module>${module.upgrade-common}</module>
 		<module>${module.upgrade-server}</module>
+		<module>${module.upgrade-client}</module>
 	</modules>
 
 	<build>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+	<id>${release.zip.postfix}</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<files>
+		<file>
+			<source>${project.build.directory}/${release.finalName}</source>
+			<outputDirectory>${release.upgrade-client.path}</outputDirectory>
+		</file>
+	</files>
+
+	<fileSets>
+		<fileSet>
+			<directory>${source.resources.path}</directory>
+			<outputDirectory>${release.resources.path}</outputDirectory>
+		</fileSet>
+
+		<fileSet>
+			<directory>${source.launcher-scripts.path}</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+				<include>*.sh</include>
+				<include>*.bat</include>
+			</includes>
+			<filtered>true</filtered>
+			<fileMode>0755</fileMode>
+		</fileSet>
+		
+		<fileSet>
+			<directory>${source.scripts.path}</directory>
+			<outputDirectory>${release.upgrade-client.path}</outputDirectory>
+			<includes>
+				<include>*.sh</include>
+				<include>*.bat</include>
+			</includes>
+			<filtered>true</filtered>
+			<fileMode>0755</fileMode>
+		</fileSet>
+	</fileSets>
+
+	<dependencySets>
+		<dependencySet>
+			<useProjectArtifact>false</useProjectArtifact>
+			<outputDirectory>${release.lib.path}</outputDirectory>
+			<scope>runtime</scope>
+		</dependencySet>
+	</dependencySets>
+</assembly>
