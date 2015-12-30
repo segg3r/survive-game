@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import by.segg3r.Application;
+import by.segg3r.ApplicationVersion;
 import by.segg3r.exceptions.UpgradeException;
 import by.segg3r.http.entities.JSONError;
 import by.segg3r.http.entities.UpgradeInfo;
@@ -30,8 +31,8 @@ public class RestUpgradeService {
 				throw new UpgradeException("Application '" + applicationPath
 						+ "' does not exist");
 			}
-			UpgradeInfo result = upgradeService.getUpgradeInfo(version,
-					application);
+			ApplicationVersion applicationVersion = new ApplicationVersion(application, version);
+			UpgradeInfo result = upgradeService.getUpgradeInfo(applicationVersion);
 			return Response.ok().entity(result).build();
 		} catch (UpgradeException e) {
 			return Response.serverError().entity(JSONError.of(e.getMessage()))

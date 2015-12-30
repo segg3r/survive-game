@@ -7,12 +7,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import by.segg3r.Application;
+import by.segg3r.ApplicationVersion;
 import by.segg3r.dao.UpgradeDAO;
 import by.segg3r.exceptions.UpgradeException;
 import by.segg3r.http.entities.FileInfo;
+import by.segg3r.util.DigestUtil;
 
 @Component
 public class UpgradeDAOImpl implements UpgradeDAO {
@@ -27,19 +30,29 @@ public class UpgradeDAOImpl implements UpgradeDAO {
 	private static final String UPGRADE_DIRECTORY_PATH = CURRENT_DIRECTORY_PATH
 			+ PATH_SPLITTER + UPGRADES_DIRECTORY;
 
-	@Override
-	public List<FileInfo> getFileInfos(String version, Application application) throws UpgradeException {
-		String versionDirectoryPath = UPGRADE_DIRECTORY_PATH + PATH_SPLITTER
-				+ version + PATH_SPLITTER + application.getPath();
-		File versionDirectory = getDirectory(versionDirectoryPath);
+	@Autowired
+	private DigestUtil digestUtil;
 
-		List<FileInfo> result = populateFileInfos(versionDirectory,
-				versionDirectoryPath, EMPTY_PATH);
-		return result;
+	@Override
+	public List<FileInfo> getFileInfos(ApplicationVersion applicationVersion)
+			throws UpgradeException {
+		try {
+			String versionDirectoryPath = UPGRADE_DIRECTORY_PATH
+					+ PATH_SPLITTER + applicationVersion.getVersion()
+					+ PATH_SPLITTER
+					+ applicationVersion.getApplication().getPath();
+			File versionDirectory = getDirectory(versionDirectoryPath);
+
+			List<FileInfo> result = populateFileInfos(versionDirectory,
+					versionDirectoryPath, EMPTY_PATH);
+			return result;
+		} catch (IOException e) {
+			throw new UpgradeException("Eror during getting file infos", e);
+		}
 	}
 
 	@Override
-	public List<String> getAvailableVersions(Application application)
+	public List<ApplicationVersion> getAvailableVersions(Application application)
 			throws UpgradeException {
 		File upgradeDirectory = getDirectory(UPGRADE_DIRECTORY_PATH);
 		String[] versionDirectories = upgradeDirectory.list();
@@ -48,13 +61,14 @@ public class UpgradeDAOImpl implements UpgradeDAO {
 					"Error getting list of available versions");
 		}
 
-		List<String> result = new ArrayList<String>();
+		List<ApplicationVersion> result = new ArrayList<ApplicationVersion>();
 		for (String versionDirectory : versionDirectories) {
 			String requiredDirectoryPath = UPGRADE_DIRECTORY_PATH
-					+ PATH_SPLITTER + versionDirectory + PATH_SPLITTER + application.getPath();
+					+ PATH_SPLITTER + versionDirectory + PATH_SPLITTER
+					+ application.getPath();
 			File file = new File(requiredDirectoryPath);
 			if (file.isDirectory()) {
-				result.add(versionDirectory);
+				result.add(ApplicationVersion.of(application, versionDirectory));
 			}
 		}
 		return result;
@@ -96,9 +110,11 @@ public class UpgradeDAOImpl implements UpgradeDAO {
 	 * @param currentFullPath
 	 *            current path to attach to found file
 	 * @return recursively built list of FileInfos
+	 * @throws IOException
 	 */
 	private List<FileInfo> populateFileInfos(File directory,
-			String currentFullPath, String currentRelativePath) {
+			String currentFullPath, String currentRelativePath)
+			throws IOException {
 		String[] subFilesNames = directory.list();
 		if (subFilesNames == null) {
 			return Collections.emptyList();
@@ -118,8 +134,9 @@ public class UpgradeDAOImpl implements UpgradeDAO {
 						subFileFullPath, subFileRelativePath);
 				result.addAll(subResult);
 			} else if (subFile.isFile()) {
+				String digest = digestUtil.getFileDigest(subFile);
 				FileInfo fileInfo = new FileInfo(subFileRelativePath,
-						subFile.length());
+						subFile.length(), digest);
 				result.add(fileInfo);
 			}
 		}

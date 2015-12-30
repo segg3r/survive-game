@@ -3,14 +3,18 @@ package by.segg3r.services.impl;
 import java.io.Serializable;
 import java.util.Comparator;
 
-public class VersionComparator implements Comparator<String>, Serializable {
+import by.segg3r.ApplicationVersion;
+
+public class VersionComparator implements Comparator<ApplicationVersion>, Serializable {
 
 	private static final long serialVersionUID = 2998489347511848656L;
 
 	private static final String VERSION_SPLITTER_REGEX = "\\.";
 	
 	@Override
-	public int compare(String version1, String version2) {
+	public int compare(ApplicationVersion applicationVersion1, ApplicationVersion applicationVersion2) {
+		String version1 = applicationVersion1.getVersion();
+		String version2 = applicationVersion2.getVersion();
 		String[] items1 = version1.split(VERSION_SPLITTER_REGEX);
 		String[] items2 = version2.split(VERSION_SPLITTER_REGEX);
 

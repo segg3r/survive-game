@@ -17,7 +17,8 @@
 		<deploy.path>${project.basedir}/deploy</deploy.path>
 
 		<!-- Keep them alphabetized -->
-		<apache.commons.version>2.4</apache.commons.version>
+		<apache.commons-io.version>2.4</apache.commons-io.version>
+		<apache.commons-codec.version>1.10</apache.commons-codec.version>
 		<apache.httpcomponents.version>4.5.1</apache.httpcomponents.version>
 		<cglib.version>3.2.0</cglib.version>
 		<cxf.version>3.1.4</cxf.version>

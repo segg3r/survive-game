@@ -50,4 +50,10 @@ public class FileSystemServiceImpl implements FileSystemService {
 		FileUtils.copyDirectory(sourceDirectory, destinationDirectory);
 	}
 
+	@Override
+	public void removeFile(String path) throws IOException {
+		File file = new File(path);
+		FileUtils.forceDelete(file);
+	}
+
 }

@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 import by.segg3r.constants.FileSystem;
 import by.segg3r.exceptions.APIException;
 import by.segg3r.exceptions.UpgradeException;
-import by.segg3r.http.entities.FileInfo;
+import by.segg3r.http.entities.FileUpgradeMode;
+import by.segg3r.http.entities.UpgradeFileInfo;
 import by.segg3r.http.entities.UpgradeInfo;
 import by.segg3r.upgradeclient.FileSystemService;
 import by.segg3r.upgradeclient.PropertiesService;
@@ -28,7 +29,8 @@ public class UpgradeClientImpl implements UpgradeClient {
 	private FileSystemService fileSystemService;
 
 	@Override
-	public UpgradeResult executeUpgrade(String rootPath) throws UpgradeException {
+	public UpgradeResult executeUpgrade(String rootPath)
+			throws UpgradeException {
 		try {
 			String upgradeClientVersion = propertiesService
 					.getUpgradeClientVersion(rootPath);
@@ -62,8 +64,7 @@ public class UpgradeClientImpl implements UpgradeClient {
 			propertiesService.updateClientVersion(rootPath,
 					clientUpgradeInfo.getUpgradeVersion());
 		} catch (APIException | IOException e) {
-			throw new UpgradeException("Error during client upgrade",
-					e);
+			throw new UpgradeException("Error during client upgrade", e);
 		}
 	}
 
@@ -75,8 +76,7 @@ public class UpgradeClientImpl implements UpgradeClient {
 			propertiesService.updateUpgradeClientVersion(rootPath,
 					upgradeInfo.getUpgradeVersion());
 		} catch (APIException | IOException e) {
-			throw new UpgradeException("Error during upgrade client upgrade",
-					e);
+			throw new UpgradeException("Error during upgrade client upgrade", e);
 		}
 	}
 
@@ -88,15 +88,22 @@ public class UpgradeClientImpl implements UpgradeClient {
 		fileSystemService.removeTemporaryFolder();
 		fileSystemService.createTemporaryFolder();
 
-		List<FileInfo> fileInfos = upgradeInfo.getFileInfos();
-		for (FileInfo fileInfo : fileInfos) {
-			String fileRelativePathFromRoot = upgradeInfo.getPath()
-					+ FileSystem.FILE_SPLITTER + fileInfo.getPath();
+		List<UpgradeFileInfo> fileInfos = upgradeInfo.getFileInfos();
+		for (UpgradeFileInfo fileInfo : fileInfos) {
+			if (fileInfo.getFileUpgradeMode() == FileUpgradeMode.ADD
+					|| fileInfo.getFileUpgradeMode() == FileUpgradeMode.UPDATE) {
+				String fileRelativePathFromRoot = upgradeInfo.getPath()
+						+ FileSystem.FILE_SPLITTER + fileInfo.getPath();
 
-			byte[] fileContent = upgradeServerAPI.getFileContent(
-					upgradeVersion, fileRelativePathFromRoot);
-			fileSystemService.writeTemporaryFile(fileRelativePathFromRoot,
-					fileContent);
+				byte[] fileContent = upgradeServerAPI.getFileContent(
+						upgradeVersion, fileRelativePathFromRoot);
+				fileSystemService.writeTemporaryFile(fileRelativePathFromRoot,
+						fileContent);
+			} else if (fileInfo.getFileUpgradeMode() == FileUpgradeMode.REMOVE) {
+				String removedFileFullPath = upgradeClientPath
+						+ FileSystem.FILE_SPLITTER + fileInfo.getPath();
+				fileSystemService.removeFile(removedFileFullPath);
+			}
 		}
 		fileSystemService.copyFromTemporaryFolderTo(upgradeInfo.getPath(),
 				upgradeClientPath);

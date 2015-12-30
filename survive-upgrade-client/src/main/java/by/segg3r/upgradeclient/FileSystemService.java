@@ -11,5 +11,7 @@ public interface FileSystemService {
 	void writeTemporaryFile(String fileRelativePath, byte[] fileContent) throws IOException;
 
 	void copyFromTemporaryFolderTo(String sourceRelativePath, String destinationFullPath) throws IOException;
+
+	void removeFile(String path) throws IOException;
 	
 }

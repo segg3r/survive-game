@@ -1,6 +1,7 @@
 package by.segg3r.upgradeclient.impl;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.inOrder;
@@ -28,7 +29,8 @@ import org.testng.annotations.Test;
 import by.segg3r.constants.FileSystem;
 import by.segg3r.exceptions.APIException;
 import by.segg3r.exceptions.UpgradeException;
-import by.segg3r.http.entities.FileInfo;
+import by.segg3r.http.entities.FileUpgradeMode;
+import by.segg3r.http.entities.UpgradeFileInfo;
 import by.segg3r.http.entities.UpgradeInfo;
 import by.segg3r.upgradeclient.FileSystemService;
 import by.segg3r.upgradeclient.PropertiesService;
@@ -168,9 +170,15 @@ public class UpgradeClientTest {
 		String path = "upgrade-client";
 		String clientVersion = "0.0.1";
 		String upgradeVersion = "0.0.2";
-		FileInfo imageInfo = new FileInfo("resources/images/image.png", 200);
-		FileInfo jarInfo = new FileInfo("lib/spring.jar", 500);
-		List<FileInfo> fileInfos = Arrays.asList(imageInfo, jarInfo);
+		UpgradeFileInfo imageInfo = new UpgradeFileInfo(
+				"resources/images/image.png", 200, "someDigest",
+				FileUpgradeMode.ADD);
+		UpgradeFileInfo jarInfo = new UpgradeFileInfo("lib/spring.jar", 500,
+				"someDigest", FileUpgradeMode.UPDATE);
+		UpgradeFileInfo removedFileInfo = new UpgradeFileInfo("removeMe.txt",
+				100, "someDigest", FileUpgradeMode.REMOVE);
+		List<UpgradeFileInfo> fileInfos = Arrays.asList(imageInfo, jarInfo,
+				removedFileInfo);
 		UpgradeInfo upgradeInfo = UpgradeInfo.withFileInfos(path,
 				clientVersion, upgradeVersion, fileInfos);
 
@@ -198,11 +206,20 @@ public class UpgradeClientTest {
 		order.verify(fileSystemService).writeTemporaryFile(
 				eq(path + FileSystem.FILE_SPLITTER + jarInfo.getPath()),
 				eq(jar));
+		order.verify(fileSystemService)
+				.removeFile(
+						eq(rootPath + FileSystem.FILE_SPLITTER + path
+								+ FileSystem.FILE_SPLITTER
+								+ removedFileInfo.getPath()));
 		order.verify(fileSystemService).copyFromTemporaryFolderTo(eq(path),
 				eq(rootPath + FileSystem.FILE_SPLITTER + path));
 		order.verify(fileSystemService).removeTemporaryFolder();
 		order.verify(propertiesService).updateUpgradeClientVersion(
 				eq(rootPath), eq(upgradeVersion));
+
+		verify(fileSystemService, times(2)).writeTemporaryFile(anyString(),
+				any(byte[].class));
+		verify(fileSystemService, times(1)).removeFile(anyString());
 	}
 
 	@Test(description = "should upgrade client")
@@ -211,9 +228,15 @@ public class UpgradeClientTest {
 		String path = "client";
 		String clientVersion = "0.0.1";
 		String upgradeVersion = "0.0.2";
-		FileInfo imageInfo = new FileInfo("resources/images/image.png", 200);
-		FileInfo jarInfo = new FileInfo("lib/spring.jar", 500);
-		List<FileInfo> fileInfos = Arrays.asList(imageInfo, jarInfo);
+		UpgradeFileInfo imageInfo = new UpgradeFileInfo(
+				"resources/images/image.png", 200, "someDigest",
+				FileUpgradeMode.ADD);
+		UpgradeFileInfo jarInfo = new UpgradeFileInfo("lib/spring.jar", 500,
+				"someDigest", FileUpgradeMode.UPDATE);
+		UpgradeFileInfo removedFileInfo = new UpgradeFileInfo("removeMe.txt",
+				100, "someDigest", FileUpgradeMode.REMOVE);
+		List<UpgradeFileInfo> fileInfos = Arrays.asList(imageInfo, jarInfo,
+				removedFileInfo);
 		UpgradeInfo upgradeInfo = UpgradeInfo.withFileInfos(path,
 				clientVersion, upgradeVersion, fileInfos);
 
@@ -241,11 +264,20 @@ public class UpgradeClientTest {
 		order.verify(fileSystemService).writeTemporaryFile(
 				eq(path + FileSystem.FILE_SPLITTER + jarInfo.getPath()),
 				eq(jar));
+		order.verify(fileSystemService)
+				.removeFile(
+						eq(rootPath + FileSystem.FILE_SPLITTER + path
+								+ FileSystem.FILE_SPLITTER
+								+ removedFileInfo.getPath()));
 		order.verify(fileSystemService).copyFromTemporaryFolderTo(eq(path),
 				eq(rootPath + FileSystem.FILE_SPLITTER + path));
 		order.verify(fileSystemService).removeTemporaryFolder();
 		order.verify(propertiesService).updateClientVersion(eq(rootPath),
 				eq(upgradeVersion));
+
+		verify(fileSystemService, times(2)).writeTemporaryFile(anyString(),
+				any(byte[].class));
+		verify(fileSystemService, times(1)).removeFile(anyString());
 	}
 
 }

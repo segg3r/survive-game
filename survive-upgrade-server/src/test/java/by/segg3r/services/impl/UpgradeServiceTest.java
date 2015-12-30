@@ -3,12 +3,8 @@ package by.segg3r.services.impl;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,18 +14,18 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import by.segg3r.Application;
+import by.segg3r.ApplicationVersion;
 import by.segg3r.dao.UpgradeDAO;
 import by.segg3r.exceptions.UpgradeException;
-import by.segg3r.http.entities.FileInfo;
 import by.segg3r.http.entities.UpgradeInfo;
-import by.segg3r.services.VersionService;
+import by.segg3r.services.UpgradeCache;
 
 public class UpgradeServiceTest {
 
 	@Mock
-	private UpgradeDAO upgradeDAO;
+	private UpgradeCache upgradeCache;
 	@Mock
-	private VersionService versionService;
+	private UpgradeDAO upgradeDAO;
 	@InjectMocks
 	private UpgradeServiceImpl service;
 
@@ -40,45 +36,19 @@ public class UpgradeServiceTest {
 
 	@AfterMethod
 	public void resetMocks() {
-		reset(versionService, upgradeDAO);
+		reset(upgradeCache, upgradeDAO);
 	}
 
-	@Test(description = "should return 'no upgrade required' if client has latest version")
-	public void testGetUpgradeInfoNoUpgradeRequired() throws UpgradeException {
-		String version = "0.0.1";
-		Application client = Application.CLIENT;
-		String latestVersion = version;
-		when(versionService.getNewerVersion(eq(version), eq(client))).thenReturn(
-				latestVersion);
-
-		UpgradeInfo upgradeInfo = service.getUpgradeInfo(version, client);
-		assertEquals(upgradeInfo.getClientVersion(), version);
-		assertEquals(upgradeInfo.getUpgradeVersion(), version);
-		assertFalse(upgradeInfo.isUpgradeRequired());
-		assertTrue(upgradeInfo.getFileInfos().isEmpty());
-		assertEquals(upgradeInfo.getPath(), client.getPath());
+	@Test(description = "should get upgrade info from cache")
+	public void testGetUpgradeInfoFromCache() throws UpgradeException {
+		ApplicationVersion applicationVersion = ApplicationVersion.of(Application.CLIENT, "0.0.1");
+		UpgradeInfo upgradeInfo = mock(UpgradeInfo.class);
+		
+		when(upgradeCache.getUpgradeInfo(applicationVersion)).thenReturn(upgradeInfo);
+	
+		assertEquals(service.getUpgradeInfo(applicationVersion), upgradeInfo);
 	}
-
-	@Test(description = "should return list of file infos if client has outdated version")
-	public void testGetUpgradeInfoUpgradeRequired() throws UpgradeException {
-		String version = "0.0.1";
-		String latestVersion = "0.0.2";
-		Application client = Application.CLIENT;
-		FileInfo fileInfo = new FileInfo("lib/spring.jar", 5000000L);
-		List<FileInfo> fileInfos = Arrays.asList(fileInfo);
-
-		when(versionService.getNewerVersion(eq(version), eq(client))).thenReturn(
-				latestVersion);
-		when(upgradeDAO.getFileInfos(eq(latestVersion), eq(client))).thenReturn(fileInfos);
-
-		UpgradeInfo upgradeInfo = service.getUpgradeInfo(version, client);
-		assertEquals(upgradeInfo.getClientVersion(), version);
-		assertEquals(upgradeInfo.getUpgradeVersion(), latestVersion);
-		assertTrue(upgradeInfo.isUpgradeRequired());
-		assertEquals(fileInfos, upgradeInfo.getFileInfos());
-		assertEquals(upgradeInfo.getPath(), client.getPath());
-	}
-
+	
 	@Test(description = "should get file content")
 	public void testGetFileContent() throws UpgradeException {
 		String version = "1.3.4";

@@ -14,6 +14,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import by.segg3r.Application;
+import by.segg3r.ApplicationVersion;
 import by.segg3r.exceptions.UpgradeException;
 import by.segg3r.http.entities.UpgradeInfo;
 import by.segg3r.services.UpgradeService;
@@ -40,8 +41,9 @@ public class RestUpgradeServiceTest {
 		String version = "0.0.1";
 		String path = "client";
 		UpgradeInfo upgradeInfo = mock(UpgradeInfo.class);
+		ApplicationVersion applicationVersion = new ApplicationVersion(Application.CLIENT, version);
 
-		when(upgradeService.getUpgradeInfo(eq(version), eq(Application.CLIENT)))
+		when(upgradeService.getUpgradeInfo(eq(applicationVersion)))
 				.thenReturn(upgradeInfo);
 
 		Response result = restUpgradeService.getUpgradeInfo(version, path);
