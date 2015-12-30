@@ -3,6 +3,8 @@ package by.segg3r.upgradeclient.impl;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,12 @@ import by.segg3r.upgradeclient.UpgradeServerAPI;
 
 @Component
 public class UpgradeClientImpl implements UpgradeClient {
+
+	private static final Logger LOG = LogManager
+			.getLogger(UpgradeClientImpl.class);
+
+	private static final double ONE_HUNDRED_PERCENT = 100.;
+	private static final String SPACE = " ";
 
 	@Autowired
 	private PropertiesService propertiesService;
@@ -39,6 +47,8 @@ public class UpgradeClientImpl implements UpgradeClient {
 			if (upgradeClientUpgradeInfo.isUpgradeRequired()) {
 				upgradeUpgradeClient(rootPath, upgradeClientUpgradeInfo);
 				return UpgradeResult.UPGRADER_UPGRADED;
+			} else {
+				System.out.println("Upgrade-client is up-to-date");
 			}
 
 			String clientVersion = propertiesService.getClientVersion(rootPath);
@@ -47,6 +57,8 @@ public class UpgradeClientImpl implements UpgradeClient {
 			if (clientUpgradeInfo.isUpgradeRequired()) {
 				upgradeClient(rootPath, clientUpgradeInfo);
 				return UpgradeResult.CLIENT_UPGRADED;
+			} else {
+				System.out.println("Client is up-to-date");
 			}
 
 			return UpgradeResult.NO_UPGRADE;
@@ -60,6 +72,10 @@ public class UpgradeClientImpl implements UpgradeClient {
 	public void upgradeClient(String rootPath, UpgradeInfo clientUpgradeInfo)
 			throws UpgradeException {
 		try {
+			String upgradingClientMessage = "Upgrading client";
+			LOG.info(upgradingClientMessage);
+			System.out.println(upgradingClientMessage);
+
 			performUpgrade(rootPath, clientUpgradeInfo);
 			propertiesService.updateClientVersion(rootPath,
 					clientUpgradeInfo.getUpgradeVersion());
@@ -72,6 +88,10 @@ public class UpgradeClientImpl implements UpgradeClient {
 	public void upgradeUpgradeClient(String rootPath, UpgradeInfo upgradeInfo)
 			throws UpgradeException {
 		try {
+			String upgradingUpgradeClientMessage = "Upgrading upgrade-client";
+			LOG.info(upgradingUpgradeClientMessage);
+			System.out.println(upgradingUpgradeClientMessage);
+
 			performUpgrade(rootPath, upgradeInfo);
 			propertiesService.updateUpgradeClientVersion(rootPath,
 					upgradeInfo.getUpgradeVersion());
@@ -82,31 +102,68 @@ public class UpgradeClientImpl implements UpgradeClient {
 
 	private void performUpgrade(String rootPath, UpgradeInfo upgradeInfo)
 			throws IOException, APIException {
+		String clientVersionMessage = "Client version : "
+				+ upgradeInfo.getClientVersion();
+		LOG.info(clientVersionMessage);
+		System.out.println(clientVersionMessage);
+		String upgradeVersionMessage = "Upgrade version : "
+				+ upgradeInfo.getUpgradeVersion();
+		LOG.info(upgradeVersionMessage);
+		System.out.println(upgradeVersionMessage);
+
 		String upgradeClientPath = rootPath + FileSystem.FILE_SPLITTER
 				+ upgradeInfo.getPath();
 		String upgradeVersion = upgradeInfo.getUpgradeVersion();
 		fileSystemService.removeTemporaryFolder();
 		fileSystemService.createTemporaryFolder();
 
+		long totalSize = upgradeInfo.getTotalSize();
+		String totalSizeMessage = "Total size : " + totalSize;
+		LOG.info(totalSizeMessage);
+		System.out.println(totalSizeMessage);
+
+		long upgraded = 0;
+
 		List<UpgradeFileInfo> fileInfos = upgradeInfo.getFileInfos();
 		for (UpgradeFileInfo fileInfo : fileInfos) {
-			if (fileInfo.getFileUpgradeMode() == FileUpgradeMode.ADD
-					|| fileInfo.getFileUpgradeMode() == FileUpgradeMode.UPDATE) {
-				String fileRelativePathFromRoot = upgradeInfo.getPath()
-						+ FileSystem.FILE_SPLITTER + fileInfo.getPath();
-
-				byte[] fileContent = upgradeServerAPI.getFileContent(
-						upgradeVersion, fileRelativePathFromRoot);
-				fileSystemService.writeTemporaryFile(fileRelativePathFromRoot,
-						fileContent);
-			} else if (fileInfo.getFileUpgradeMode() == FileUpgradeMode.REMOVE) {
-				String removedFileFullPath = upgradeClientPath
-						+ FileSystem.FILE_SPLITTER + fileInfo.getPath();
-				fileSystemService.removeFile(removedFileFullPath);
-			}
+			upgraded = upgradeFile(upgradeInfo, upgradeClientPath,
+					upgradeVersion, totalSize, upgraded, fileInfo);
 		}
+
+		String copyingMessage = "Copying...";
+		LOG.info(copyingMessage);
+		System.out.println(copyingMessage);
+
 		fileSystemService.copyFromTemporaryFolderTo(upgradeInfo.getPath(),
 				upgradeClientPath);
 		fileSystemService.removeTemporaryFolder();
+	}
+
+	private long upgradeFile(UpgradeInfo upgradeInfo, String upgradeClientPath,
+			String upgradeVersion, long totalSize, long upgraded,
+			UpgradeFileInfo fileInfo) throws APIException, IOException {
+		if (fileInfo.getFileUpgradeMode() == FileUpgradeMode.ADD
+				|| fileInfo.getFileUpgradeMode() == FileUpgradeMode.UPDATE) {
+			String fileRelativePathFromRoot = upgradeInfo.getPath()
+					+ FileSystem.FILE_SPLITTER + fileInfo.getPath();
+
+			byte[] fileContent = upgradeServerAPI.getFileContent(
+					upgradeVersion, fileRelativePathFromRoot);
+			fileSystemService.writeTemporaryFile(fileRelativePathFromRoot,
+					fileContent);
+		} else if (fileInfo.getFileUpgradeMode() == FileUpgradeMode.REMOVE) {
+			String removedFileFullPath = upgradeClientPath
+					+ FileSystem.FILE_SPLITTER + fileInfo.getPath();
+			fileSystemService.removeFile(removedFileFullPath);
+		}
+		
+		upgraded += fileInfo.getSize();
+		int percent = (int) (upgraded * ONE_HUNDRED_PERCENT / totalSize);
+		String upgradedMessage = "Upgraded : " + SPACE + upgraded + "/" + totalSize
+				+ SPACE + ">>> " + percent + "% <<<";
+		LOG.info(upgradedMessage);
+		System.out.println(upgradedMessage);
+		
+		return upgraded;
 	}
 }

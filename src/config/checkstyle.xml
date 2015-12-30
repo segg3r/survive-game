@@ -28,7 +28,7 @@
 			<property name="ignoreAnnotation" value="true" />
 		</module>
 		<module name="MethodLength">
-			<property name="max" value="35" />
+			<property name="max" value="50" />
 		</module>
 		<module name="MissingOverride" />
 		<module name="MissingSwitchDefault" />

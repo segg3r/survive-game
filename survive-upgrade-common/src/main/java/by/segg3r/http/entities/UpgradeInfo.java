@@ -37,6 +37,14 @@ public class UpgradeInfo {
 		this.upgradeRequired = upgradeRequired;
 		this.fileInfos = fileInfos;
 	}
+	
+	public long getTotalSize() {
+		long totalSize = 0;
+		for (UpgradeFileInfo upgradeFileInfo : fileInfos) {
+			totalSize += upgradeFileInfo.getSize();
+		}
+		return totalSize;
+	}
 
 	public boolean isUpgradeRequired() {
 		return upgradeRequired;
