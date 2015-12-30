@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import by.segg3r.Application;
 import by.segg3r.dao.UpgradeDAO;
 import by.segg3r.exceptions.UpgradeException;
 import by.segg3r.http.entities.FileInfo;
@@ -27,9 +28,9 @@ public class UpgradeDAOImpl implements UpgradeDAO {
 			+ PATH_SPLITTER + UPGRADES_DIRECTORY;
 
 	@Override
-	public List<FileInfo> getFileInfos(String version, String path) throws UpgradeException {
+	public List<FileInfo> getFileInfos(String version, Application application) throws UpgradeException {
 		String versionDirectoryPath = UPGRADE_DIRECTORY_PATH + PATH_SPLITTER
-				+ version + PATH_SPLITTER + path;
+				+ version + PATH_SPLITTER + application.getPath();
 		File versionDirectory = getDirectory(versionDirectoryPath);
 
 		List<FileInfo> result = populateFileInfos(versionDirectory,
@@ -38,7 +39,7 @@ public class UpgradeDAOImpl implements UpgradeDAO {
 	}
 
 	@Override
-	public List<String> getAvailableVersions(String path)
+	public List<String> getAvailableVersions(Application application)
 			throws UpgradeException {
 		File upgradeDirectory = getDirectory(UPGRADE_DIRECTORY_PATH);
 		String[] versionDirectories = upgradeDirectory.list();
@@ -50,7 +51,7 @@ public class UpgradeDAOImpl implements UpgradeDAO {
 		List<String> result = new ArrayList<String>();
 		for (String versionDirectory : versionDirectories) {
 			String requiredDirectoryPath = UPGRADE_DIRECTORY_PATH
-					+ PATH_SPLITTER + versionDirectory + PATH_SPLITTER + path;
+					+ PATH_SPLITTER + versionDirectory + PATH_SPLITTER + application.getPath();
 			File file = new File(requiredDirectoryPath);
 			if (file.isDirectory()) {
 				result.add(versionDirectory);

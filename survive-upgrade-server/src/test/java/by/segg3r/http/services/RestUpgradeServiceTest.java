@@ -4,6 +4,7 @@ import static org.testng.Assert.*;
 import static org.mockito.Mockito.*;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -12,6 +13,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import by.segg3r.Application;
 import by.segg3r.exceptions.UpgradeException;
 import by.segg3r.http.entities.UpgradeInfo;
 import by.segg3r.services.UpgradeService;
@@ -39,12 +41,21 @@ public class RestUpgradeServiceTest {
 		String path = "client";
 		UpgradeInfo upgradeInfo = mock(UpgradeInfo.class);
 
-		when(upgradeService.getUpgradeInfo(eq(version), eq(path)))
+		when(upgradeService.getUpgradeInfo(eq(version), eq(Application.CLIENT)))
 				.thenReturn(upgradeInfo);
 
 		Response result = restUpgradeService.getUpgradeInfo(version, path);
 		UpgradeInfo actualUgradeInfo = (UpgradeInfo) result.getEntity();
 		assertEquals(actualUgradeInfo, upgradeInfo);
+	}
+	
+	@Test(description = "should return server error if application does not exist")
+	public void testGetUpgradeInfoApplicationDoesNotExist() throws UpgradeException	 {
+		String version = "0.0.1";
+		String path = "some-application";
+
+		Response result = restUpgradeService.getUpgradeInfo(version, path);
+		assertEquals(result.getStatus(), Status.INTERNAL_SERVER_ERROR.getStatusCode());
 	}
 
 	@Test(description = "should correctly get file content")

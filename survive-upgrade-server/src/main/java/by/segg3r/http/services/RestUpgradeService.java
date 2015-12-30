@@ -8,6 +8,7 @@ import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import by.segg3r.Application;
 import by.segg3r.exceptions.UpgradeException;
 import by.segg3r.http.entities.JSONError;
 import by.segg3r.http.entities.UpgradeInfo;
@@ -19,11 +20,15 @@ public class RestUpgradeService {
 	private UpgradeService upgradeService;
 
 	@GET
-	@Path("/upgrade/{version}/{path:.+}")
+	@Path("/upgrade/{version}/{applicationPath}")
 	@Produces({ "application/json" })
-	public Response getUpgradeInfo(@PathParam("version") String version, @PathParam("path") String path) {
+	public Response getUpgradeInfo(@PathParam("version") String version, @PathParam("applicationPath") String applicationPath) {
 		try {
-			UpgradeInfo result = upgradeService.getUpgradeInfo(version, path);
+			Application application = Application.withPath(applicationPath);
+			if (application == null) {
+				throw new UpgradeException("Application '" + applicationPath + "' does not exist");
+			}
+			UpgradeInfo result = upgradeService.getUpgradeInfo(version, application);
 			return Response.ok().entity(result).build();
 		} catch (UpgradeException e) {
 			return Response.serverError().entity(JSONError.of(e.getMessage()))

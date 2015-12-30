@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import by.segg3r.Application;
 import by.segg3r.dao.UpgradeDAO;
 import by.segg3r.exceptions.UpgradeException;
 import by.segg3r.services.VersionService;
@@ -18,8 +19,8 @@ public class VersionServiceImpl implements VersionService {
 	private UpgradeDAO upgradeDAO;
 	
 	@Override
-	public String getNewerVersion(String version, String path) throws UpgradeException {
-		List<String> availableVersions = upgradeDAO.getAvailableVersions(path);
+	public String getNewerVersion(String version, Application application) throws UpgradeException {
+		List<String> availableVersions = upgradeDAO.getAvailableVersions(application);
 		if (availableVersions.isEmpty()) {
 			return version;
 		}

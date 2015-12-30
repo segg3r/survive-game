@@ -17,6 +17,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import by.segg3r.Application;
 import by.segg3r.dao.UpgradeDAO;
 import by.segg3r.exceptions.UpgradeException;
 import by.segg3r.http.entities.FileInfo;
@@ -45,37 +46,37 @@ public class UpgradeServiceTest {
 	@Test(description = "should return 'no upgrade required' if client has latest version")
 	public void testGetUpgradeInfoNoUpgradeRequired() throws UpgradeException {
 		String version = "0.0.1";
-		String path = "client";
+		Application client = Application.CLIENT;
 		String latestVersion = version;
-		when(versionService.getNewerVersion(eq(version), eq(path))).thenReturn(
+		when(versionService.getNewerVersion(eq(version), eq(client))).thenReturn(
 				latestVersion);
 
-		UpgradeInfo upgradeInfo = service.getUpgradeInfo(version, path);
+		UpgradeInfo upgradeInfo = service.getUpgradeInfo(version, client);
 		assertEquals(upgradeInfo.getClientVersion(), version);
 		assertEquals(upgradeInfo.getUpgradeVersion(), version);
 		assertFalse(upgradeInfo.isUpgradeRequired());
 		assertTrue(upgradeInfo.getFileInfos().isEmpty());
-		assertEquals(upgradeInfo.getPath(), path);
+		assertEquals(upgradeInfo.getPath(), client.getPath());
 	}
 
 	@Test(description = "should return list of file infos if client has outdated version")
 	public void testGetUpgradeInfoUpgradeRequired() throws UpgradeException {
 		String version = "0.0.1";
 		String latestVersion = "0.0.2";
-		String path = "client";
+		Application client = Application.CLIENT;
 		FileInfo fileInfo = new FileInfo("lib/spring.jar", 5000000L);
 		List<FileInfo> fileInfos = Arrays.asList(fileInfo);
 
-		when(versionService.getNewerVersion(eq(version), eq(path))).thenReturn(
+		when(versionService.getNewerVersion(eq(version), eq(client))).thenReturn(
 				latestVersion);
-		when(upgradeDAO.getFileInfos(eq(latestVersion), eq(path))).thenReturn(fileInfos);
+		when(upgradeDAO.getFileInfos(eq(latestVersion), eq(client))).thenReturn(fileInfos);
 
-		UpgradeInfo upgradeInfo = service.getUpgradeInfo(version, path);
+		UpgradeInfo upgradeInfo = service.getUpgradeInfo(version, client);
 		assertEquals(upgradeInfo.getClientVersion(), version);
 		assertEquals(upgradeInfo.getUpgradeVersion(), latestVersion);
 		assertTrue(upgradeInfo.isUpgradeRequired());
 		assertEquals(fileInfos, upgradeInfo.getFileInfos());
-		assertEquals(upgradeInfo.getPath(), path);
+		assertEquals(upgradeInfo.getPath(), client.getPath());
 	}
 
 	@Test(description = "should get file content")
