@@ -2,7 +2,7 @@ package by.segg3r.upgradeclient.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import by.segg3r.constants.FileSystem;
+import by.segg3r.Application;
 import by.segg3r.exceptions.APIException;
 import by.segg3r.http.entities.UpgradeInfo;
 import by.segg3r.upgradeclient.UpgradeServerAPI;
@@ -25,19 +25,19 @@ public class UpgradeServerAPIImpl implements UpgradeServerAPI {
 	public UpgradeInfo getUpgradeClientUpgradeInfo(String upgradeClientVersion)
 			throws APIException {
 		return getUpgradeInfo(upgradeClientVersion,
-				FileSystem.UPGRADE_CLIENT_FOLDER);
+				Application.UPGRADE_CLIENT);
 	}
 
 	@Override
 	public UpgradeInfo getClientUpgradeInfo(String clientVersion)
 			throws APIException {
-		return getUpgradeInfo(clientVersion, FileSystem.CLIENT_FOLDER);
+		return getUpgradeInfo(clientVersion, Application.CLIENT);
 	}
 
-	private UpgradeInfo getUpgradeInfo(String version, String folder)
+	private UpgradeInfo getUpgradeInfo(String version, Application application)
 			throws APIException {
 		String requestPath = buildPath("upgrade" + HTTP_SPLITTER + version
-				+ HTTP_SPLITTER + folder);
+				+ HTTP_SPLITTER + application.getPath());
 		return jsonHttpClient.get(requestPath, UpgradeInfo.class);
 	}
 

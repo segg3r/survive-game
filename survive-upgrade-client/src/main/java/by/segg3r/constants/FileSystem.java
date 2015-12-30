@@ -1,18 +1,13 @@
 package by.segg3r.constants;
 
+import by.segg3r.Application;
+
 public class FileSystem {
 
 	public static final String FILE_SPLITTER = "/";
 	
-	public static final String CLIENT_FOLDER = "client";
-	public static final String UPGRADE_CLIENT_FOLDER = "upgrade-client";
-	
-	public static String getClientPath(String rootPath) {
-		return rootPath + FILE_SPLITTER + CLIENT_FOLDER;
-	}
-	
-	public static String getUpgradeClientPath(String rootPath) {
-		return rootPath + FILE_SPLITTER + UPGRADE_CLIENT_FOLDER;
+	public static String getApplicationPath(String rootPath, Application application) {
+		return rootPath + FILE_SPLITTER + application.getPath();
 	}
 	
 	public static String getCurrentPath() {

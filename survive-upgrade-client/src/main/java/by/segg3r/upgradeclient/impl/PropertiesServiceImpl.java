@@ -6,6 +6,7 @@ import java.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import by.segg3r.Application;
 import by.segg3r.constants.FileSystem;
 import by.segg3r.upgradeclient.PropertiesDAO;
 import by.segg3r.upgradeclient.PropertiesService;
@@ -28,7 +29,7 @@ public class PropertiesServiceImpl implements PropertiesService {
 	@Override
 	public String getUpgradeClientVersion(String rootPath) throws IOException {
 		String upgradeClientPropertiesFilePath = FileSystem
-				.getUpgradeClientPath(rootPath)
+				.getApplicationPath(rootPath, Application.UPGRADE_CLIENT)
 				+ FileSystem.FILE_SPLITTER
 				+ RELATIVE_UPGRADE_CLIENT_PROPERTIES_PATH;
 		return getVersionFromPropertiesFile(upgradeClientPropertiesFilePath);
@@ -36,7 +37,7 @@ public class PropertiesServiceImpl implements PropertiesService {
 
 	@Override
 	public String getClientVersion(String rootPath) throws IOException {
-		String clientPropertiesFilePath = FileSystem.getClientPath(rootPath)
+		String clientPropertiesFilePath = FileSystem.getApplicationPath(rootPath, Application.CLIENT)
 				+ FileSystem.FILE_SPLITTER + RELATIVE_CLIENT_PROPERTIES_PATH;
 		return getVersionFromPropertiesFile(clientPropertiesFilePath);
 	}
@@ -44,7 +45,7 @@ public class PropertiesServiceImpl implements PropertiesService {
 	@Override
 	public void updateClientVersion(String rootPath, String upgradeVersion)
 			throws IOException {
-		String clientPropertiesFilePath = FileSystem.getClientPath(rootPath)
+		String clientPropertiesFilePath = FileSystem.getApplicationPath(rootPath, Application.CLIENT)
 				+ FileSystem.FILE_SPLITTER + RELATIVE_CLIENT_PROPERTIES_PATH;
 		updateVersionProperty(upgradeVersion, clientPropertiesFilePath);
 	}
@@ -53,7 +54,7 @@ public class PropertiesServiceImpl implements PropertiesService {
 	public void updateUpgradeClientVersion(String rootPath,
 			String upgradeVersion) throws IOException {
 		String upgradeClientPropertiesFilePath = FileSystem
-				.getUpgradeClientPath(rootPath)
+				.getApplicationPath(rootPath, Application.UPGRADE_CLIENT)
 				+ FileSystem.FILE_SPLITTER
 				+ RELATIVE_UPGRADE_CLIENT_PROPERTIES_PATH;
 		updateVersionProperty(upgradeVersion, upgradeClientPropertiesFilePath);

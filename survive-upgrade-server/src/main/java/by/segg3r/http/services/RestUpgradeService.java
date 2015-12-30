@@ -22,13 +22,16 @@ public class RestUpgradeService {
 	@GET
 	@Path("/upgrade/{version}/{applicationPath}")
 	@Produces({ "application/json" })
-	public Response getUpgradeInfo(@PathParam("version") String version, @PathParam("applicationPath") String applicationPath) {
+	public Response getUpgradeInfo(@PathParam("version") String version,
+			@PathParam("applicationPath") String applicationPath) {
 		try {
 			Application application = Application.withPath(applicationPath);
 			if (application == null) {
-				throw new UpgradeException("Application '" + applicationPath + "' does not exist");
+				throw new UpgradeException("Application '" + applicationPath
+						+ "' does not exist");
 			}
-			UpgradeInfo result = upgradeService.getUpgradeInfo(version, application);
+			UpgradeInfo result = upgradeService.getUpgradeInfo(version,
+					application);
 			return Response.ok().entity(result).build();
 		} catch (UpgradeException e) {
 			return Response.serverError().entity(JSONError.of(e.getMessage()))
@@ -44,8 +47,8 @@ public class RestUpgradeService {
 			byte[] fileContent = upgradeService.getFileContent(version, path);
 			return Response.ok(fileContent).build();
 		} catch (UpgradeException e) {
-			return Response.serverError().type("application/json").entity(JSONError.of(e.getMessage()))
-					.build();
+			return Response.serverError().type("application/json")
+					.entity(JSONError.of(e.getMessage())).build();
 		}
 	}
 
