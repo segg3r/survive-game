@@ -22,19 +22,7 @@ public class UpgradeServerAPIImpl implements UpgradeServerAPI {
 	private int upgradeServerPort;
 
 	@Override
-	public UpgradeInfo getUpgradeClientUpgradeInfo(String upgradeClientVersion)
-			throws APIException {
-		return getUpgradeInfo(upgradeClientVersion,
-				Application.UPGRADE_CLIENT);
-	}
-
-	@Override
-	public UpgradeInfo getClientUpgradeInfo(String clientVersion)
-			throws APIException {
-		return getUpgradeInfo(clientVersion, Application.CLIENT);
-	}
-
-	private UpgradeInfo getUpgradeInfo(String version, Application application)
+	public UpgradeInfo getApplicationUpgradeInfo(Application application, String version)
 			throws APIException {
 		String requestPath = buildPath("upgrade" + HTTP_SPLITTER + version
 				+ HTTP_SPLITTER + application.getPath());

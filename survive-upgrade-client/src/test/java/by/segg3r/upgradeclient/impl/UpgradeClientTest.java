@@ -4,18 +4,18 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.mockito.InOrder;
@@ -26,6 +26,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import by.segg3r.Application;
 import by.segg3r.constants.FileSystem;
 import by.segg3r.exceptions.APIException;
 import by.segg3r.exceptions.UpgradeException;
@@ -34,6 +35,7 @@ import by.segg3r.http.entities.UpgradeFileInfo;
 import by.segg3r.http.entities.UpgradeInfo;
 import by.segg3r.upgradeclient.FileSystemService;
 import by.segg3r.upgradeclient.PropertiesService;
+import by.segg3r.upgradeclient.UpgradeComponent;
 import by.segg3r.upgradeclient.UpgradeResult;
 import by.segg3r.upgradeclient.UpgradeServerAPI;
 
@@ -48,9 +50,15 @@ public class UpgradeClientTest {
 	@InjectMocks
 	private UpgradeClientImpl client;
 
+	private List<UpgradeComponent> upgradeComponents;
+
 	@BeforeClass
 	public void initMocks() {
 		MockitoAnnotations.initMocks(this);
+
+		upgradeComponents = Arrays.asList(mock(UpgradeComponent.class),
+				mock(UpgradeComponent.class));
+		client.setUpgradeComponents(upgradeComponents);
 
 		client = spy(client);
 	}
@@ -58,226 +66,253 @@ public class UpgradeClientTest {
 	@AfterMethod
 	public void resetMocks() {
 		reset(propertiesService, upgradeServerAPI, fileSystemService, client);
+		for (UpgradeComponent upgradeComponentMock : upgradeComponents) {
+			reset(upgradeComponentMock);
+		}
 	}
 
-	@Test(description = "executeUpgrade should return 'UPGRADER_UPGRADED' if upgrade-client upgrade was performed")
-	public void testExecuteUpgradeUpgradeClientUpgradePerformed()
-			throws UpgradeException, APIException, IOException {
-		String upgradeClientVersion = "0.0.1";
-		String upgradeClientUpgradeVersion = "0.0.2";
-		String rootPath = "D:/survive-game";
-		String path = "upgrade-client";
-		UpgradeInfo upgradeInfo = UpgradeInfo.withFileInfos(path,
-				upgradeClientVersion, upgradeClientUpgradeVersion,
-				Collections.emptyList());
+	@Test(description = "upgrade execution should return 'upgraded' if upgrade-client was upgraded")
+	public void testExecuteUpgradeUpradeClientUpgraded()
+			throws UpgradeException {
+		String rootPath = "rootPath";
+		doReturn(UpgradeResult.NO_UPGRADE).when(client).upgradeApplication(
+				eq(rootPath), any(Application.class));
+		doReturn(UpgradeResult.UPGRADED).when(client).upgradeApplication(
+				eq(rootPath), eq(Application.UPGRADE_CLIENT));
 
-		when(propertiesService.getUpgradeClientVersion(eq(rootPath)))
-				.thenReturn(upgradeClientVersion);
-		when(
-				upgradeServerAPI
-						.getUpgradeClientUpgradeInfo(eq(upgradeClientVersion)))
-				.thenReturn(upgradeInfo);
-		doNothing().when(client).upgradeUpgradeClient(eq(rootPath),
-				eq(upgradeInfo));
-
-		UpgradeResult upgradeResult = client.executeUpgrade(rootPath);
-		assertEquals(upgradeResult, UpgradeResult.UPGRADER_UPGRADED);
-		verify(client, times(1)).upgradeUpgradeClient(eq(rootPath),
-				eq(upgradeInfo));
+		assertEquals(client.executeUpgrade(rootPath), UpgradeResult.UPGRADED);
 	}
 
-	@Test(description = "executeUpgrade should execute client upgrade and return 'CLIENT_UPGRADED'"
-			+ "if upgread-client upgrade is not needed and client upgrade is needed")
-	public void testExecuteUpgradeClientUpgradePerformed()
-			throws UpgradeException, APIException, IOException {
-		String rootPath = "D:/survive-game";
+	@Test(description = "upgrade execution should return 'upgraded' if upgrade-client was not upgraded, but client was")
+	public void testExecuteUpgradeClientUpgraded() throws UpgradeException {
+		String rootPath = "rootPath";
+		doReturn(UpgradeResult.NO_UPGRADE).when(client).upgradeApplication(
+				eq(rootPath), any(Application.class));
+		doReturn(UpgradeResult.NO_UPGRADE).when(client).upgradeApplication(
+				eq(rootPath), eq(Application.UPGRADE_CLIENT));
+		doReturn(UpgradeResult.UPGRADED).when(client).upgradeApplication(
+				eq(rootPath), eq(Application.CLIENT));
 
-		String upgradeClientVersion = "0.0.2";
-		String upgradeClientPath = "upgrade-client";
-		UpgradeInfo upgradeClientUpgradeInfo = UpgradeInfo.noUpgradeRequired(
-				upgradeClientPath, upgradeClientVersion);
-		when(propertiesService.getUpgradeClientVersion(eq(rootPath)))
-				.thenReturn(upgradeClientVersion);
-		when(
-				upgradeServerAPI
-						.getUpgradeClientUpgradeInfo(eq(upgradeClientVersion)))
-				.thenReturn(upgradeClientUpgradeInfo);
-
-		String clientVersion = "0.0.1";
-		String clientUpgradeVersion = "0.0.2";
-		String clientPath = "client";
-		UpgradeInfo clientUpgradeInfo = UpgradeInfo.withFileInfos(clientPath,
-				clientVersion, clientUpgradeVersion, Collections.emptyList());
-		when(propertiesService.getClientVersion(eq(rootPath))).thenReturn(
-				clientVersion);
-		when(upgradeServerAPI.getClientUpgradeInfo(eq(clientVersion)))
-				.thenReturn(clientUpgradeInfo);
-
-		doNothing().when(client).upgradeClient(eq(rootPath),
-				eq(clientUpgradeInfo));
-		doNothing().when(client).upgradeUpgradeClient(eq(rootPath),
-				eq(upgradeClientUpgradeInfo));
-
-		UpgradeResult upgradeResult = client.executeUpgrade(rootPath);
-		assertEquals(upgradeResult, UpgradeResult.CLIENT_UPGRADED);
-		verify(client, never()).upgradeUpgradeClient(eq(rootPath),
-				any(UpgradeInfo.class));
-		verify(client, times(1)).upgradeClient(eq(rootPath),
-				eq(clientUpgradeInfo));
+		assertEquals(client.executeUpgrade(rootPath), UpgradeResult.UPGRADED);
 	}
 
-	@Test(description = "should not execute any upgrades if not needed and return 'true'")
-	public void testExecuteUpgradeNoUpgradesNeeded() throws APIException,
-			UpgradeException, IOException {
+	@Test(description = "upgrade execution should return 'no-upgrade' if none of application were upgraded")
+	public void testExecuteUpgradeNoUpgrade() throws UpgradeException {
+		String rootPath = "rootPath";
+		doReturn(UpgradeResult.NO_UPGRADE).when(client).upgradeApplication(
+				eq(rootPath), any(Application.class));
+
+		assertEquals(client.executeUpgrade(rootPath), UpgradeResult.NO_UPGRADE);
+	}
+
+	@Test(description = "application upgrade should return 'no-upgrade' if upgrade info does not require upgrade")
+	public void testUpgradeApplicationNoUpgrade() throws UpgradeException,
+			APIException, IOException {
 		String rootPath = "D:/survive-game";
+		String version = "0.0.2";
+		UpgradeInfo upgradeInfo = UpgradeInfo.noUpgradeRequired(
+				Application.CLIENT.getPath(), version);
 
-		String upgradeClientVersion = "0.0.2";
-		String upgradeClientPath = "upgrade-client";
-		UpgradeInfo upgradeClientUpgradeInfo = UpgradeInfo.noUpgradeRequired(
-				upgradeClientPath, upgradeClientVersion);
-		when(propertiesService.getUpgradeClientVersion(eq(rootPath)))
-				.thenReturn(upgradeClientVersion);
 		when(
-				upgradeServerAPI
-						.getUpgradeClientUpgradeInfo(eq(upgradeClientVersion)))
-				.thenReturn(upgradeClientUpgradeInfo);
+				propertiesService.getApplicationVersion(eq(rootPath),
+						eq(Application.CLIENT))).thenReturn(version);
+		when(
+				upgradeServerAPI.getApplicationUpgradeInfo(
+						eq(Application.CLIENT), eq(version))).thenReturn(
+				upgradeInfo);
+		doNothing().when(client).upgradeFile(anyString(),
+				any(Application.class), any(UpgradeInfo.class),
+				any(UpgradeFileInfo.class));
 
-		String clientVersion = "0.0.2";
-		String clientPath = "client";
-		UpgradeInfo clientUpgradeInfo = UpgradeInfo.noUpgradeRequired(
-				clientPath, clientVersion);
-		when(propertiesService.getClientVersion(eq(rootPath))).thenReturn(
-				clientVersion);
-		when(upgradeServerAPI.getClientUpgradeInfo(eq(clientVersion)))
-				.thenReturn(clientUpgradeInfo);
-
-		doNothing().when(client).upgradeClient(eq(rootPath),
-				eq(clientUpgradeInfo));
-		doNothing().when(client).upgradeUpgradeClient(eq(rootPath),
-				eq(upgradeClientUpgradeInfo));
-
-		UpgradeResult upgradeResult = client.executeUpgrade(rootPath);
+		UpgradeResult upgradeResult = client.upgradeApplication(rootPath,
+				Application.CLIENT);
 		assertEquals(upgradeResult, UpgradeResult.NO_UPGRADE);
-		verify(client, never()).upgradeUpgradeClient(eq(rootPath),
-				any(UpgradeInfo.class));
-		verify(client, never()).upgradeClient(eq(rootPath),
-				any(UpgradeInfo.class));
+
+		verify(fileSystemService, never()).removeTemporaryFolder();
+		verify(fileSystemService, never()).createTemporaryFolder();
+		verify(client, never()).upgradeFile(anyString(),
+				any(Application.class), any(UpgradeInfo.class),
+				any(UpgradeFileInfo.class));
+		verify(fileSystemService, never()).copyFromTemporaryFolderTo(
+				anyString(), anyString());
+		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
+			verify(mockUpgradeComponent, never()).beforeApplicationUpgrade(
+					any(Application.class), any(UpgradeInfo.class));
+			verify(mockUpgradeComponent, never()).afterApplicationUpgrade(
+					any(Application.class), any(UpgradeInfo.class));
+		}
 	}
 
-	@Test(description = "should upgrade upgrade-client")
-	public void testUpgradeUpgradeClient() throws Exception {
+	@Test(description = "should upgrade application and return 'upgraded'")
+	public void testUpgradeApplication() throws Exception {
 		String rootPath = "D:/survive-game";
-		String path = "upgrade-client";
 		String clientVersion = "0.0.1";
 		String upgradeVersion = "0.0.2";
-		UpgradeFileInfo imageInfo = new UpgradeFileInfo(
-				"resources/images/image.png", 200, "someDigest",
-				FileUpgradeMode.ADD);
-		UpgradeFileInfo jarInfo = new UpgradeFileInfo("lib/spring.jar", 500,
-				"someDigest", FileUpgradeMode.UPDATE);
-		UpgradeFileInfo removedFileInfo = new UpgradeFileInfo("removeMe.txt",
-				100, "someDigest", FileUpgradeMode.REMOVE);
-		List<UpgradeFileInfo> fileInfos = Arrays.asList(imageInfo, jarInfo,
-				removedFileInfo);
-		UpgradeInfo upgradeInfo = UpgradeInfo.withFileInfos(path,
-				clientVersion, upgradeVersion, fileInfos);
 
-		byte[] image = new byte[] { 1, 2, 3, 4, 5 };
-		byte[] jar = new byte[] { 5, 4, 3, 2, 1 };
+		// files
+		UpgradeFileInfo file1 = mock(UpgradeFileInfo.class);
+		UpgradeFileInfo file2 = mock(UpgradeFileInfo.class);
+		List<UpgradeFileInfo> fileInfos = Arrays.asList(file1, file2);
+
+		// upgrade info
+		UpgradeInfo upgradeInfo = UpgradeInfo.withFileInfos(
+				Application.CLIENT.getPath(), clientVersion, upgradeVersion,
+				fileInfos);
 		when(
-				upgradeServerAPI.getFileContent(eq(upgradeVersion), eq(path
-						+ FileSystem.FILE_SPLITTER + imageInfo.getPath())))
-				.thenReturn(image);
+				propertiesService.getApplicationVersion(eq(rootPath),
+						eq(Application.CLIENT))).thenReturn(clientVersion);
 		when(
-				upgradeServerAPI.getFileContent(eq(upgradeVersion), eq(path
-						+ FileSystem.FILE_SPLITTER + jarInfo.getPath())))
-				.thenReturn(jar);
+				upgradeServerAPI.getApplicationUpgradeInfo(
+						eq(Application.CLIENT), eq(clientVersion))).thenReturn(
+				upgradeInfo);
+		doNothing().when(client).upgradeFile(anyString(),
+				any(Application.class), any(UpgradeInfo.class),
+				any(UpgradeFileInfo.class));
 
 		InOrder order = inOrder(fileSystemService, upgradeServerAPI,
-				propertiesService);
+				propertiesService, client);
 
-		client.upgradeUpgradeClient(rootPath, upgradeInfo);
+		client.upgradeApplication(rootPath, Application.CLIENT);
 
 		order.verify(fileSystemService).removeTemporaryFolder();
 		order.verify(fileSystemService).createTemporaryFolder();
-		order.verify(fileSystemService).writeTemporaryFile(
-				eq(path + FileSystem.FILE_SPLITTER + imageInfo.getPath()),
-				eq(image));
-		order.verify(fileSystemService).writeTemporaryFile(
-				eq(path + FileSystem.FILE_SPLITTER + jarInfo.getPath()),
-				eq(jar));
-		order.verify(fileSystemService)
-				.removeFile(
-						eq(rootPath + FileSystem.FILE_SPLITTER + path
-								+ FileSystem.FILE_SPLITTER
-								+ removedFileInfo.getPath()));
-		order.verify(fileSystemService).copyFromTemporaryFolderTo(eq(path),
-				eq(rootPath + FileSystem.FILE_SPLITTER + path));
+		for (UpgradeFileInfo fileInfo : fileInfos) {
+			order.verify(client).upgradeFile(eq(rootPath),
+					eq(Application.CLIENT), eq(upgradeInfo), eq(fileInfo));
+		}
+		order.verify(fileSystemService).copyFromTemporaryFolderTo(
+				eq(Application.CLIENT.getPath()),
+				eq(rootPath + FileSystem.FILE_SPLITTER
+						+ Application.CLIENT.getPath()));
 		order.verify(fileSystemService).removeTemporaryFolder();
-		order.verify(propertiesService).updateUpgradeClientVersion(
-				eq(rootPath), eq(upgradeVersion));
-
-		verify(fileSystemService, times(2)).writeTemporaryFile(anyString(),
-				any(byte[].class));
-		verify(fileSystemService, times(1)).removeFile(anyString());
+		order.verify(propertiesService).updateApplicationVersion(eq(rootPath),
+				eq(Application.CLIENT), eq(upgradeVersion));
 	}
 
-	@Test(description = "should upgrade client")
-	public void testUpgradeClient() throws Exception {
-		String rootPath = "D:/survive-game";
-		String path = "client";
-		String clientVersion = "0.0.1";
+	@Test(description = "verify add file flow")
+	public void testUpgradeFileAdd() throws UpgradeException {
+		String rootPath = "rootPath";
+		Application application = Application.CLIENT;
+		UpgradeInfo upgradeInfo = mock(UpgradeInfo.class);
+		UpgradeFileInfo fileInfo = mock(UpgradeFileInfo.class);
+		when(fileInfo.getFileUpgradeMode()).thenReturn(FileUpgradeMode.ADD);
+
+		doNothing().when(client).updateFile(anyString(),
+				any(Application.class), any(UpgradeInfo.class),
+				any(UpgradeFileInfo.class));
+
+		InOrder order = inOrder(client, upgradeComponents.get(0),
+				upgradeComponents.get(1));
+
+		client.upgradeFile(rootPath, application, upgradeInfo, fileInfo);
+
+		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
+			order.verify(mockUpgradeComponent).beforeFile(eq(application), eq(fileInfo));
+		}
+		order.verify(client).updateFile(rootPath, application, upgradeInfo,
+				fileInfo);
+		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
+			order.verify(mockUpgradeComponent).afterFile(eq(application), eq(fileInfo));
+		}
+	}
+
+	@Test(description = "verify update file flow")
+	public void testUpgradeFileUpdate() throws UpgradeException {
+		String rootPath = "rootPath";
+		Application application = Application.CLIENT;
+		UpgradeInfo upgradeInfo = mock(UpgradeInfo.class);
+		UpgradeFileInfo fileInfo = mock(UpgradeFileInfo.class);
+		when(fileInfo.getFileUpgradeMode()).thenReturn(FileUpgradeMode.UPDATE);
+
+		doNothing().when(client).updateFile(anyString(),
+				any(Application.class), any(UpgradeInfo.class),
+				any(UpgradeFileInfo.class));
+
+		InOrder order = inOrder(client, upgradeComponents.get(0),
+				upgradeComponents.get(1));
+
+		client.upgradeFile(rootPath, application, upgradeInfo, fileInfo);
+
+		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
+			order.verify(mockUpgradeComponent).beforeFile(eq(application), eq(fileInfo));
+		}
+		order.verify(client).updateFile(rootPath, application, upgradeInfo,
+				fileInfo);
+		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
+			order.verify(mockUpgradeComponent).afterFile(eq(application), eq(fileInfo));
+		}
+	}
+
+	@Test(description = "verify remove file flow")
+	public void testUpgradeFileRemove() throws UpgradeException {
+		String rootPath = "rootPath";
+		Application application = Application.CLIENT;
+		UpgradeInfo upgradeInfo = mock(UpgradeInfo.class);
+		UpgradeFileInfo fileInfo = mock(UpgradeFileInfo.class);
+		when(fileInfo.getFileUpgradeMode()).thenReturn(FileUpgradeMode.REMOVE);
+
+		doNothing().when(client).updateFile(anyString(),
+				any(Application.class), any(UpgradeInfo.class),
+				any(UpgradeFileInfo.class));
+
+		InOrder order = inOrder(client, upgradeComponents.get(0),
+				upgradeComponents.get(1));
+
+		client.upgradeFile(rootPath, application, upgradeInfo, fileInfo);
+
+		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
+			order.verify(mockUpgradeComponent).beforeFile(eq(application), eq(fileInfo));
+		}
+		order.verify(client).removeFile(rootPath, application, upgradeInfo,
+				fileInfo);
+		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
+			order.verify(mockUpgradeComponent).afterFile(eq(application), eq(fileInfo));
+		}
+	}
+
+	@Test(description = "should update file")
+	public void testUpdateFile() throws Exception {
+		String root = "D:/survive-game";
 		String upgradeVersion = "0.0.2";
-		UpgradeFileInfo imageInfo = new UpgradeFileInfo(
-				"resources/images/image.png", 200, "someDigest",
-				FileUpgradeMode.ADD);
-		UpgradeFileInfo jarInfo = new UpgradeFileInfo("lib/spring.jar", 500,
-				"someDigest", FileUpgradeMode.UPDATE);
-		UpgradeFileInfo removedFileInfo = new UpgradeFileInfo("removeMe.txt",
-				100, "someDigest", FileUpgradeMode.REMOVE);
-		List<UpgradeFileInfo> fileInfos = Arrays.asList(imageInfo, jarInfo,
-				removedFileInfo);
-		UpgradeInfo upgradeInfo = UpgradeInfo.withFileInfos(path,
-				clientVersion, upgradeVersion, fileInfos);
+		String filePath = "update.txt";
+		byte[] fileContent = new byte[] { 1, 2, 3 };
 
-		byte[] image = new byte[] { 1, 2, 3, 4, 5 };
-		byte[] jar = new byte[] { 5, 4, 3, 2, 1 };
+		UpgradeInfo upgradeInfo = mock(UpgradeInfo.class);
+		when(upgradeInfo.getPath()).thenReturn(Application.CLIENT.getPath());
+		when(upgradeInfo.getUpgradeVersion()).thenReturn(upgradeVersion);
+
+		UpgradeFileInfo fileInfo = mock(UpgradeFileInfo.class);
+		when(fileInfo.getPath()).thenReturn(filePath);
+
 		when(
-				upgradeServerAPI.getFileContent(eq(upgradeVersion), eq(path
-						+ FileSystem.FILE_SPLITTER + imageInfo.getPath())))
-				.thenReturn(image);
-		when(
-				upgradeServerAPI.getFileContent(eq(upgradeVersion), eq(path
-						+ FileSystem.FILE_SPLITTER + jarInfo.getPath())))
-				.thenReturn(jar);
+				upgradeServerAPI.getFileContent(eq(upgradeVersion),
+						eq(Application.CLIENT.getPath()
+								+ FileSystem.FILE_SPLITTER + filePath)))
+				.thenReturn(fileContent);
 
-		InOrder order = inOrder(fileSystemService, upgradeServerAPI,
-				propertiesService);
+		client.updateFile(root, Application.CLIENT, upgradeInfo, fileInfo);
 
-		client.upgradeClient(rootPath, upgradeInfo);
+		verify(fileSystemService).writeTemporaryFile(
+				eq(Application.CLIENT.getPath() + FileSystem.FILE_SPLITTER
+						+ filePath), eq(fileContent));
+	}
 
-		order.verify(fileSystemService).removeTemporaryFolder();
-		order.verify(fileSystemService).createTemporaryFolder();
-		order.verify(fileSystemService).writeTemporaryFile(
-				eq(path + FileSystem.FILE_SPLITTER + imageInfo.getPath()),
-				eq(image));
-		order.verify(fileSystemService).writeTemporaryFile(
-				eq(path + FileSystem.FILE_SPLITTER + jarInfo.getPath()),
-				eq(jar));
-		order.verify(fileSystemService)
-				.removeFile(
-						eq(rootPath + FileSystem.FILE_SPLITTER + path
-								+ FileSystem.FILE_SPLITTER
-								+ removedFileInfo.getPath()));
-		order.verify(fileSystemService).copyFromTemporaryFolderTo(eq(path),
-				eq(rootPath + FileSystem.FILE_SPLITTER + path));
-		order.verify(fileSystemService).removeTemporaryFolder();
-		order.verify(propertiesService).updateClientVersion(eq(rootPath),
-				eq(upgradeVersion));
+	@Test(description = "should remove file")
+	public void testRemoveFile() throws Exception {
+		String root = "D:/survive-game";
+		String filePath = "update.txt";
 
-		verify(fileSystemService, times(2)).writeTemporaryFile(anyString(),
-				any(byte[].class));
-		verify(fileSystemService, times(1)).removeFile(anyString());
+		UpgradeInfo upgradeInfo = mock(UpgradeInfo.class);
+
+		UpgradeFileInfo fileInfo = mock(UpgradeFileInfo.class);
+		when(fileInfo.getPath()).thenReturn(filePath);
+
+		client.removeFile(root, Application.CLIENT, upgradeInfo, fileInfo);
+
+		verify(fileSystemService).removeFile(
+				eq(root + FileSystem.FILE_SPLITTER
+						+ Application.CLIENT.getPath()
+						+ FileSystem.FILE_SPLITTER + filePath));
 	}
 
 }

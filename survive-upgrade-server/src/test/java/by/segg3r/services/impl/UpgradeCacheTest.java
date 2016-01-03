@@ -90,7 +90,7 @@ public class UpgradeCacheTest {
 				.zeroOf(Application.CLIENT));
 		assertTrue(clientZeroToOne.isUpgradeRequired());
 		assertEquals(clientZeroToOne.getClientVersion(),
-				ApplicationVersion.VERSION_ZERO);
+				ApplicationVersion.ZERO_VERSION);
 		assertEquals(clientZeroToOne.getUpgradeVersion(),
 				clientVersion1.getVersion());
 		assertEquals(clientZeroToOne.getFileInfos(), zeroToOneUpgrade);
@@ -108,8 +108,8 @@ public class UpgradeCacheTest {
 		
 		UpgradeInfo upgradeClientZeroNoUpgrade = cache.getUpgradeInfo(ApplicationVersion.zeroOf(Application.UPGRADE_CLIENT));
 		assertFalse(upgradeClientZeroNoUpgrade.isUpgradeRequired());
-		assertEquals(upgradeClientZeroNoUpgrade.getClientVersion(), ApplicationVersion.VERSION_ZERO);
-		assertEquals(upgradeClientZeroNoUpgrade.getUpgradeVersion(), ApplicationVersion.VERSION_ZERO);
+		assertEquals(upgradeClientZeroNoUpgrade.getClientVersion(), ApplicationVersion.ZERO_VERSION);
+		assertEquals(upgradeClientZeroNoUpgrade.getUpgradeVersion(), ApplicationVersion.ZERO_VERSION);
 	}
 
 }

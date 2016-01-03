@@ -1,7 +1,10 @@
 package by.segg3r.upgradeclient.impl;
 
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -10,6 +13,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import by.segg3r.Application;
 import by.segg3r.exceptions.APIException;
 import by.segg3r.http.entities.UpgradeInfo;
 import by.segg3r.upgradeclient.http.impl.JsonHttpClient;
@@ -42,8 +46,8 @@ public class UpgradeServerAPITest {
 		reset(simpleHttpClient, jsonHttpClient);
 	}
 
-	@Test(description = "should get client upgrade info")
-	public void testGetClientUpgradeInfo() throws APIException {
+	@Test(description = "should get application upgrade info")
+	public void testGetApplicationUpgradeInfo() throws APIException {
 		String clientVersion = "0.0.1";
 		UpgradeInfo upgradeInfo = mock(UpgradeInfo.class);
 
@@ -52,21 +56,7 @@ public class UpgradeServerAPITest {
 						.get(eq("http://segg3r.servegame.com:11199/api/upgrade/0.0.1/client"),
 								eq(UpgradeInfo.class))).thenReturn(upgradeInfo);
 
-		assertEquals(api.getClientUpgradeInfo(clientVersion), upgradeInfo);
-	}
-
-	@Test(description = "should get upgrade client upgrade info")
-	public void testGetUpgradeClientUpgradeInfo() throws APIException {
-		String upgradeClientVersion = "0.0.1";
-		UpgradeInfo upgradeInfo = mock(UpgradeInfo.class);
-
-		when(
-				jsonHttpClient
-						.get(eq("http://segg3r.servegame.com:11199/api/upgrade/0.0.1/upgrade-client"),
-								eq(UpgradeInfo.class))).thenReturn(upgradeInfo);
-
-		assertEquals(api.getUpgradeClientUpgradeInfo(upgradeClientVersion),
-				upgradeInfo);
+		assertEquals(api.getApplicationUpgradeInfo(Application.CLIENT, clientVersion), upgradeInfo);
 	}
 
 	@Test(description = "should get file content")

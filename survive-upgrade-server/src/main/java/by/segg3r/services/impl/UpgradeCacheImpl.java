@@ -40,7 +40,7 @@ public class UpgradeCacheImpl implements UpgradeCache {
 			if (availableVersions.isEmpty()) {
 				UpgradeInfo zeroToZeroUpgradeInfo = UpgradeInfo
 						.noUpgradeRequired(application.getPath(),
-								ApplicationVersion.VERSION_ZERO);
+								ApplicationVersion.ZERO_VERSION);
 				upgradeCache.put(ApplicationVersion.zeroOf(application), zeroToZeroUpgradeInfo);
 			}
 

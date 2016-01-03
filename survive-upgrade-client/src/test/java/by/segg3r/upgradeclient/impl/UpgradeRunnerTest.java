@@ -42,22 +42,13 @@ public class UpgradeRunnerTest {
 		assertEquals(upgradeRunner.runUpgrade(rootPath), 0);
 	}
 
-	@Test(description = "should return code '2' if upgrader is upgraded")
+	@Test(description = "should return code '1' if upgrade was performed")
 	public void testRunUpgradeUpgraderUpgraded() throws UpgradeException {
 		String rootPath = "D:/survive-game";
 
-		when(upgradeClient.executeUpgrade(eq(rootPath))).thenReturn(UpgradeResult.UPGRADER_UPGRADED);
+		when(upgradeClient.executeUpgrade(eq(rootPath))).thenReturn(UpgradeResult.UPGRADED);
 
 		assertEquals(upgradeRunner.runUpgrade(rootPath), 1);
-	}
-	
-	@Test(description = "should return code '1' if client is upgraded")
-	public void testRunUpgradeClientUpgraded() throws UpgradeException {
-		String rootPath = "D:/survive-game";
-
-		when(upgradeClient.executeUpgrade(eq(rootPath))).thenReturn(UpgradeResult.CLIENT_UPGRADED);
-
-		assertEquals(upgradeRunner.runUpgrade(rootPath), 2);
 	}
 
 	@Test(description = "should return code '1' if failed the upgrade")

@@ -2,7 +2,7 @@ package by.segg3r;
 
 public class ApplicationVersion {
 
-	public static final String VERSION_ZERO = "0";
+	public static final String ZERO_VERSION = "0";
 	
 	private Application application;
 	private String version;
@@ -12,7 +12,7 @@ public class ApplicationVersion {
 	}
 	
 	public static ApplicationVersion zeroOf(Application application) {
-		return new ApplicationVersion(application, VERSION_ZERO);
+		return new ApplicationVersion(application, ZERO_VERSION);
 	}
 	
 	public ApplicationVersion(Application application, String version) {

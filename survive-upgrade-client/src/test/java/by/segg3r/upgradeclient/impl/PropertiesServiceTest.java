@@ -14,6 +14,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import by.segg3r.Application;
 import by.segg3r.upgradeclient.PropertiesDAO;
 
 public class PropertiesServiceTest {
@@ -33,8 +34,8 @@ public class PropertiesServiceTest {
 		reset(propertiesDAO);
 	}
 
-	@Test(description = "should get client version")
-	public void testGetClientVersion() throws IOException {
+	@Test(description = "should get application version")
+	public void testGetApplicationVersion() throws IOException {
 		String rootPath = "D:/survive-game";
 		String version = "0.0.1";
 
@@ -44,24 +45,10 @@ public class PropertiesServiceTest {
 								eq("D:/survive-game/client/resources/client.properties"),
 								eq("version"), eq("0"))).thenReturn(version);
 
-		assertEquals(reader.getClientVersion(rootPath), version);
+		assertEquals(reader.getApplicationVersion(rootPath, Application.CLIENT), version);
 	}
 
-	@Test(description = "should get upgrade client version")
-	public void testGetUpgradeClientVersion() throws IOException {
-		String rootPath = "D:/survive-game";
-		String version = "0.0.1";
-
-		when(
-				propertiesDAO
-						.getProperty(
-								eq("D:/survive-game/upgrade-client/resources/upgrade-client.properties"),
-								eq("version"), eq("0"))).thenReturn(version);
-
-		assertEquals(reader.getUpgradeClientVersion(rootPath), version);
-	}
-
-	@Test(description = "should update client version property")
+	@Test(description = "should update application version property")
 	public void testUpdateClientVersion() throws IOException {
 		String rootPath = "D:/survive-game";
 		String version = "0.0.1";
@@ -74,32 +61,11 @@ public class PropertiesServiceTest {
 
 		InOrder order = inOrder(propertiesDAO, properties);
 
-		reader.updateClientVersion(rootPath, version);
+		reader.updateApplicationVersion(rootPath, Application.CLIENT, version);
 		order.verify(properties).setProperty(eq("version"), eq(version));
 		order.verify(propertiesDAO).saveProperties(
 				eq("D:/survive-game/client/resources/client.properties"),
 				eq(properties));
-	}
-
-	@Test(description = "should update upgrade client version property")
-	public void testUpdateUpgradeClientVersion() throws IOException {
-		String rootPath = "D:/survive-game";
-		String version = "0.0.1";
-		Properties properties = mock(Properties.class);
-
-		when(
-				propertiesDAO
-						.getProperties(eq("D:/survive-game/upgrade-client/resources/upgrade-client.properties")))
-				.thenReturn(properties);
-
-		InOrder order = inOrder(propertiesDAO, properties);
-
-		reader.updateUpgradeClientVersion(rootPath, version);
-		order.verify(properties).setProperty(eq("version"), eq(version));
-		order.verify(propertiesDAO)
-				.saveProperties(
-						eq("D:/survive-game/upgrade-client/resources/upgrade-client.properties"),
-						eq(properties));
 	}
 
 }

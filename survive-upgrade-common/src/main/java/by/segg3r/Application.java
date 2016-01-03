@@ -2,6 +2,7 @@ package by.segg3r;
 
 public enum Application {
 
+	//order here is the order, applications should be upgraded in
 	UPGRADE_CLIENT("upgrade-client"), CLIENT("client");
 
 	public static Application withPath(String applicationPath) {
