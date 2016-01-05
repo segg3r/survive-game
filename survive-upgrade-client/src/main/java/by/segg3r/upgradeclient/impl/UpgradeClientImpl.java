@@ -80,7 +80,7 @@ public class UpgradeClientImpl implements UpgradeClient {
 				+ upgradeInfo.getUpgradeVersion());
 
 		for (UpgradeComponent upgradeComponent : upgradeComponents) {
-			upgradeComponent.beforeApplicationUpgrade(application, upgradeInfo);
+			upgradeComponent.beforeApplicationUpgrade(rootPath, application, upgradeInfo);
 		}
 
 		long totalSize = upgradeInfo.getTotalSize();
@@ -101,12 +101,13 @@ public class UpgradeClientImpl implements UpgradeClient {
 		fileSystemService.copyFromTemporaryFolderTo(upgradeInfo.getPath(),
 				FileSystem.getApplicationPath(rootPath, application));
 		fileSystemService.removeTemporaryFolder();
-		propertiesService.updateApplicationVersion(rootPath, application,
-				upgradeInfo.getUpgradeVersion());
 
 		for (UpgradeComponent upgradeComponent : upgradeComponents) {
-			upgradeComponent.afterApplicationUpgrade(application, upgradeInfo);
+			upgradeComponent.afterApplicationUpgrade(rootPath, application, upgradeInfo);
 		}
+		
+		propertiesService.updateApplicationVersion(rootPath, application,
+				upgradeInfo.getUpgradeVersion());
 	}
 
 	@Override
@@ -114,7 +115,7 @@ public class UpgradeClientImpl implements UpgradeClient {
 			UpgradeInfo upgradeInfo, UpgradeFileInfo fileInfo)
 			throws UpgradeException {
 		for (UpgradeComponent upgradeComponent : upgradeComponents) {
-			upgradeComponent.beforeFile(application, fileInfo);
+			upgradeComponent.beforeFile(rootPath, application, fileInfo);
 		}
 
 		if (fileInfo.getFileUpgradeMode() == FileUpgradeMode.ADD
@@ -125,7 +126,7 @@ public class UpgradeClientImpl implements UpgradeClient {
 		}
 
 		for (UpgradeComponent upgradeComponent : upgradeComponents) {
-			upgradeComponent.afterFile(application, fileInfo);
+			upgradeComponent.afterFile(rootPath, application, fileInfo);
 		}
 	}
 

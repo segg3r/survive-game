@@ -22,7 +22,7 @@ public class PropertiesServiceTest {
 	@Mock
 	private PropertiesDAO propertiesDAO;
 	@InjectMocks
-	private PropertiesServiceImpl reader;
+	private PropertiesServiceImpl service;
 
 	@BeforeClass
 	public void initMocks() {
@@ -45,7 +45,9 @@ public class PropertiesServiceTest {
 								eq("D:/survive-game/client/resources/client.properties"),
 								eq("version"), eq("0"))).thenReturn(version);
 
-		assertEquals(reader.getApplicationVersion(rootPath, Application.CLIENT), version);
+		assertEquals(
+				service.getApplicationVersion(rootPath, Application.CLIENT),
+				version);
 	}
 
 	@Test(description = "should update application version property")
@@ -61,9 +63,36 @@ public class PropertiesServiceTest {
 
 		InOrder order = inOrder(propertiesDAO, properties);
 
-		reader.updateApplicationVersion(rootPath, Application.CLIENT, version);
+		service.updateApplicationVersion(rootPath, Application.CLIENT, version);
 		order.verify(properties).setProperty(eq("version"), eq(version));
 		order.verify(propertiesDAO).saveProperties(
+				eq("D:/survive-game/client/resources/client.properties"),
+				eq(properties));
+	}
+
+	@Test(description = "should get properties")
+	public void testGetProperties() throws IOException {
+		String rootPath = "D:/survive-game";
+		Application application = Application.CLIENT;
+		Properties properties = mock(Properties.class);
+
+		when(
+				propertiesDAO
+						.getProperties(eq("D:/survive-game/client/resources/client.properties")))
+				.thenReturn(properties);
+
+		assertEquals(service.getProperties(rootPath, application), properties);
+	}
+
+	@Test(description = "should update properties")
+	public void testUpdateProperties() throws IOException {
+		String rootPath = "D:/survive-game";
+		Application application = Application.CLIENT;
+		Properties properties = mock(Properties.class);
+
+		service.updateProperties(rootPath, application, properties);
+
+		verify(propertiesDAO).saveProperties(
 				eq("D:/survive-game/client/resources/client.properties"),
 				eq(properties));
 	}

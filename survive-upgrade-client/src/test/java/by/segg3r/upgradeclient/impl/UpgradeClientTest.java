@@ -136,10 +136,12 @@ public class UpgradeClientTest {
 		verify(fileSystemService, never()).copyFromTemporaryFolderTo(
 				anyString(), anyString());
 		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
-			verify(mockUpgradeComponent, never()).beforeApplicationUpgrade(
-					any(Application.class), any(UpgradeInfo.class));
-			verify(mockUpgradeComponent, never()).afterApplicationUpgrade(
-					any(Application.class), any(UpgradeInfo.class));
+			verify(mockUpgradeComponent, never())
+					.beforeApplicationUpgrade(anyString(),
+							any(Application.class), any(UpgradeInfo.class));
+			verify(mockUpgradeComponent, never())
+					.afterApplicationUpgrade(anyString(),
+							any(Application.class), any(UpgradeInfo.class));
 		}
 	}
 
@@ -170,10 +172,15 @@ public class UpgradeClientTest {
 				any(UpgradeFileInfo.class));
 
 		InOrder order = inOrder(fileSystemService, upgradeServerAPI,
-				propertiesService, client);
+				propertiesService, client, upgradeComponents.get(0),
+				upgradeComponents.get(1));
 
 		client.upgradeApplication(rootPath, Application.CLIENT);
 
+		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
+			order.verify(mockUpgradeComponent).beforeApplicationUpgrade(
+					eq(rootPath), eq(Application.CLIENT), eq(upgradeInfo));
+		}
 		order.verify(fileSystemService).removeTemporaryFolder();
 		order.verify(fileSystemService).createTemporaryFolder();
 		for (UpgradeFileInfo fileInfo : fileInfos) {
@@ -185,6 +192,10 @@ public class UpgradeClientTest {
 				eq(rootPath + FileSystem.FILE_SPLITTER
 						+ Application.CLIENT.getPath()));
 		order.verify(fileSystemService).removeTemporaryFolder();
+		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
+			order.verify(mockUpgradeComponent).afterApplicationUpgrade(
+					eq(rootPath), eq(Application.CLIENT), eq(upgradeInfo));
+		}
 		order.verify(propertiesService).updateApplicationVersion(eq(rootPath),
 				eq(Application.CLIENT), eq(upgradeVersion));
 	}
@@ -207,12 +218,14 @@ public class UpgradeClientTest {
 		client.upgradeFile(rootPath, application, upgradeInfo, fileInfo);
 
 		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
-			order.verify(mockUpgradeComponent).beforeFile(eq(application), eq(fileInfo));
+			order.verify(mockUpgradeComponent).beforeFile(eq(rootPath),
+					eq(application), eq(fileInfo));
 		}
 		order.verify(client).updateFile(rootPath, application, upgradeInfo,
 				fileInfo);
 		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
-			order.verify(mockUpgradeComponent).afterFile(eq(application), eq(fileInfo));
+			order.verify(mockUpgradeComponent).afterFile(eq(rootPath),
+					eq(application), eq(fileInfo));
 		}
 	}
 
@@ -234,12 +247,14 @@ public class UpgradeClientTest {
 		client.upgradeFile(rootPath, application, upgradeInfo, fileInfo);
 
 		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
-			order.verify(mockUpgradeComponent).beforeFile(eq(application), eq(fileInfo));
+			order.verify(mockUpgradeComponent).beforeFile(eq(rootPath),
+					eq(application), eq(fileInfo));
 		}
 		order.verify(client).updateFile(rootPath, application, upgradeInfo,
 				fileInfo);
 		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
-			order.verify(mockUpgradeComponent).afterFile(eq(application), eq(fileInfo));
+			order.verify(mockUpgradeComponent).afterFile(eq(rootPath),
+					eq(application), eq(fileInfo));
 		}
 	}
 
@@ -261,12 +276,14 @@ public class UpgradeClientTest {
 		client.upgradeFile(rootPath, application, upgradeInfo, fileInfo);
 
 		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
-			order.verify(mockUpgradeComponent).beforeFile(eq(application), eq(fileInfo));
+			order.verify(mockUpgradeComponent).beforeFile(eq(rootPath),
+					eq(application), eq(fileInfo));
 		}
 		order.verify(client).removeFile(rootPath, application, upgradeInfo,
 				fileInfo);
 		for (UpgradeComponent mockUpgradeComponent : upgradeComponents) {
-			order.verify(mockUpgradeComponent).afterFile(eq(application), eq(fileInfo));
+			order.verify(mockUpgradeComponent).afterFile(eq(rootPath),
+					eq(application), eq(fileInfo));
 		}
 	}
 

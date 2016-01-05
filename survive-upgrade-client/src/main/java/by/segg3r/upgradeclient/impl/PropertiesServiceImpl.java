@@ -31,12 +31,22 @@ public class PropertiesServiceImpl implements PropertiesService {
 	@Override
 	public void updateApplicationVersion(String rootPath,
 			Application application, String upgradeVersion) throws IOException {
+		Properties properties = getProperties(rootPath, application);
+		properties.setProperty(VERSION_PROPERTY, upgradeVersion);
+		updateProperties(rootPath, application, properties);
+	}
+
+	@Override
+	public Properties getProperties(String rootPath, Application application) throws IOException {
+		return propertiesDAO.getProperties(FileSystem
+				.getApplicationPropertiesFilePath(rootPath, application));
+	}
+
+	@Override
+	public void updateProperties(String rootPath, Application application,
+			Properties properties) throws IOException {
 		String applicationPropertiesFilePath = FileSystem
 				.getApplicationPropertiesFilePath(rootPath, application);
-
-		Properties properties = propertiesDAO
-				.getProperties(applicationPropertiesFilePath);
-		properties.setProperty(VERSION_PROPERTY, upgradeVersion);
 		propertiesDAO.saveProperties(applicationPropertiesFilePath, properties);
 	}
 
