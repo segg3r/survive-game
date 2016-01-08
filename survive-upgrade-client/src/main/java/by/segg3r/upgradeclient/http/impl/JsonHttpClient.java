@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,10 @@ public class JsonHttpClient {
 			HttpResponse response = httpClient.execute(request);
 			InputStream in = response.getEntity().getContent();
 			String jsonString = IOUtils.toString(in);
+			
+			if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+				throw new APIException(jsonString);
+			}
 			
 			return gson.fromJson(jsonString, clazz);
 		} catch (IOException e) {
