@@ -30,7 +30,10 @@ public class UpgradeCacheImpl implements UpgradeCache {
 	@Autowired
 	private VersionFileTreeService versionFileTreeService;
 
-	private Map<ApplicationVersion, UpgradeInfo> upgradeCache = new HashMap<ApplicationVersion, UpgradeInfo>();
+	private Map<ApplicationVersion, UpgradeInfo> upgradeCacheByClientVersion = 
+			new HashMap<ApplicationVersion, UpgradeInfo>();
+	private Map<ApplicationVersion, UpgradeInfo> upgradeCacheByUpgradeVersion =
+			new HashMap<ApplicationVersion, UpgradeInfo>();
 
 	@PostConstruct
 	public void initializeCache() throws UpgradeException {
@@ -41,7 +44,9 @@ public class UpgradeCacheImpl implements UpgradeCache {
 				UpgradeInfo zeroToZeroUpgradeInfo = UpgradeInfo
 						.noUpgradeRequired(application.getPath(),
 								ApplicationVersion.ZERO_VERSION);
-				upgradeCache.put(ApplicationVersion.zeroOf(application), zeroToZeroUpgradeInfo);
+				upgradeCacheByClientVersion.put(
+						ApplicationVersion.zeroOf(application),
+						zeroToZeroUpgradeInfo);
 			}
 
 			availableVersions.sort(VERSION_COMPARATOR);
@@ -51,7 +56,7 @@ public class UpgradeCacheImpl implements UpgradeCache {
 
 			UpgradeInfo latest = UpgradeInfo.noUpgradeRequired(
 					application.getPath(), latestVersion.getVersion());
-			upgradeCache.put(latestVersion, latest);
+			upgradeCacheByClientVersion.put(latestVersion, latest);
 		}
 	}
 
@@ -71,15 +76,15 @@ public class UpgradeCacheImpl implements UpgradeCache {
 		List<FileInfo> previousFileInfos = UpgradeInfo.VERSION_ZERO_FILE_INFOS;
 		while (versionIterator.hasNext()) {
 			ApplicationVersion current = versionIterator.next();
-			List<FileInfo> currentFileInfos = upgradeDAO
-					.getFileInfos(current);
-			
+			List<FileInfo> currentFileInfos = upgradeDAO.getFileInfos(current);
+
 			List<UpgradeFileInfo> upgradeFileInfos = versionFileTreeService
 					.compare(previousFileInfos, currentFileInfos);
 			UpgradeInfo upgradeInfo = UpgradeInfo.withFileInfos(
 					application.getPath(), previous.getVersion(),
 					current.getVersion(), upgradeFileInfos);
-			upgradeCache.put(previous, upgradeInfo);
+			upgradeCacheByClientVersion.put(previous, upgradeInfo);
+			upgradeCacheByUpgradeVersion.put(current, upgradeInfo);
 
 			previous = current;
 			previousFileInfos = currentFileInfos;
@@ -88,16 +93,31 @@ public class UpgradeCacheImpl implements UpgradeCache {
 	}
 
 	@Override
-	public UpgradeInfo getUpgradeInfo(ApplicationVersion applicationVersion)
-			throws UpgradeException {
-		UpgradeInfo result = upgradeCache.get(applicationVersion);
+	public UpgradeInfo getUpgradeInfoByClientVersion(
+			ApplicationVersion applicationVersion) throws UpgradeException {
+		UpgradeInfo result = upgradeCacheByClientVersion
+				.get(applicationVersion);
+		handleNullUpgradeInfo(applicationVersion, result);
+		return result;
+	}
+
+	@Override
+	public UpgradeInfo getUpgradeInfoByUpgradeVersion(
+			ApplicationVersion applicationVersion) throws UpgradeException {
+		UpgradeInfo result = upgradeCacheByUpgradeVersion
+				.get(applicationVersion);
+		handleNullUpgradeInfo(applicationVersion, result);
+		return result;
+	}
+
+	private void handleNullUpgradeInfo(ApplicationVersion applicationVersion,
+			UpgradeInfo result) throws UpgradeException {
 		if (result == null) {
 			throw new UpgradeException("Application "
 					+ applicationVersion.getApplication().getPath()
 					+ " does not have version "
 					+ applicationVersion.getVersion());
 		}
-		return result;
 	}
 
 }

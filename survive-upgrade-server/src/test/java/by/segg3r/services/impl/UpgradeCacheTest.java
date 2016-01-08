@@ -86,7 +86,7 @@ public class UpgradeCacheTest {
 
 		cache.initializeCache();
 
-		UpgradeInfo clientZeroToOne = cache.getUpgradeInfo(ApplicationVersion
+		UpgradeInfo clientZeroToOne = cache.getUpgradeInfoByClientVersion(ApplicationVersion
 				.zeroOf(Application.CLIENT));
 		assertTrue(clientZeroToOne.isUpgradeRequired());
 		assertEquals(clientZeroToOne.getClientVersion(),
@@ -95,21 +95,24 @@ public class UpgradeCacheTest {
 				clientVersion1.getVersion());
 		assertEquals(clientZeroToOne.getFileInfos(), zeroToOneUpgrade);
 
-		UpgradeInfo clientOneToTwo = cache.getUpgradeInfo(clientVersion1);
+		UpgradeInfo clientOneToTwo = cache.getUpgradeInfoByClientVersion(clientVersion1);
 		assertTrue(clientZeroToOne.isUpgradeRequired());
 		assertEquals(clientOneToTwo.getClientVersion(), clientVersion1.getVersion());
 		assertEquals(clientOneToTwo.getUpgradeVersion(), clientVersion2.getVersion());
 		assertEquals(clientOneToTwo.getFileInfos(), oneToTwoUpgrade);
 		
-		UpgradeInfo clientTwoNoUpgrade = cache.getUpgradeInfo(clientVersion2);
+		UpgradeInfo clientTwoNoUpgrade = cache.getUpgradeInfoByClientVersion(clientVersion2);
 		assertFalse(clientTwoNoUpgrade.isUpgradeRequired());
 		assertEquals(clientTwoNoUpgrade.getClientVersion(), clientVersion2.getVersion());
 		assertEquals(clientTwoNoUpgrade.getUpgradeVersion(), clientVersion2.getVersion());
 		
-		UpgradeInfo upgradeClientZeroNoUpgrade = cache.getUpgradeInfo(ApplicationVersion.zeroOf(Application.UPGRADE_CLIENT));
+		UpgradeInfo upgradeClientZeroNoUpgrade = cache.getUpgradeInfoByClientVersion(ApplicationVersion.zeroOf(Application.UPGRADE_CLIENT));
 		assertFalse(upgradeClientZeroNoUpgrade.isUpgradeRequired());
 		assertEquals(upgradeClientZeroNoUpgrade.getClientVersion(), ApplicationVersion.ZERO_VERSION);
 		assertEquals(upgradeClientZeroNoUpgrade.getUpgradeVersion(), ApplicationVersion.ZERO_VERSION);
+		
+		assertEquals(cache.getUpgradeInfoByUpgradeVersion(clientVersion1), clientZeroToOne);
+		assertEquals(cache.getUpgradeInfoByUpgradeVersion(clientVersion2), clientOneToTwo);
 	}
 
 }

@@ -75,23 +75,26 @@ public class UpgradeDAOImpl implements UpgradeDAO {
 	}
 
 	@Override
-	public byte[] getFileContent(String version, String path)
-			throws UpgradeException {
+	public byte[] getFileContent(ApplicationVersion applicationVersion,
+			String path) throws UpgradeException {
+		String relativeFilePath = applicationVersion.getVersion()
+				+ PATH_SPLITTER + applicationVersion.getApplication().getPath()
+				+ PATH_SPLITTER + path;
 		try {
-			String filePath = UPGRADE_DIRECTORY_PATH + PATH_SPLITTER + version
-					+ PATH_SPLITTER + path;
+			String filePath = UPGRADE_DIRECTORY_PATH + PATH_SPLITTER
+					+ relativeFilePath;
 			File file = new File(filePath);
 
 			if (!file.isFile()) {
-				throw new UpgradeException("Can not get file " + version
-						+ PATH_SPLITTER + path);
+				throw new UpgradeException("Can not get file "
+						+ relativeFilePath);
 			}
 
 			byte[] result = Files.readAllBytes(file.toPath());
 			return result;
 		} catch (IOException e) {
-			throw new UpgradeException("Error reading file " + version
-					+ PATH_SPLITTER + path, e);
+			throw new UpgradeException(
+					"Error reading file " + relativeFilePath, e);
 		}
 	}
 

@@ -13,6 +13,6 @@ public interface UpgradeDAO {
 
 	List<ApplicationVersion> getAvailableVersions(Application application) throws UpgradeException;
 
-	byte[] getFileContent(String version, String path) throws UpgradeException;
+	byte[] getFileContent(ApplicationVersion applicationVersion, String path) throws UpgradeException;
 
 }

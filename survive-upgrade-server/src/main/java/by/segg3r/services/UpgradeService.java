@@ -8,6 +8,8 @@ public interface UpgradeService {
 
 	UpgradeInfo getUpgradeInfo(ApplicationVersion applicationVersion) throws UpgradeException;
 
-	byte[] getFileContent(String version, String path) throws UpgradeException;
+	byte[] getFileContent(ApplicationVersion applicationVersion, String path) throws UpgradeException;
+
+	boolean fileExists(ApplicationVersion applicationVersion, String path);
 	
 }

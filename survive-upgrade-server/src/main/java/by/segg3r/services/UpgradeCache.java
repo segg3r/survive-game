@@ -6,6 +6,10 @@ import by.segg3r.http.entities.UpgradeInfo;
 
 public interface UpgradeCache {
 
-	UpgradeInfo getUpgradeInfo(ApplicationVersion applicationVersion) throws UpgradeException;
-	
+	UpgradeInfo getUpgradeInfoByClientVersion(
+			ApplicationVersion applicationVersion) throws UpgradeException;
+
+	UpgradeInfo getUpgradeInfoByUpgradeVersion(
+			ApplicationVersion applicationVersion) throws UpgradeException;
+
 }

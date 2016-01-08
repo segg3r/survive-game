@@ -41,36 +41,62 @@ public class RestUpgradeServiceTest {
 		String version = "0.0.1";
 		String path = "client";
 		UpgradeInfo upgradeInfo = mock(UpgradeInfo.class);
-		ApplicationVersion applicationVersion = new ApplicationVersion(Application.CLIENT, version);
+		ApplicationVersion applicationVersion = new ApplicationVersion(
+				Application.CLIENT, version);
 
-		when(upgradeService.getUpgradeInfo(eq(applicationVersion)))
-				.thenReturn(upgradeInfo);
+		when(upgradeService.getUpgradeInfo(eq(applicationVersion))).thenReturn(
+				upgradeInfo);
 
 		Response result = restUpgradeService.getUpgradeInfo(version, path);
 		UpgradeInfo actualUgradeInfo = (UpgradeInfo) result.getEntity();
 		assertEquals(actualUgradeInfo, upgradeInfo);
 	}
-	
+
 	@Test(description = "should return server error if application does not exist")
-	public void testGetUpgradeInfoApplicationDoesNotExist() throws UpgradeException	 {
+	public void testGetUpgradeInfoApplicationDoesNotExist()
+			throws UpgradeException {
 		String version = "0.0.1";
 		String path = "some-application";
 
 		Response result = restUpgradeService.getUpgradeInfo(version, path);
-		assertEquals(result.getStatus(), Status.INTERNAL_SERVER_ERROR.getStatusCode());
+		assertEquals(result.getStatus(),
+				Status.INTERNAL_SERVER_ERROR.getStatusCode());
 	}
 
-	@Test(description = "should correctly get file content")
-	public void testGetFileContent() throws UpgradeException {
+	@Test(description = "should correctly get file content if file exists")
+	public void testGetFileContentFileExists() throws UpgradeException {
 		String version = "1.3.4";
-		String filePath = "test/test.txt";
+		String applicationPath = "client";
+		String filePath = "test.txt";
 
 		byte[] fileData = new byte[] { 1, 2, 3 };
-		when(upgradeService.getFileContent(eq(version), eq(filePath)))
-				.thenReturn(fileData);
-		
-		Response result = restUpgradeService.getFileContent(version, filePath);
+		when(
+				upgradeService.getFileContent(
+						eq(ApplicationVersion.of(Application.CLIENT, version)),
+						eq(filePath))).thenReturn(fileData);
+		when(
+				upgradeService.fileExists(
+						eq(ApplicationVersion.of(Application.CLIENT, version)),
+						eq(filePath))).thenReturn(true);
+
+		Response result = restUpgradeService.getFileContent(version,
+				applicationPath, filePath);
 		byte[] actualFileData = (byte[]) result.getEntity();
 		assertEquals(actualFileData, fileData);
+	}
+	
+	@Test(description = "should respond '403' if file does not exist")
+	public void testGetFileContentFileDoesNotExist() throws UpgradeException {
+		String version = "1.3.4";
+		String applicationPath = "client";
+		String filePath = "test.txt";
+		when(
+				upgradeService.fileExists(
+						eq(ApplicationVersion.of(Application.CLIENT, version)),
+						eq(filePath))).thenReturn(false);
+
+		Response result = restUpgradeService.getFileContent(version,
+				applicationPath, filePath);
+		assertEquals(result.getStatus(), Status.FORBIDDEN.getStatusCode());
 	}
 }
