@@ -97,7 +97,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -113,6 +113,8 @@
 							<target name="copy zip in target">
 								<copy file="${release.zip.targetPath}/${release.zip.targetName}"
 									tofile="${release.zip.finalPath}/${release.zip.finalName}" />
+								<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
+									dest="${deploy.path}" />
 							</target>
 						</configuration>
 					</execution>
@@ -124,8 +126,6 @@
 						</goals>
 						<configuration>
 							<target name="execute-run" unless="${debug}">
-								<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
-									dest="${deploy.path}" />
 								<exec executable="${deploy.runPath}" dir="${deploy.fullPath}"
 									spawn="false" />
 							</target>
@@ -139,8 +139,6 @@
 						</goals>
 						<configuration>
 							<target name="execute-debug" if="${debug}">
-								<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
-									dest="${deploy.path}" />
 								<exec executable="${deploy.debugPath}" dir="${deploy.fullPath}"
 									spawn="false" />
 							</target>

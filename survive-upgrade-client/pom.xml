@@ -13,6 +13,8 @@
 		<parent.target>${parent.basedir}/target</parent.target>
 
 		<deploy.path>${parent.basedir}/deploy</deploy.path>
+		<deploy.forUpgrade>${deploy.path}/upgrade-client</deploy.forUpgrade>
+		<deploy.fullPathRoot>${deploy.path}/${project.artifactId}-${project.version}</deploy.fullPathRoot>
 		<deploy.fullPath>${deploy.path}/${project.artifactId}-${project.version}/${release.upgrade-client.path}</deploy.fullPath>
 		<deploy.runPath>${deploy.path}/${project.artifactId}-${project.version}/launcher-run.bat</deploy.runPath>
 		<deploy.debugPath>${deploy.path}/${project.artifactId}-${project.version}/launcher-debug.bat</deploy.debugPath>
@@ -122,6 +124,11 @@
 							<target name="copy zip in target">
 								<copy file="${release.zip.targetPath}/${release.zip.targetName}"
 									tofile="${release.zip.finalPath}/${release.zip.finalName}" />
+								<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
+									dest="${deploy.path}" />
+								<copy todir="${deploy.forUpgrade}">
+									<fileset dir="${deploy.fullPathRoot}"/>
+								</copy>
 							</target>
 						</configuration>
 					</execution>
@@ -133,8 +140,6 @@
 						</goals>
 						<configuration>
 							<target name="execute-run" unless="${debug}">
-								<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
-									dest="${deploy.path}" />
 								<exec executable="${deploy.runPath}" dir="${deploy.path}/${project.artifactId}-${project.version}"
 									spawn="false" />
 							</target>
@@ -148,8 +153,6 @@
 						</goals>
 						<configuration>
 							<target name="execute-debug" if="${debug}">
-								<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
-									dest="${deploy.path}" />
 								<exec executable="${deploy.debugPath}" dir="${deploy.path}/${project.artifactId}-${project.version}"
 									spawn="false" />
 							</target>
