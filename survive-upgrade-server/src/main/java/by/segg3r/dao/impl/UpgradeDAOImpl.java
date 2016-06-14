@@ -101,7 +101,10 @@ public class UpgradeDAOImpl implements UpgradeDAO {
 	private File getDirectory(String directoryPath) throws UpgradeException {
 		File directory = new File(directoryPath);
 		if (!directory.isDirectory()) {
-			throw new UpgradeException(directory + " is not a directory");
+			boolean directoriesCreated = directory.mkdirs();
+			if (!directoriesCreated) {
+				throw new UpgradeException("Could not find application directory");
+			}
 		}
 		return directory;
 	}
