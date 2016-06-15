@@ -1,11 +1,11 @@
 package by.segg3r;
 
-import org.apache.log4j.BasicConfigurator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import by.segg3r.config.ServerConfig;
+import by.segg3r.util.LoggerUtil;
 
 public class Runner {
 
@@ -13,7 +13,7 @@ public class Runner {
 	}
 
 	public static void main(String[] args) {
-		BasicConfigurator.configure();
+		LoggerUtil.initializeLogger("upgrade-server.log");
 
 		try (AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				ServerConfig.class)) {

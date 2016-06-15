@@ -166,6 +166,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>by.segg3r</groupId>
+			<artifactId>survive-common</artifactId>
+			<version>${survive.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>by.segg3r</groupId>
 			<artifactId>survive-upgrade-common</artifactId>
 			<version>${survive.version}</version>
 		</dependency>

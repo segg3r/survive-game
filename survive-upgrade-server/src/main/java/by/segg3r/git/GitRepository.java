@@ -1,9 +1,15 @@
 package by.segg3r.git;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.maven.cli.MavenCli;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -15,11 +21,15 @@ import by.segg3r.FileSystem;
 
 public class GitRepository {
 
+	private static final Logger LOG = LogManager.getLogger(GitRepository.class);
+	
 	@Autowired
 	private MavenCli mavenCli;
 
 	private static final String DEPLOY_DIRECTORY = "deploy";
 	private static final String GIT_HIDDEN_DIRECTORY_NAME = ".git";
+	
+	private static final String TAG_PREFIX = "refs/tags/";
 
 	private String remoteUrl;
 	private String relativeDirectoryPath;
@@ -73,8 +83,15 @@ public class GitRepository {
 
 	public List<String> getVersions() throws GitRepositoryException {
 		try {
+			int tagNameStart = TAG_PREFIX.length();
+			
 			List<Ref> refs = this.repository.tagList().call();
-			return refs.stream().map(Ref::getName).collect(Collectors.toList());
+			return refs.stream()
+					.map(Ref::getName)
+					.map(refName -> {
+						return refName.substring(tagNameStart);
+					})
+					.collect(Collectors.toList());
 		} catch (Exception e) {
 			throw new GitRepositoryException(
 					"Could not get list of tags from repository "
@@ -97,14 +114,48 @@ public class GitRepository {
 	}
 
 	private void executeMavenBuild() throws GitRepositoryException {
-		int result = mavenCli.doMain(new String[] { "clean", "install" },
-				directoryPath, System.out, System.out);
-		if (result != 0) {
-			throw new GitRepositoryException(
-					"Could not execute maven build in " + directoryPath);
+		try {
+			Runtime runtime = Runtime.getRuntime();
+			Process process = runtime.exec(
+					"cmd /c mvn clean install",
+					null,
+					getDirectory());
+			
+			logProcessOutput(process);
+			
+			int result = process.waitFor();
+			if (result != 0) {
+				throw new GitRepositoryException("Maven return code is not 0");
+			}
+		} catch (IOException | InterruptedException e) {
+			throw new GitRepositoryException("Could not execute maven command", e);
 		}
 	}
 	
+	private void logProcessOutput(Process process) throws GitRepositoryException {
+		BufferedReader br = null;
+		try {
+			InputStream in = process.getInputStream();
+			InputStreamReader isr = new InputStreamReader(in, "UTF-8");
+			br = new BufferedReader(isr);
+			
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				LOG.info(line);
+			}
+		} catch (IOException e) {
+			throw new GitRepositoryException("Could not get process output", e);
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					throw new GitRepositoryException("Could not close process input stream", e);
+				}
+			}
+		}
+	}
+
 	public String getDeployDirectory(Application application) {
 		return FileSystem.getRelativePath(relativeDirectoryPath
 				+ FileSystem.FILE_SPLITTER + DEPLOY_DIRECTORY

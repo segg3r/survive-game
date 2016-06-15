@@ -40,6 +40,11 @@ public class UpgradeCacheImpl implements UpgradeCache {
 			new HashMap<ApplicationVersion, UpgradeInfo>();
 
 	@PostConstruct
+	public void pullChangesAndInitializeCache() throws UpgradeException {
+		populateApplicationVersions();
+		initializeCache();
+	}
+	
 	public void populateApplicationVersions() throws UpgradeException {
 		try {
 			repository.initialize();
@@ -72,7 +77,6 @@ public class UpgradeCacheImpl implements UpgradeCache {
 		}
 	}
 	
-	@PostConstruct
 	public void initializeCache() throws UpgradeException {
 		for (Application application : Application.values()) {
 			List<ApplicationVersion> availableVersions = upgradeDAO

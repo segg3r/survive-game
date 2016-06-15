@@ -152,6 +152,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>by.segg3r</groupId>
+			<artifactId>survive-common</artifactId>
+			<version>${survive.version}</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>by.segg3r</groupId>
 			<artifactId>survive-upgrade-common</artifactId>
 			<version>${survive.version}</version>
 		</dependency>
@@ -253,6 +259,13 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>${apache.commons-io.version}</version>
+		</dependency>
+	
+		<!-- http://mvnrepository.com/artifact/com.google.guava/guava -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
 		</dependency>
 	</dependencies>
 </project>

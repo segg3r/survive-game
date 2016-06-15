@@ -23,6 +23,7 @@
 		<cglib.version>3.2.0</cglib.version>
 		<cxf.version>3.1.4</cxf.version>
 		<gson.version>2.5</gson.version>
+		<guava.version>19.0</guava.version>
 		<jackson.version>2.6.4</jackson.version>
 		<jetty.version>9.3.6.v20151106</jetty.version>
 		<jgit.version>4.3.1.201605051710-r</jgit.version>
@@ -32,7 +33,7 @@
 		<maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
 		<maven.cobertura.plugin.version>2.7</maven.cobertura.plugin.version>
 		<maven.compiler.plugin.version>3.2</maven.compiler.plugin.version>
-		<maven.embedder.version>3.2.2</maven.embedder.version>
+		<maven.embedder.version>3.3.9</maven.embedder.version>
 		<maven.findbugs.plugin.version>3.0.1</maven.findbugs.plugin.version>
 		<maven.jar.plugin.version>2.3.2</maven.jar.plugin.version>
 		<maven.nativedependencies.plugin.version>0.0.7</maven.nativedependencies.plugin.version>
