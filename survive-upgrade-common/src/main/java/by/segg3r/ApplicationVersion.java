@@ -66,4 +66,10 @@ public class ApplicationVersion {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "ApplicationVersion [application=" + application + ", version="
+				+ version + "]";
+	}
+	
 }

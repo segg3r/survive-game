@@ -1,6 +1,7 @@
 package by.segg3r.config;
 
 import org.apache.cxf.transport.servlet.CXFServlet;
+import org.apache.maven.cli.MavenCli;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -13,6 +14,8 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
+import by.segg3r.git.GitRepository;
+
 @Configuration
 @PropertySource(value = "file:" + ServerConfig.RESOURCES_FOLDER
 		+ "/upgrade-server.properties")
@@ -22,6 +25,10 @@ public class ServerConfig {
 
 	@Value("${upgrade-server.port}")
 	private int upgradeServerPort;
+	@Value("${upgrade-server.remote}")
+	private String remoteRepositoryUrl;
+	@Value("${upgrade-server.repository}")
+	private String relativeRepositoryDirectory;
 
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertyConfig() {
@@ -36,6 +43,16 @@ public class ServerConfig {
 	@Bean
 	public Server server() {
 		return new Server(upgradeServerPort);
+	}
+	
+	@Bean
+	public GitRepository repository() {
+		return new GitRepository(remoteRepositoryUrl, relativeRepositoryDirectory);
+	}
+	
+	@Bean
+	public MavenCli mavenCli() {
+		return new MavenCli();
 	}
 
 	@Bean

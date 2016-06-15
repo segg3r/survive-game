@@ -15,7 +15,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.FileSystemResource;
 
-import by.segg3r.constants.FileSystem;
+import by.segg3r.FileSystem;
 import by.segg3r.upgradeclient.UpgradeComponent;
 import by.segg3r.upgradeclient.UpgradeServerAPI;
 import by.segg3r.upgradeclient.impl.UpgradeServerAPIImpl;

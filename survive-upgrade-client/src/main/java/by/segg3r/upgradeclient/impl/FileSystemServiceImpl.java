@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 
-import by.segg3r.constants.FileSystem;
+import by.segg3r.FileSystem;
 import by.segg3r.upgradeclient.FileSystemService;
 
 @Component
@@ -14,7 +14,7 @@ public class FileSystemServiceImpl implements FileSystemService {
 
 	private static final String TEMPORARY_FOLDER_RELATIVE_PATH = "temp";
 	private static final String TEMPORARY_FOLDER_FULL_PATH = FileSystem
-			.getFullPathFromCurrentRelativePath(TEMPORARY_FOLDER_RELATIVE_PATH);
+			.getRelativePath(TEMPORARY_FOLDER_RELATIVE_PATH);
 
 	@Override
 	public void removeTemporaryFolder() throws IOException {

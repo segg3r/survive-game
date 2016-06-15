@@ -9,10 +9,18 @@ import by.segg3r.http.entities.FileInfo;
 
 public interface UpgradeDAO {
 
-	List<FileInfo> getFileInfos(ApplicationVersion applicationVersion) throws UpgradeException;
+	void populateApplicationVersion(ApplicationVersion applicationVersion,
+			String sourcePath) throws UpgradeException;
 
-	List<ApplicationVersion> getAvailableVersions(Application application) throws UpgradeException;
+	List<FileInfo> getFileInfos(ApplicationVersion applicationVersion)
+			throws UpgradeException;
 
-	byte[] getFileContent(ApplicationVersion applicationVersion, String path) throws UpgradeException;
+	List<String> getAvailableVersions() throws UpgradeException;
+
+	List<ApplicationVersion> getAvailableApplicationVersions(
+			Application application) throws UpgradeException;
+
+	byte[] getFileContent(ApplicationVersion applicationVersion, String path)
+			throws UpgradeException;
 
 }

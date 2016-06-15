@@ -1,6 +1,5 @@
-package by.segg3r.constants;
+package by.segg3r;
 
-import by.segg3r.Application;
 
 public class FileSystem {
 
@@ -30,7 +29,7 @@ public class FileSystem {
 		return System.getProperty("user.dir");
 	}
 
-	public static String getFullPathFromCurrentRelativePath(String relativePath) {
+	public static String getRelativePath(String relativePath) {
 		return getCurrentPath() + FILE_SPLITTER + relativePath;
 	}
 

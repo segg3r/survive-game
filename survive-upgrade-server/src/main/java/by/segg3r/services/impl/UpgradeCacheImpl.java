@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -14,6 +15,7 @@ import by.segg3r.Application;
 import by.segg3r.ApplicationVersion;
 import by.segg3r.dao.UpgradeDAO;
 import by.segg3r.exceptions.UpgradeException;
+import by.segg3r.git.GitRepository;
 import by.segg3r.http.entities.FileInfo;
 import by.segg3r.http.entities.UpgradeFileInfo;
 import by.segg3r.http.entities.UpgradeInfo;
@@ -26,6 +28,8 @@ public class UpgradeCacheImpl implements UpgradeCache {
 	private static final VersionComparator VERSION_COMPARATOR = new VersionComparator();
 
 	@Autowired
+	private GitRepository repository;
+	@Autowired
 	private UpgradeDAO upgradeDAO;
 	@Autowired
 	private VersionFileTreeService versionFileTreeService;
@@ -36,10 +40,43 @@ public class UpgradeCacheImpl implements UpgradeCache {
 			new HashMap<ApplicationVersion, UpgradeInfo>();
 
 	@PostConstruct
+	public void populateApplicationVersions() throws UpgradeException {
+		try {
+			repository.initialize();
+			
+			List<String> repositoryVersions = repository.getVersions();
+			List<String> populatedVersions = upgradeDAO.getAvailableVersions();
+			List<String> buildVersions = repositoryVersions.stream()
+				.filter(repositoryVersion -> {
+					return !populatedVersions.contains(repositoryVersion);
+				})
+				.collect(Collectors.toList());
+			
+			for (String buildVersion : buildVersions) {
+				repository.buildVersion(buildVersion);
+				
+				for (Application application : Application.values()) {
+					ApplicationVersion applicationVersion = ApplicationVersion
+							.of(application, buildVersion);
+					String sourceApplicationDirectory = repository
+							.getDeployDirectory(application);
+					upgradeDAO
+							.populateApplicationVersion(applicationVersion,
+									sourceApplicationDirectory);
+				}
+			}
+		} catch (Exception e) {
+			throw new UpgradeException("Could not populate application versions", e);
+		} finally {
+			repository.close();
+		}
+	}
+	
+	@PostConstruct
 	public void initializeCache() throws UpgradeException {
 		for (Application application : Application.values()) {
 			List<ApplicationVersion> availableVersions = upgradeDAO
-					.getAvailableVersions(application);
+					.getAvailableApplicationVersions(application);
 			if (availableVersions.isEmpty()) {
 				UpgradeInfo zeroToZeroUpgradeInfo = UpgradeInfo
 						.noUpgradeRequired(application.getPath(),

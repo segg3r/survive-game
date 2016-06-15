@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import by.segg3r.Application;
 import by.segg3r.ApplicationVersion;
-import by.segg3r.constants.FileSystem;
+import by.segg3r.FileSystem;
 import by.segg3r.upgradeclient.PropertiesDAO;
 import by.segg3r.upgradeclient.PropertiesService;
 

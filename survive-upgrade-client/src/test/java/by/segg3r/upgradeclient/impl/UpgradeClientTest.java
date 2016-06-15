@@ -27,7 +27,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import by.segg3r.Application;
-import by.segg3r.constants.FileSystem;
+import by.segg3r.FileSystem;
 import by.segg3r.exceptions.APIException;
 import by.segg3r.exceptions.UpgradeException;
 import by.segg3r.http.entities.FileUpgradeMode;
