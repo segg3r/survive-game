@@ -117,7 +117,9 @@ public class GitRepository {
 		try {
 			Runtime runtime = Runtime.getRuntime();
 			Process process = runtime.exec(
-					"cmd /c mvn clean install",
+					"cmd /c mvn clean install"
+						+ " -Dmaven.test.skip=true"
+						+ " -Dbuild.skip.checks=true",
 					null,
 					getDirectory());
 			
