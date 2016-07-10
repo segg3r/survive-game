@@ -101,12 +101,16 @@ public class GitRepository {
 	}
 
 	public void buildVersion(String buildVersion) throws GitRepositoryException {
+		LOG.info("Building version " + buildVersion);
+		
 		checkout(buildVersion);
 		executeMavenBuild();
 	}
 
 	private void checkout(String buildVersion) throws GitRepositoryException {
 		try {
+			LOG.info("Checking out version " + buildVersion);
+			
 			this.repository.checkout().setName(buildVersion).call();
 		} catch (GitAPIException e) {
 			throw new GitRepositoryException("Could not checkout tag "
@@ -135,7 +139,6 @@ public class GitRepository {
 	}
 	
 	private void logProcessOutput(Process process) throws GitRepositoryException {
-		logProcessStream(process.getInputStream());
 		logProcessStream(process.getErrorStream());
 	}
 

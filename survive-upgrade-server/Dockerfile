@@ -1,4 +1,4 @@
-FROM java:8
+FROM isuper/java-oracle:jdk_8
 
 # Maven download and unzip
 ENV MAVEN_VERSION 3.3.9
@@ -15,6 +15,8 @@ VOLUME /root/.m2
 
 # Copy upgrade server under image
 COPY target/deploy/survive-upgrade-server-0.0.1-dev /usr/upgrade-server
+VOLUME usr/upgrade-server/repo
+VOLUME usr/upgrade-server/upgrades
 WORKDIR /usr/upgrade-server
 
 EXPOSE 11199
