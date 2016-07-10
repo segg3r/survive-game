@@ -14,7 +14,7 @@ ENV PATH $PATH:/usr/share/maven/bin
 VOLUME /root/.m2
 
 # Copy upgrade server under image
-COPY target/deploy/survive-upgrade-server-0.0.1-dev /usr/upgrade-server
+COPY target/deploy/survive-upgrade-server /usr/upgrade-server
 VOLUME usr/upgrade-server/repo
 VOLUME usr/upgrade-server/upgrades
 WORKDIR /usr/upgrade-server

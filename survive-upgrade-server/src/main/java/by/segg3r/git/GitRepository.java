@@ -139,6 +139,7 @@ public class GitRepository {
 	}
 	
 	private void logProcessOutput(Process process) throws GitRepositoryException {
+		logProcessStream(process.getInputStream());
 		logProcessStream(process.getErrorStream());
 	}
 

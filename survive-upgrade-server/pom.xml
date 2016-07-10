@@ -13,16 +13,16 @@
 		<parent.target>${parent.basedir}/target</parent.target>
 
 		<deploy.path>target/deploy</deploy.path>
-		<deploy.fullPath>${deploy.path}/${project.artifactId}-${project.version}</deploy.fullPath>
+		<deploy.fullPath>${deploy.path}/${project.artifactId}</deploy.fullPath>
 		<deploy.runPath>${deploy.fullPath}/run.bat</deploy.runPath>
 		<deploy.debugPath>${deploy.fullPath}/debug.bat</deploy.debugPath>
 		<deploy.debugPort>5007</deploy.debugPort>
 
-		<release.finalName>${project.artifactId}-${project.version}.jar</release.finalName>
+		<release.finalName>${project.artifactId}.jar</release.finalName>
 
 		<release.zip.finalPath>${parent.target}</release.zip.finalPath>
-		<release.zip.finalName>${project.artifactId}-${project.version}.zip</release.zip.finalName>
-		<release.zip.targetName>${project.artifactId}-${project.version}-${release.zip.postfix}.zip</release.zip.targetName>
+		<release.zip.finalName>${project.artifactId}.zip</release.zip.finalName>
+		<release.zip.targetName>${project.artifactId}-${release.zip.postfix}.zip</release.zip.targetName>
 		<release.zip.targetPath>${project.build.directory}</release.zip.targetPath>
 
 		<release.resources.path>resources</release.resources.path>
@@ -65,6 +65,7 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>${maven.jar.plugin.version}</version>
 				<configuration>
+					<finalName>${project.artifactId}</finalName>
 					<excludes>
 						<exclude>**/*.properties</exclude>
 						<exclude>**/*.png</exclude>
@@ -90,6 +91,7 @@
 							<goal>single</goal>
 						</goals>
 						<configuration>
+							<finalName>${project.artifactId}</finalName>
 							<descriptors>
 								<descriptor>${source.assembly.path}</descriptor>
 							</descriptors>
