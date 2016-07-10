@@ -12,7 +12,7 @@
 		<parent.basedir>${project.basedir}/..</parent.basedir>
 		<parent.target>${parent.basedir}/target</parent.target>
 
-		<deploy.path>${parent.basedir}/deploy</deploy.path>
+		<deploy.path>target/deploy</deploy.path>
 		<deploy.forUpgrade>${deploy.path}/client</deploy.forUpgrade>
 		<deploy.fullPath>${deploy.path}/${project.artifactId}-${project.version}</deploy.fullPath>
 		<deploy.runPath>${deploy.fullPath}/run.bat</deploy.runPath>
@@ -139,9 +139,6 @@
 									tofile="${release.zip.finalPath}/${release.zip.finalName}" />
 								<unzip src="${release.zip.finalPath}/${release.zip.finalName}"
 									dest="${deploy.path}" />
-								<copy todir="${deploy.forUpgrade}">
-									<fileset dir="${deploy.fullPath}"/>
-								</copy>
 							</target>
 						</configuration>
 					</execution>

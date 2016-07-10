@@ -19,4 +19,4 @@ done
 progdir=`dirname "$PRG"`
 cd $progdir
 
-java -jar "${release.finalName}" &
+java -jar "${release.finalName}"

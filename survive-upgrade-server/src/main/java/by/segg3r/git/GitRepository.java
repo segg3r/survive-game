@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import by.segg3r.Application;
 import by.segg3r.FileSystem;
+import by.segg3r.util.CommandLine;
 
 public class GitRepository {
 
@@ -115,19 +116,18 @@ public class GitRepository {
 
 	private void executeMavenBuild() throws GitRepositoryException {
 		try {
-			Runtime runtime = Runtime.getRuntime();
-			Process process = runtime.exec(
-					"cmd /c mvn clean install"
+			LOG.info("Executing maven build in directory : " + directoryPath);
+			
+			Process process = CommandLine.execute("mvn clean install"
 						+ " -Dmaven.test.skip=true"
 						+ " -Dbuild.skip.checks=true",
-					null,
-					getDirectory());
+						getDirectory());
 			
 			logProcessOutput(process);
-			
+
 			int result = process.waitFor();
 			if (result != 0) {
-				throw new GitRepositoryException("Maven return code is not 0");
+				throw new GitRepositoryException("Maven return code was " + result);
 			}
 		} catch (IOException | InterruptedException e) {
 			throw new GitRepositoryException("Could not execute maven command", e);
@@ -135,9 +135,13 @@ public class GitRepository {
 	}
 	
 	private void logProcessOutput(Process process) throws GitRepositoryException {
+		logProcessStream(process.getInputStream());
+		logProcessStream(process.getErrorStream());
+	}
+
+	public void logProcessStream(InputStream in) throws GitRepositoryException {
 		BufferedReader br = null;
 		try {
-			InputStream in = process.getInputStream();
 			InputStreamReader isr = new InputStreamReader(in, "UTF-8");
 			br = new BufferedReader(isr);
 			

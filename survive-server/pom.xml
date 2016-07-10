@@ -12,7 +12,7 @@
 		<parent.basedir>${project.basedir}/..</parent.basedir>
 		<parent.target>${parent.basedir}/target</parent.target>
 
-		<deploy.path>${parent.basedir}/deploy</deploy.path>
+		<deploy.path>target/deploy</deploy.path>
 		<deploy.fullPath>${deploy.path}/${project.artifactId}-${project.version}</deploy.fullPath>
 		<deploy.runPath>${deploy.fullPath}/run.bat</deploy.runPath>
 		<deploy.debugPath>${deploy.fullPath}/debug.bat</deploy.debugPath>
