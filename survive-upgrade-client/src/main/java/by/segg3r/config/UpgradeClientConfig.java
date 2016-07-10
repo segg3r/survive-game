@@ -40,7 +40,7 @@ public class UpgradeClientConfig {
 	@Value("${upgrade-server.host}")
 	private String upgradeServerHost;
 	@Value("${upgrade-server.port}")
-	private int upgradeServerPort;
+	private String upgradeServerPort;
 
 	@Autowired
 	private ApplicationContext applicationContext;

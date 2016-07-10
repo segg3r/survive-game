@@ -1,6 +1,7 @@
 package by.segg3r.upgradeclient.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import by.segg3r.Application;
 import by.segg3r.exceptions.APIException;
@@ -19,7 +20,7 @@ public class UpgradeServerAPIImpl implements UpgradeServerAPI {
 	private JsonHttpClient jsonHttpClient;
 
 	private String upgradeServerHost;
-	private int upgradeServerPort;
+	private String upgradeServerPort;
 
 	@Override
 	public UpgradeInfo getApplicationUpgradeInfo(Application application, String version)
@@ -38,15 +39,18 @@ public class UpgradeServerAPIImpl implements UpgradeServerAPI {
 	}
 
 	private String buildPath(String relativeUrl) {
-		return "http://" + upgradeServerHost + ":" + upgradeServerPort
-				+ "/api/" + relativeUrl;
+		String host = StringUtils.isEmpty(upgradeServerPort)
+				? upgradeServerHost
+				: upgradeServerHost + ":" + upgradeServerPort;
+		
+		return host + "/api/" + relativeUrl;
 	}
 
 	public void setUpgradeServerHost(String upgradeServerHost) {
 		this.upgradeServerHost = upgradeServerHost;
 	}
 
-	public void setUpgradeServerPort(int upgradeServerPort) {
+	public void setUpgradeServerPort(String upgradeServerPort) {
 		this.upgradeServerPort = upgradeServerPort;
 	}
 
