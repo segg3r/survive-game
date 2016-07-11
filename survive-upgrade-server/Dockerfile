@@ -15,8 +15,8 @@ VOLUME /root/.m2
 
 # Copy upgrade server under image
 COPY target/deploy/survive-upgrade-server /usr/upgrade-server
-VOLUME usr/upgrade-server/repo
-VOLUME usr/upgrade-server/upgrades
+VOLUME /usr/upgrade-server/repo
+VOLUME /usr/upgrade-server/upgrades
 WORKDIR /usr/upgrade-server
 
 EXPOSE 11199
