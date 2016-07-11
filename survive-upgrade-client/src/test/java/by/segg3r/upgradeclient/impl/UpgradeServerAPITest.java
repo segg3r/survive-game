@@ -29,14 +29,14 @@ public class UpgradeServerAPITest {
 	private UpgradeServerAPIImpl api;
 
 	private String upgradeServerHost;
-	private String upgradeServerPort;
+	private int upgradeServerPort;
 
 	@BeforeClass
 	public void initMocks() {
 		MockitoAnnotations.initMocks(this);
 
-		upgradeServerHost = "http://segg3r.servegame.com";
-		upgradeServerPort = "11199";
+		upgradeServerHost = "segg3r.servegame.com";
+		upgradeServerPort = 11199;
 		api.setUpgradeServerHost(upgradeServerHost);
 		api.setUpgradeServerPort(upgradeServerPort);
 	}
