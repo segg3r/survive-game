@@ -1,7 +1,7 @@
 @echo off
 :runUpgrade
-	rmdir /s /q ${release.upgrade-client-temp.path}
-	xcopy "${release.upgrade-client.path}" "${release.upgrade-client-temp.path}/*" /s /q
+	rmdir /s /q ${release.upgrade-client-temp.path} >nul 2>nul
+	xcopy "${release.upgrade-client.path}" "${release.upgrade-client-temp.path}/*" /s /q >nul 2>nul
 	set rootPath=%~dp0
 	set rootPath=%rootPath:~0,-1%
 
@@ -22,7 +22,8 @@
 		) else (
 			echo --- Successfully upgraded client to latest version.
 			cd ${release.client.path}
-			call ${deploy.client.runPath}
+			start ${deploy.client.runPath}
+			exit
 		)
 	)
 	

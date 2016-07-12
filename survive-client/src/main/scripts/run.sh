@@ -19,4 +19,4 @@ done
 progdir=`dirname "$PRG"`
 cd $progdir
 
-java -jar -Djava.library.path="${release.natives.path}" "${release.finalName}" &
+javaw -jar -Djava.library.path="${release.natives.path}" "${release.finalName}" &

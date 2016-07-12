@@ -22,7 +22,8 @@
 		) else (
 			echo --- Successfully upgraded client to latest version.
 			cd ${release.client.path}
-			call ${deploy.client.runPath}
+			start ${deploy.client.runPath}
+			exit
 		)
 	)
 	
