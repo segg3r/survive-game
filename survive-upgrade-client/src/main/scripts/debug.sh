@@ -19,4 +19,4 @@ done
 progdir=`dirname "$PRG"`
 cd $progdir
 
-java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=${deploy.debugPort} -jar "${release.finalName}" &
+java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=${deploy.debugPort} -jar "${release.finalName}" $1 &

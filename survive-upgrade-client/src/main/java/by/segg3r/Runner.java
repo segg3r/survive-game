@@ -5,6 +5,7 @@ import java.io.File;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import by.segg3r.config.UpgradeClientConfig;
+import by.segg3r.upgradeclient.UpgradeResult;
 import by.segg3r.upgradeclient.UpgradeRunner;
 import by.segg3r.util.LoggerUtil;
 
@@ -15,15 +16,15 @@ public class Runner {
 
 	public static void main(String[] args) {
 		if (args.length != 1) {
-			throw new RuntimeException(
-					"Wrong number of arguments. <args>: [String root-path].");
+			System.err.println("Wrong number of arguments. <args>: [String root-path].");
+			System.exit(UpgradeResult.UPGRADE_FAILED.getResultCode());
 		}
 
 		String rootPath = args[0];
 		File file = new File(rootPath);
 		if (!file.isDirectory()) {
-			throw new RuntimeException(
-					"Specified root-path does not exist in file system.");
+			System.err.println("Specified root-path '" + rootPath + "' does not exist in file system.");
+			System.exit(UpgradeResult.UPGRADE_FAILED.getResultCode());
 		}
 
 		LoggerUtil.initializeLogger(rootPath, "upgrade-client.log");
